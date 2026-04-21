@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Velion Health — CareLoop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#111210;--ink2:#44433f;--ink3:#8c8b87;
+  --cream:#f8f6f1;--white:#fff;--rule:#e4e1d9;--rule2:#ccc9c0;
+  --blue:#1a4fd6;--blue2:#1341b5;--blue-tint:#eef1fc;
+  --green:#1a6644;--green-tint:#e4f2eb;
+  --amber:#92600a;--amber-tint:#fdf3e3;
+  --red:#991b1b;--red-tint:#fee2e2;
+  --sidebar-bg:#1a1f2e;
+  --min-h:1100px;
+}
+body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;background:var(--white);overflow-x:hidden}
+.page{display:none;pointer-events:none;position:absolute;top:0;left:0;width:100%}.page.active{display:block;pointer-events:auto;position:relative}
+.btn-primary{background:var(--blue);color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:6px;font-size:0.875rem;font-weight:500;font-family:'Figtree',sans-serif;cursor:pointer;transition:background 0.15s}.btn-primary:hover{background:var(--blue2)}
+.btn-outline{background:none;color:var(--ink2);border:1px solid var(--rule2);padding:0.7rem 1.35rem;border-radius:6px;font-size:0.875rem;font-weight:400;font-family:'Figtree',sans-serif;cursor:pointer}.btn-outline:hover{border-color:var(--ink2);color:var(--ink)}
+.btn-white{background:#fff;color:var(--ink);border:none;padding:0.8rem 2rem;border-radius:6px;font-size:0.875rem;font-weight:500;font-family:'Figtree',sans-serif;cursor:pointer}.btn-white:hover{opacity:0.88}
+/* NAV */
+.l-nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(8px)}
+.logo{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:400;color:var(--ink);display:flex;align-items:center;gap:8px;cursor:pointer}.logo:hover{opacity:0.8}
+.logo-mark{width:26px;height:26px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:14px;height:14px}
+.l-nav-links{display:flex;align-items:center;gap:1.75rem;list-style:none}
+.l-nav-links a{font-size:0.85rem;color:var(--ink2);text-decoration:none;font-weight:400;cursor:pointer;transition:color 0.15s}.l-nav-links a:hover{color:var(--ink)}
+.nav-cta{background:var(--ink);color:#fff;border:none;padding:0.5rem 1.1rem;border-radius:6px;font-size:0.83rem;font-weight:500;font-family:'Figtree',sans-serif;cursor:pointer}.nav-cta:hover{background:#2a2a28}
+/* HERO */
+.hero{padding:4.5rem 2.5rem 4rem;max-width:1080px;margin:0 auto;display:grid;grid-template-columns:55% 1fr;gap:4rem;align-items:center}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:1.5rem}
+.hero-tag::before{content:'';width:18px;height:1.5px;background:var(--blue)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(2.4rem,4.5vw,3.6rem);font-weight:300;line-height:1.1;letter-spacing:-0.03em;color:var(--ink);margin-bottom:1.25rem}
+.hero h1 em{font-style:italic;color:var(--blue)}
+.hero-sub{font-size:1rem;color:var(--ink2);line-height:1.75;font-weight:300;max-width:430px;margin-bottom:2.25rem}
+.hero-btns{display:flex;gap:0.75rem;align-items:center}
+.chat-card{background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden;box-shadow:0 2px 24px rgba(0,0,0,0.06)}
+.chat-header{padding:0.875rem 1.1rem;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:0.6rem;background:var(--cream)}
+.chat-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue-tint);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:600;color:var(--blue)}
+.chat-name{font-size:0.82rem;font-weight:500;color:var(--ink)}
+.chat-status{font-size:0.7rem;color:var(--green);display:flex;align-items:center;gap:4px}
+.chat-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green)}
+.chat-body{padding:1rem;display:flex;flex-direction:column;gap:0.7rem}
+.bubble{max-width:85%;padding:0.65rem 0.85rem;border-radius:10px;font-size:0.8rem;line-height:1.5}
+.b-out{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.b-in{background:var(--cream);color:var(--ink);border:1px solid var(--rule);align-self:flex-start;border-bottom-left-radius:3px}
+.b-time{font-size:0.62rem;opacity:0.55;margin-top:3px;text-align:right}.b-in .b-time{text-align:left}
+.b-divider{display:flex;align-items:center;gap:8px;font-size:0.65rem;color:var(--ink3)}
+.b-divider::before,.b-divider::after{content:'';flex:1;height:1px;background:var(--rule)}
+.chat-tags{padding:0.75rem 1rem;border-top:1px solid var(--rule);display:flex;gap:6px;background:var(--cream);flex-wrap:wrap}
+.ctag{font-size:0.68rem;font-weight:500;padding:0.22rem 0.55rem;border-radius:4px}
+.ctag-g{background:var(--green-tint);color:var(--green)}.ctag-b{background:var(--blue-tint);color:var(--blue)}.ctag-a{background:var(--amber-tint);color:var(--amber)}
+/* STATS */
+.l-stats{background:var(--cream);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:2.25rem 2.5rem}
+.l-stats-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+.l-stat{padding:0 2rem;border-left:1px solid var(--rule2)}.l-stat:first-child{padding-left:0;border-left:none}
+.l-stat-n{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:300;color:var(--ink);letter-spacing:-0.04em;line-height:1;margin-bottom:0.3rem}
+.l-stat-l{font-size:0.82rem;color:var(--ink2);line-height:1.45;font-weight:300}
+.l-stat-s{font-size:0.67rem;color:var(--ink3);margin-top:0.25rem}
+/* PRODUCT */
+.l-product{padding:5rem 2.5rem;max-width:1080px;margin:0 auto}
+.sec-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.6rem}
+.sec-title{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:300;letter-spacing:-0.025em;line-height:1.15;color:var(--ink);margin-bottom:0.75rem}
+.sec-sub{font-size:0.95rem;color:var(--ink2);font-weight:300;line-height:1.7;max-width:460px;margin-bottom:3rem}
+.product-card{border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.product-grid{display:grid;grid-template-columns:1fr 1fr}
+.product-l{padding:2.5rem;border-right:1px solid var(--rule)}
+.product-name{font-family:'Fraunces',serif;font-size:2rem;font-weight:300;letter-spacing:-0.02em;color:var(--ink);margin-bottom:0.25rem}
+.product-by{font-size:0.75rem;color:var(--ink3);margin-bottom:1rem}
+.product-desc{font-size:0.88rem;color:var(--ink2);line-height:1.75;font-weight:300;margin-bottom:1.5rem}
+.feat-list{list-style:none;display:flex;flex-direction:column;gap:0.55rem;margin-bottom:2rem}
+.feat-list li{font-size:0.83rem;color:var(--ink2);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.feat-list li::before{content:'→';color:var(--blue);font-size:0.75rem;margin-top:2px;flex-shrink:0}
+.product-r{padding:2rem;background:var(--cream)}
+.dash-thumb{background:#fff;border:1px solid var(--rule);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow 0.2s,transform 0.15s}
+.dash-thumb:hover{box-shadow:0 4px 20px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.dt-bar{background:var(--ink);padding:0.5rem 0.85rem;display:flex;align-items:center;gap:5px}
+.dt-dot{width:8px;height:8px;border-radius:50%}
+.dt-body{padding:1rem}
+.dt-metrics{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem}
+.dt-metric{background:var(--cream);border:1px solid var(--rule);border-radius:6px;padding:0.5rem 0.65rem}
+.dt-n{font-size:1.1rem;font-weight:500;color:var(--ink);letter-spacing:-0.02em}.dt-l{font-size:0.62rem;color:var(--ink3)}
+.dt-rl{font-size:0.63rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);margin-bottom:0.4rem}
+.dt-rows{display:flex;flex-direction:column;gap:0.3rem}
+.dt-row{display:flex;align-items:center;justify-content:space-between;background:var(--cream);border:1px solid var(--rule);border-radius:4px;padding:0.35rem 0.6rem}
+.dt-rn{font-size:0.68rem;color:var(--ink)}
+.dpill{font-size:0.58rem;font-weight:500;padding:0.12rem 0.4rem;border-radius:3px}
+.dp-g{background:var(--green-tint);color:var(--green)}.dp-a{background:var(--amber-tint);color:var(--amber)}
+.product-footer{padding:1.1rem 2.5rem;border-top:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;background:var(--cream)}
+.status-badge{display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--ink2)}
+.sdot{width:7px;height:7px;border-radius:50%;background:#22c55e}
+/* WHY */
+.l-why{background:var(--cream);border-top:1px solid var(--rule);padding:5rem 2.5rem}
+.l-why-inner{max-width:1080px;margin:0 auto}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:2.5rem}
+.why-card{padding:2rem;background:#fff}
+.why-num{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:300;color:var(--rule2);margin-bottom:1rem}
+.why-title{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem}
+.why-desc{font-size:0.82rem;color:var(--ink2);line-height:1.65;font-weight:300}
+/* ABOUT */
+.l-about{padding:5rem 2.5rem;max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.steps-card{border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.step{display:flex;gap:1rem;padding:1.25rem 1.5rem;border-bottom:1px solid var(--rule);background:#fff;transition:background 0.15s}
+.step:last-child{border-bottom:none}.step:hover{background:var(--cream)}
+.step-n{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:300;color:var(--ink3);min-width:20px;line-height:1;padding-top:2px}
+.step-t{font-size:0.875rem;font-weight:500;color:var(--ink);margin-bottom:0.2rem}
+.step-d{font-size:0.78rem;color:var(--ink2);line-height:1.55;font-weight:300}
+.story-title{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;letter-spacing:-0.025em;line-height:1.2;color:var(--ink);margin-bottom:1.25rem}
+.story-p{font-size:0.9rem;color:var(--ink3);line-height:1.8;font-weight:300;margin-bottom:0.85rem}
+.focus-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1.25rem}
+.focus-tag{font-size:0.75rem;font-weight:500;padding:0.3rem 0.75rem;border-radius:20px;background:var(--blue-tint);color:var(--blue);border:1px solid rgba(26,79,214,0.15)}
+/* CTA + FOOTER */
+.l-cta{background:var(--ink);padding:5rem 2.5rem;text-align:center}
+.l-cta-inner{max-width:520px;margin:0 auto}
+.l-cta h2{font-family:'Fraunces',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:300;color:#fff;letter-spacing:-0.025em;line-height:1.15;margin-bottom:1rem}
+.l-cta p{font-size:0.9rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;line-height:1.7;font-weight:300}
+.l-footer{padding:1.5rem 2.5rem;border-top:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between}
+.foot-logo{font-family:'Fraunces',serif;font-size:1rem;font-weight:400;color:var(--ink);display:flex;align-items:center;gap:7px;cursor:pointer}
+.foot-mark{width:20px;height:20px;background:var(--blue);border-radius:4px;display:flex;align-items:center;justify-content:center}
+.foot-mark svg{width:10px;height:10px}
+.foot-copy{font-size:0.75rem;color:var(--ink3)}
+.foot-links{display:flex;gap:1.5rem}
+.foot-links a{font-size:0.75rem;color:var(--ink3);cursor:pointer;text-decoration:none}.foot-links a:hover{color:var(--ink)}
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:none;align-items:center;justify-content:center;pointer-events:none}
+.modal-overlay.open{display:flex;pointer-events:auto}
+.modal{background:#fff;border-radius:14px;padding:2.5rem;max-width:460px;width:90%;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink3);line-height:1;padding:0.25rem}.modal-close:hover{color:var(--ink)}
+.modal h3{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:300;margin-bottom:0.5rem;letter-spacing:-0.02em}
+.modal-sub{font-size:0.85rem;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6}
+.form-group{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem}
+.form-group label{font-size:0.75rem;font-weight:500;color:var(--ink2)}
+.form-group input,.form-group textarea,.form-group select{border:1px solid var(--rule2);border-radius:6px;padding:0.6rem 0.75rem;font-size:0.85rem;font-family:'Figtree',sans-serif;color:var(--ink);outline:none;transition:border-color 0.15s;background:#fff;width:100%}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--blue)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-success{text-align:center;padding:1rem 0}
+.form-success-icon{font-size:2rem;margin-bottom:0.75rem}
+.form-success h4{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:300;margin-bottom:0.5rem}
+.form-success p{font-size:0.85rem;color:var(--ink2)}
+.contact-row{display:flex;align-items:center;gap:1.25rem;padding:0.75rem 0;border-bottom:1px solid var(--rule)}
+.contact-row:last-of-type{border-bottom:none}
+.contact-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink3);width:70px;flex-shrink:0;line-height:1}
+.contact-value{font-size:0.85rem;color:var(--ink2);line-height:1}
+.contact-value a{color:var(--blue);text-decoration:none}.contact-value a:hover{text-decoration:underline}
+.about-section-title{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.6rem}
+.about-status{background:var(--amber-tint);border:1px solid rgba(146,96,10,0.2);border-radius:8px;padding:0.875rem 1rem;display:flex;gap:0.6rem;align-items:flex-start}
+.about-status-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:4px}
+.about-status p{font-size:0.82rem;color:var(--amber);margin:0;line-height:1.6}
+.about-tag{font-size:0.75rem;font-weight:500;padding:0.3rem 0.75rem;border-radius:20px;background:var(--blue-tint);color:var(--blue);border:1px solid rgba(26,79,214,0.15)}
+.patient-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.25rem}
+.form-divider{font-size:0.7rem;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--ink3);margin:1.25rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--rule);grid-column:1/-1}
+/* DASHBOARD */
+.dash-page{background:var(--cream)}
+.dash-shell{display:grid;grid-template-columns:220px 1fr;min-height:var(--min-h)}
+.dsidebar{background:var(--sidebar-bg);display:flex;flex-direction:column;align-self:stretch}
+.dsidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:8px;cursor:pointer;transition:opacity 0.15s}.dsidebar-logo:hover{opacity:0.75}
+.ds-mark{width:24px;height:24px;background:var(--blue);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ds-mark svg{width:12px;height:12px}
+.ds-logo-text{font-family:'Fraunces',serif;font-size:0.95rem;color:#fff;font-weight:400}
+.ds-logo-sub{font-size:0.6rem;color:rgba(255,255,255,0.4);margin-top:1px}
+.ds-back{font-size:0.58rem;color:rgba(255,255,255,0.25);margin-top:2px}
+.ds-sec{padding:1rem 0.75rem 0.4rem;font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.ds-nav{display:flex;align-items:center;gap:9px;padding:0.6rem 0.75rem;margin:0 0.5rem 2px;border-radius:6px;cursor:pointer;font-size:0.82rem;color:rgba(255,255,255,0.6);transition:background 0.15s,color 0.15s;border:none;background:none;width:calc(100% - 1rem);font-family:'Figtree',sans-serif;text-align:left}
+.ds-nav:hover{background:rgba(255,255,255,0.08);color:#fff}
+.ds-nav.active{background:rgba(255,255,255,0.12);color:#fff}
+.ds-nav svg{width:15px;height:15px;flex-shrink:0}
+.ds-badge{margin-left:auto;background:var(--blue);color:#fff;font-size:0.6rem;font-weight:600;padding:0.15rem 0.45rem;border-radius:10px}
+.dsidebar-bottom{margin-top:auto;padding:1rem 0.75rem;border-top:1px solid rgba(255,255,255,0.08)}
+.ds-clinic{display:flex;align-items:center;gap:8px}
+.ds-avatar{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.8);flex-shrink:0}
+.ds-cname{font-size:0.78rem;color:rgba(255,255,255,0.75);font-weight:400}
+.ds-cplan{font-size:0.62rem;color:rgba(255,255,255,0.35)}
+.dmain{display:flex;flex-direction:column;min-width:0;align-self:stretch}
+.dtopbar{background:#fff;border-bottom:1px solid var(--rule);padding:0 1.75rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.dtopbar-title{font-size:0.9rem;font-weight:500;color:var(--ink)}
+.dtopbar-r{display:flex;align-items:center;gap:0.75rem}
+.dtopbar-date{font-size:0.78rem;color:var(--ink3)}
+.btn-sm{background:var(--blue);color:#fff;border:none;padding:0.45rem 1rem;border-radius:5px;font-size:0.78rem;font-weight:500;font-family:'Figtree',sans-serif;cursor:pointer;transition:background 0.15s}.btn-sm:hover{background:var(--blue2)}
+.btn-sm-ghost{background:none;color:var(--ink2);border:1px solid var(--rule2);padding:0.45rem 0.9rem;border-radius:5px;font-size:0.78rem;font-family:'Figtree',sans-serif;cursor:pointer}.btn-sm-ghost:hover{border-color:var(--ink)}
+.dpage{display:none;padding:1.75rem;flex-direction:column;gap:1.25rem;min-height:calc(var(--min-h) - 52px)}.dpage.active{display:flex}
+.dcard{background:#fff;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.dcard-header{padding:1rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between}
+.dcard-title{font-size:0.82rem;font-weight:500;color:var(--ink)}
+.dcard-btn{font-size:0.75rem;color:var(--blue);cursor:pointer;background:none;border:none;font-family:'Figtree',sans-serif}.dcard-btn:hover{opacity:0.7}
+.d-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.d-metrics-5{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
+.d-metric{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:1.1rem 1.25rem}
+.dm-label{font-size:0.7rem;color:var(--ink3);margin-bottom:0.5rem}
+.dm-value{font-size:1.6rem;font-weight:500;color:var(--ink);letter-spacing:-0.03em;line-height:1}
+.dm-change{font-size:0.7rem;margin-top:0.3rem}
+.c-up{color:var(--green)}.c-dn{color:var(--red)}
+.dtable{width:100%;border-collapse:collapse}
+.dtable thead tr{border-bottom:1px solid var(--rule)}
+.dtable th{font-size:0.67rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);padding:0.6rem 1.25rem;text-align:left}
+.dtable td{padding:0.75rem 1.25rem;font-size:0.8rem;color:var(--ink2);border-bottom:1px solid var(--rule)}
+.dtable tbody tr:last-child td{border-bottom:none}
+.dtable tbody tr{transition:background 0.1s;cursor:pointer}.dtable tbody tr:hover{background:var(--cream)}
+.td-name{color:var(--ink);font-weight:500}.td-sub{font-size:0.72rem;color:var(--ink3)}
+.spill{display:inline-flex;align-items:center;font-size:0.68rem;font-weight:500;padding:0.2rem 0.55rem;border-radius:4px}
+.sp-g{background:var(--green-tint);color:var(--green)}.sp-a{background:var(--amber-tint);color:var(--amber)}.sp-b{background:var(--blue-tint);color:var(--blue)}.sp-r{background:var(--red-tint);color:var(--red)}
+.dtabs{display:flex;border-bottom:1px solid var(--rule);padding:0 1.25rem}
+.dtab{font-size:0.78rem;color:var(--ink3);padding:0.7rem 0.85rem;border-bottom:2px solid transparent;cursor:pointer;transition:color 0.15s,border-color 0.15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Figtree',sans-serif;margin-bottom:-1px}
+.dtab:hover{color:var(--ink2)}.dtab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.bar-chart{padding:1.25rem;display:flex;flex-direction:column;gap:0.6rem}
+.bar-row{display:flex;align-items:center;gap:0.75rem}
+.bar-lbl{font-size:0.72rem;color:var(--ink2);width:28px;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:7px;background:var(--cream);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:var(--blue)}
+.bar-fill-green{height:100%;border-radius:4px;background:var(--green)}
+.bar-val{font-size:0.72rem;color:var(--ink3);width:40px;flex-shrink:0}
+.ulist{display:flex;flex-direction:column}
+.uitem{display:flex;align-items:center;gap:0.85rem;padding:0.8rem 1.25rem;border-bottom:1px solid var(--rule);transition:background 0.1s;cursor:pointer}.uitem:last-child{border-bottom:none}.uitem:hover{background:var(--cream)}
+.udate{min-width:36px;text-align:center;background:var(--cream);border:1px solid var(--rule);border-radius:6px;padding:0.3rem 0.4rem}
+.ud-day{font-size:1rem;font-weight:500;color:var(--ink);line-height:1;font-family:'Fraunces',serif}
+.ud-mon{font-size:0.58rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em}
+.uinfo{flex:1}.u-name{font-size:0.82rem;font-weight:500;color:var(--ink)}.u-type{font-size:0.72rem;color:var(--ink3);margin-top:1px}.u-time{font-size:0.75rem;color:var(--ink3)}
+.feed{display:flex;flex-direction:column}
+.fitem{display:flex;gap:0.85rem;padding:0.85rem 1.25rem;border-bottom:1px solid var(--rule);align-items:flex-start}.fitem:last-child{border-bottom:none}
+.fdot{width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.fdot svg{width:12px;height:12px}
+.ftext{font-size:0.8rem;color:var(--ink2);line-height:1.5}.ftext strong{color:var(--ink);font-weight:500}
+.ftime{font-size:0.68rem;color:var(--ink3);margin-top:2px}
+.g2{display:grid;grid-template-columns:1.4fr 1fr;gap:1.25rem}
+.g2b{display:grid;grid-template-columns:1fr 1.2fr;gap:1.25rem}
+/* PATIENT PROFILE */
+.pp-back{background:none;border:none;font-size:0.78rem;color:var(--blue);cursor:pointer;font-family:'Figtree',sans-serif;margin-bottom:1rem;padding:0}.pp-back:hover{text-decoration:underline}
+.pp-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--rule)}
+.pp-avatar{width:52px;height:52px;border-radius:50%;background:var(--blue-tint);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:500;color:var(--blue);flex-shrink:0}
+.pp-name-el{font-size:1.1rem;font-weight:500;color:var(--ink)}.pp-meta-el{font-size:0.78rem;color:var(--ink3)}
+.pp-section{margin-bottom:1.75rem}
+.pp-section-title{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink3);margin-bottom:0.875rem;padding-bottom:0.5rem;border-bottom:1px solid var(--rule)}
+.pp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.875rem;margin-bottom:1.75rem}
+.pp-stat{background:var(--cream);border:1px solid var(--rule);border-radius:8px;padding:0.875rem 1rem}
+.wp-card{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+.wp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.wp-title{font-size:0.88rem;font-weight:600;color:var(--ink)}
+.wp-badge{font-size:0.68rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:20px;background:var(--blue-tint);color:var(--blue)}
+.wp-badge.wp-done{background:var(--green-tint);color:var(--green)}
+.wp-badge.wp-warn{background:var(--amber-tint);color:var(--amber)}
+.wp-progress-wrap{background:var(--cream);border-radius:6px;height:6px;overflow:hidden;margin-bottom:0.75rem}
+.wp-progress-bar{height:100%;border-radius:6px;background:var(--blue);transition:width 0.4s}
+.wp-row{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--ink2);margin-bottom:0.35rem}
+.wp-row span:first-child{color:var(--ink3)}
+.wp-plan-badge{display:inline-flex;align-items:center;gap:4px;font-size:0.65rem;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--blue-tint);color:var(--blue);border:1px solid rgba(26,79,214,0.15);white-space:nowrap}
+.wp-plan-badge.wp-plan-done{background:var(--green-tint);color:var(--green);border-color:rgba(26,102,68,0.15)}
+.wp-plan-badge.wp-plan-warn{background:var(--amber-tint);color:var(--amber);border-color:rgba(146,96,10,0.2)}
+.pp-stat-n{font-size:1.3rem;font-weight:500;color:var(--ink);letter-spacing:-0.02em}.pp-stat-l{font-size:0.7rem;color:var(--ink3);margin-top:2px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem}
+.info-item{display:flex;flex-direction:column;gap:3px}
+.info-label{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3)}
+.info-value{font-size:0.83rem;color:var(--ink)}.info-value a{color:var(--blue);text-decoration:none}
+.billing-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.billing-item{background:var(--cream);border:1px solid var(--rule);border-radius:8px;padding:0.875rem 1rem}
+.billing-n{font-size:1.2rem;font-weight:500;color:var(--ink);letter-spacing:-0.02em}.billing-l{font-size:0.7rem;color:var(--ink3);margin-top:2px}
+.notes-area{width:100%;border:1px solid var(--rule2);border-radius:6px;padding:0.75rem;font-size:0.83rem;font-family:'Figtree',sans-serif;color:var(--ink);outline:none;resize:vertical;min-height:100px;background:#fff;transition:border-color 0.15s;box-sizing:border-box}.notes-area:focus{border-color:var(--blue)}
+.file-drop{border:1.5px dashed var(--rule2);border-radius:8px;padding:1.25rem;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s}.file-drop:hover{border-color:var(--blue);background:var(--blue-tint)}
+.file-drop-icon{font-size:1.3rem;margin-bottom:0.35rem}
+.file-drop-label{font-size:0.82rem;font-weight:500;color:var(--ink2)}.file-drop-sub{font-size:0.72rem;color:var(--ink3);margin-top:3px}
+.file-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.75rem}
+.file-item{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.875rem;background:var(--cream);border:1px solid var(--rule);border-radius:6px;cursor:pointer;transition:background 0.1s}.file-item:hover{background:var(--blue-tint);border-color:rgba(26,79,214,0.2)}
+.file-icon{width:28px;height:28px;border-radius:5px;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:var(--blue);flex-shrink:0}
+.file-name{font-size:0.8rem;font-weight:500;color:var(--ink);flex:1}.file-size{font-size:0.7rem;color:var(--ink3)}
+.file-view-btn{font-size:0.7rem;color:var(--blue);background:none;border:none;cursor:pointer;font-family:'Figtree',sans-serif;padding:0;flex-shrink:0}
+.file-viewer{background:var(--cream);border:1px solid var(--rule);border-radius:8px;margin-top:0.75rem;overflow:hidden;display:none}.file-viewer.open{display:block}
+.fv-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:1px solid var(--rule);background:#fff}
+.fv-title{font-size:0.82rem;font-weight:500;color:var(--ink)}.fv-close{background:none;border:none;font-size:1rem;cursor:pointer;color:var(--ink3);line-height:1}
+.fv-body{padding:1.25rem}
+.fv-pdf{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:1.5rem}
+.fv-pdf-title{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--rule)}
+.fv-field{display:grid;grid-template-columns:140px 1fr;gap:0;padding:0.5rem 0;border-bottom:1px solid var(--rule)}.fv-field:last-child{border-bottom:none}
+.fv-label{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);padding-top:1px;line-height:1.5}
+.fv-val{font-size:0.82rem;color:var(--ink);line-height:1.5}
+.fv-img{width:100%;border-radius:6px;background:linear-gradient(135deg,#e8f0fe 0%,#c5d8fa 50%,#e8f0fe 100%);height:180px;display:flex;align-items:center;justify-content:center;font-size:0.82rem;color:var(--ink3);border:1px solid var(--rule)}
+/* PATIENT SEARCH */
+.patient-search-wrap{position:relative}
+.patient-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--rule2);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.1);z-index:300;overflow:hidden;display:none}.patient-dropdown.open{display:block}
+.pd-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.875rem;cursor:pointer;transition:background 0.1s}.pd-item:hover{background:var(--cream)}.pd-item:not(:last-child){border-bottom:1px solid var(--rule)}
+.pd-avatar{width:28px;height:28px;border-radius:50%;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:600;color:var(--blue);flex-shrink:0}
+.pd-name{font-size:0.83rem;font-weight:500;color:var(--ink)}.pd-sub{font-size:0.72rem;color:var(--ink3)}.pd-none{padding:0.875rem;font-size:0.82rem;color:var(--ink3);text-align:center}
+.patient-context-banner{background:var(--blue-tint);border:1px solid rgba(26,79,214,0.15);border-radius:8px;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem}
+.pcb-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:600;color:#fff;flex-shrink:0}
+.pcb-name{font-size:0.85rem;font-weight:500;color:var(--ink)}.pcb-sub{font-size:0.75rem;color:var(--ink3)}
+/* CALENDAR */
+.cal-interval-btn,.cal-type-btn{width:100%;text-align:left;padding:0.45rem 0.65rem;border-radius:6px;font-size:0.78rem;font-family:'Figtree',sans-serif;cursor:pointer;border:1px solid var(--rule);background:#fff;color:var(--ink2);transition:all 0.15s;display:flex;align-items:center}
+.cal-interval-btn:hover,.cal-type-btn:hover{border-color:var(--blue);color:var(--blue)}
+.cal-interval-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.cal-type-btn.active{background:var(--cream);border-color:var(--blue);color:var(--ink);font-weight:500}
+.cal-slot{border-bottom:1px solid var(--rule);position:relative;transition:background 0.1s;cursor:pointer}
+.cal-slot:hover{background:var(--blue-tint)}
+.cal-slot.drag-over{background:var(--blue-tint)!important;border:1.5px dashed var(--blue)}
+.cal-slot.half-hour{border-bottom:1px solid var(--rule2)}
+.cal-slot.hour-mark{border-bottom:1px solid var(--rule)}
+.cal-appt-block{position:absolute;left:4px;right:4px;border-radius:6px;padding:4px 7px;cursor:grab;font-size:0.72rem;color:#fff;overflow:hidden;user-select:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);transition:opacity 0.15s,box-shadow 0.15s;z-index:10}
+.cal-appt-block:hover{opacity:0.9;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.cal-appt-block:active{cursor:grabbing;opacity:0.7}
+.cal-appt-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-appt-type{opacity:0.85;font-size:0.65rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-time-label{height:var(--slot-h);display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 6px 0 0;font-size:0.65rem;color:var(--ink3);font-weight:500}
+.avail-slot{display:flex;align-items:center;gap:6px;font-size:0.72rem;padding:0.25rem 0;color:var(--ink2)}
+.avail-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* NO-SHOW */
+.nst-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.25rem;border-bottom:1px solid var(--rule)}.nst-row:last-child{border-bottom:none}
+.nst-name{font-size:0.83rem;font-weight:500;color:var(--ink)}.nst-count{font-size:0.78rem;color:var(--ink3)}
+.nst-bar-wrap{width:80px;height:6px;background:var(--cream);border-radius:3px;overflow:hidden;margin:0 0.75rem}
+.nst-bar{height:100%;border-radius:3px;background:var(--red)}
+/* INTAKE */
+.intake-card{background:var(--cream);border:1px solid var(--rule);border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.1s}.intake-card:hover{background:var(--blue-tint)}
+.intake-title{font-size:0.83rem;font-weight:500;color:var(--ink)}.intake-sub{font-size:0.72rem;color:var(--ink3);margin-top:2px}
+/* REVENUE */
+.rev-chart{padding:0.75rem 1.25rem 1rem}
+.rev-bars{display:flex;align-items:flex-end;gap:8px;height:72px}
+.rev-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center}
+.rev-bar{width:100%;border-radius:3px 3px 0 0;background:var(--blue);cursor:pointer;transition:opacity 0.15s;min-height:4px}.rev-bar:hover{opacity:0.75}
+.rev-base{height:2px;background:var(--rule2);width:100%;margin-bottom:4px;border-radius:1px}
+.rev-lbl{font-size:0.62rem;color:var(--ink3);text-align:center;width:100%}
+.msg-item.active-thread{background:var(--blue-tint);border-left:3px solid var(--blue)}
+.thread-group{display:flex;flex-direction:column;gap:2px}.thread-group.out{align-items:flex-end}.thread-group.in{align-items:flex-start}
+.thread-bubble-out{background:var(--blue);color:#fff;align-self:flex-end;border-radius:10px 10px 3px 10px;padding:0.65rem 0.875rem;font-size:0.82rem;line-height:1.5;max-width:75%}
+.thread-bubble-in{background:#fff;color:var(--ink);border:1px solid var(--rule);align-self:flex-start;border-radius:10px 10px 10px 3px;padding:0.65rem 0.875rem;font-size:0.82rem;line-height:1.5;max-width:75%}
+.thread-time{font-size:0.62rem;color:var(--ink3);opacity:0.6;margin-top:2px}
+/* MSG LIST */
+.msg-list{display:flex;flex-direction:column}
+.msg-item{padding:1rem 1.25rem;border-bottom:1px solid var(--rule);cursor:pointer;transition:background 0.1s;display:flex;gap:1rem;align-items:flex-start}.msg-item:hover{background:var(--cream)}.msg-item:last-child{border-bottom:none}
+.msg-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;color:var(--blue);flex-shrink:0}
+.msg-content{flex:1;min-width:0}.msg-name{font-size:0.83rem;font-weight:500;color:var(--ink)}.msg-preview{font-size:0.78rem;color:var(--ink3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-time{font-size:0.7rem;color:var(--ink3);flex-shrink:0}.msg-unread{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:6px}
+.settings-section{margin-bottom:2rem}
+.settings-title{font-size:0.875rem;font-weight:500;color:var(--ink);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--rule)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:0.875rem 0;border-bottom:1px solid var(--rule)}.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:0.85rem;color:var(--ink)}.settings-sub{font-size:0.75rem;color:var(--ink3);margin-top:2px}
+.toggle{width:36px;height:20px;background:var(--rule2);border-radius:10px;cursor:pointer;position:relative;transition:background 0.2s;border:none;flex-shrink:0}.toggle.on{background:var(--blue)}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left 0.2s}.toggle.on::after{left:19px}
+.settings-input{border:1px solid var(--rule2);border-radius:6px;padding:0.45rem 0.75rem;font-size:0.83rem;font-family:'Figtree',sans-serif;color:var(--ink);outline:none}.settings-input:focus{border-color:var(--blue)}
+</style>
+</head>
+<body>
+
+<!-- LANDING PAGE -->
+<div class="page active" id="page-landing">
+<nav class="l-nav">
+  <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
+  <ul class="l-nav-links">
+    <li><a onclick="document.getElementById('l-product-section').scrollIntoView({behavior:'smooth'})">Products</a></li>
+    <li><a onclick="document.getElementById('l-story-section').scrollIntoView({behavior:'smooth'})">About</a></li>
+    <li><a onclick="openModal('contact-modal')">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openModal('demo-modal')">Request demo</button>
+</nav>
+<section class="hero">
+  <div>
+    <div class="hero-tag">Modern healthcare technology</div>
+    <h1>Carrying patient care <em>forward.</em></h1>
+    <p class="hero-sub">Velion Health develops intelligent, data-driven solutions that address inefficiencies across the healthcare system, improving patient outcomes and advancing the standard of modern care.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="goTo('dashboard');setDashPage('overview')">See CareLoop in action</button>
+      <button class="btn-outline" onclick="document.getElementById('l-product-section').scrollIntoView({behavior:'smooth'})">How it works</button>
+    </div>
+  </div>
+  <div>
+    <div class="chat-card">
+      <div class="chat-header"><div class="chat-avatar">CL</div><div><div class="chat-name">CareLoop</div><div class="chat-status">Active</div></div></div>
+      <div class="chat-body">
+        <div class="bubble b-out">Hi Marcus — checking in after your visit yesterday. How's the shoulder feeling?<div class="b-time">CareLoop · 9:00 AM</div></div>
+        <div class="bubble b-in">Way better than expected. Thanks for reaching out.<div class="b-time">Patient · 9:18 AM</div></div>
+        <div class="b-divider">3 days later</div>
+        <div class="bubble b-out">Great! Your next appointment is Thursday at 2pm. Reply YES to confirm.<div class="b-time">CareLoop · 9:20 AM</div></div>
+        <div class="bubble b-in">YES<div class="b-time">Patient · 9:22 AM</div></div>
+      </div>
+      <div class="chat-tags"><span class="ctag ctag-g">Appointment confirmed</span><span class="ctag ctag-b">AI-personalized</span><span class="ctag ctag-a">Follow-up complete</span></div>
+    </div>
+  </div>
+</section>
+<div class="l-stats">
+  <div class="l-stats-inner">
+    <div class="l-stat"><div class="l-stat-n">23–33%</div><div class="l-stat-l">of outpatient appointments are missed on average, costing U.S. providers an estimated $150B annually</div><div class="l-stat-s">MGMA / Kyruus Health, 2024</div></div>
+    <div class="l-stat"><div class="l-stat-n">13 hours</div><div class="l-stat-l">spent weekly by the average physician on documentation, order entry, and administrative tasks alone</div><div class="l-stat-s">American Medical Association, 2024</div></div>
+    <div class="l-stat"><div class="l-stat-n">$265B</div><div class="l-stat-l">in unnecessary healthcare administrative spending that could be eliminated through streamlined workflows</div><div class="l-stat-s">McKinsey &amp; Company, 2019</div></div>
+  </div>
+</div>
+<section class="l-product" id="l-product-section">
+  <div class="sec-label">Our product</div>
+  <div class="sec-title">Introducing CareLoop</div>
+  <p class="sec-sub">A comprehensive clinical operations platform built for independent practices: streamlining appointment scheduling, patient engagement, and practice performance in one integrated system.</p>
+  <div class="product-card">
+    <div class="product-grid">
+      <div class="product-l">
+        <div class="product-name">CareLoop</div>
+        <div class="product-by">by Velion Health</div>
+        <p class="product-desc">CareLoop is a full-featured clinical management platform that gives independent practices the tools to manage their entire patient lifecycle: from digital intake and scheduling to automated follow-up, revenue tracking, and performance analytics, all in one place.</p>
+        <ul class="feat-list">
+          <li>AI-automated pre and post-visit messaging via SMS and email, with no manual action required from clinic staff</li>
+          <li>Messages personalized to each patient's visit type, care plan, and provider notes</li>
+          <li>Appointment reminder sequences with no-show tracking</li>
+          <li>Digital intake forms patients complete prior to their visit</li>
+          <li>Drag-and-drop appointment calendar</li>
+          <li>Revenue tracking and monthly analytics</li>
+        </ul>
+        <button class="btn-primary" onclick="goTo('dashboard');setDashPage('overview')">View demo dashboard →</button>
+      </div>
+      <div class="product-r">
+        <div class="dash-thumb" onclick="goTo('dashboard');setDashPage('overview')">
+          <div class="dt-bar"><div class="dt-dot" style="background:#ff5f57"></div><div class="dt-dot" style="background:#febc2e"></div><div class="dt-dot" style="background:#28c840"></div><span style="font-size:0.6rem;color:rgba(255,255,255,0.35);margin-left:auto">CareLoop</span></div>
+          <div class="dt-body">
+            <div class="dt-metrics"><div class="dt-metric"><div class="dt-n">$18,240</div><div class="dt-l">revenue this month</div></div><div class="dt-metric"><div class="dt-n">94%</div><div class="dt-l">open rate</div></div></div>
+            <div class="dt-rl">Recent follow-ups</div>
+            <div class="dt-rows">
+              <div class="dt-row"><div class="dt-rn">Marcus T. · Post-visit</div><span class="dpill dp-g">Sent</span></div>
+              <div class="dt-row"><div class="dt-rn">Lena R. · Reminder</div><span class="dpill dp-g">Confirmed</span></div>
+              <div class="dt-row"><div class="dt-rn">Derek M. · Check-in</div><span class="dpill dp-a">Scheduled</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-footer"><div class="status-badge"><div class="sdot" style="background:var(--amber)"></div><span style="color:var(--amber)">CareLoop — currently in development</span></div><div style="font-size:0.78rem;color:var(--ink3)">Early access inquiries welcome &middot; <a href="mailto:velionhealth@gmail.com">velionhealth@gmail.com</a></div></div>
+  </div>
+</section>
+<div class="l-why">
+  <div class="l-why-inner">
+    <div class="sec-label">Why CareLoop</div>
+    <div class="sec-title">Built for the way clinics actually work</div>
+    <div class="why-grid">
+      <div class="why-card"><div class="why-num">01</div><div class="why-title">Built for practices of every size</div><p class="why-desc">Most clinical software is designed for large hospital systems: complex, expensive, and difficult to implement. CareLoop is built specifically for the independent practice that needs enterprise-grade tools without the enterprise overhead.</p></div>
+      <div class="why-card"><div class="why-num">02</div><div class="why-title">Intelligent, patient-specific communication</div><p class="why-desc">CareLoop tailors every interaction to the individual, adapting to visit type, provider notes, and patient history. The result is timely, relevant communication that strengthens the patient-provider relationship and drives better clinical outcomes.</p></div>
+      <div class="why-card"><div class="why-num">03</div><div class="why-title">Up and running in under an hour</div><p class="why-desc">CareLoop is built to be used by clinical staff from day one. No lengthy onboarding, no IT consultant, no manual. Most practices are fully operational within the hour, allowing your team to focus on patient care rather than software training.</p></div>
+    </div>
+  </div>
+</div>
+<section class="l-about" id="l-story-section">
+  <div>
+    <div class="sec-label">Our story</div>
+    <div class="story-title">Built from direct experience in the clinical setting.</div>
+    <p class="story-p">Velion Health was founded on the belief that healthcare must continuously evolve. Guided by a commitment to improving patient outcomes and addressing inefficiencies in existing systems, we develop intelligent, data-driven solutions that advance the standard of modern care.</p>
+    <p class="story-p">Independent practices deserve the same quality of tools as large health systems, without the complexity, cost, or implementation burden. CareLoop was built to close that gap.</p>
+    <div class="focus-tags"><span class="focus-tag">Workflow optimization</span><span class="focus-tag">Data-driven insights</span><span class="focus-tag">Patient engagement systems</span><span class="focus-tag">No-show reduction</span><span class="focus-tag">Automated care reminders</span><span class="focus-tag">Digital intake forms</span><span class="focus-tag">Revenue tracking</span><span class="focus-tag">Appointment scheduling</span><span class="focus-tag">Clinical documentation</span></div>
+    <div style="margin-top:1.5rem;padding:0.875rem 1rem;background:var(--cream);border-radius:8px;border:1px solid var(--rule)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem">
+        <div class="about-status-dot"></div>
+        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3)">Current status</div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--ink2);line-height:1.6;font-weight:300">Velion Health is currently in development. We are actively building and refining our platform and welcome early feedback and partnership inquiries.</p>
+    </div>
+  </div>
+  <div class="steps-card">
+    <div class="step"><div class="step-n">1</div><div><div class="step-t">Scheduling and intake, simplified</div><p class="step-d">Appointments are managed through a drag-and-drop calendar. Digital intake forms are sent to patients before their visit, so staff arrive prepared.</p></div></div>
+    <div class="step"><div class="step-n">2</div><div><div class="step-t">Continuity of care between visits</div><p class="step-d">After each appointment, CareLoop automatically sends a personalized follow-up tailored to the patient's visit type and care plan, keeping them engaged and on track.</p></div></div>
+    <div class="step"><div class="step-n">3</div><div><div class="step-t">Patient records, all in one place</div><p class="step-d">Clinical notes, billing details, file attachments, and intake responses are stored in each patient's profile and accessible in seconds.</p></div></div>
+    <div class="step"><div class="step-n">4</div><div><div class="step-t">No-shows tracked and addressed proactively</div><p class="step-d">CareLoop flags patients who have not responded or confirmed, giving staff the visibility to follow up before an appointment is lost.</p></div></div>
+    <div class="step"><div class="step-n">5</div><div><div class="step-t">Know exactly how your practice is performing</div><p class="step-d">Revenue trends, message open rates, appointment volume, and no-show data are surfaced in a live analytics dashboard, so decisions are driven by data.</p></div></div>
+  </div>
+</section>
+<div class="l-cta"><div class="l-cta-inner"><h2>Ready to run a more efficient practice?</h2><p>CareLoop gives your clinic everything it needs: scheduling, patient engagement, intake, analytics, and more — up and running in under an hour.</p><button class="btn-white" onclick="openModal('demo-modal')">Request a demo</button></div></div>
+<div class="l-footer" style="display:flex;align-items:center;justify-content:space-between">
+  <div class="foot-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><div class="foot-mark"><svg viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
+  <div class="foot-links" style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:1.5rem"><a onclick="document.getElementById('l-story-section').scrollIntoView({behavior:'smooth'})">About</a><a onclick="openModal('contact-modal')">Contact</a><a onclick="openModal('demo-modal')">Request demo</a></div>
+  <div class="foot-copy">© 2025 Velion Health, Inc. · College Station, TX</div>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page" id="page-dashboard">
+<div class="dash-page"><div class="dash-shell">
+  <div class="dsidebar">
+    <div class="dsidebar-logo" onclick="goTo('landing')"><div class="ds-mark"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><div class="ds-logo-text">CareLoop</div><div class="ds-logo-sub">by Velion Health</div><div class="ds-back">← back to site</div></div></div>
+    <div class="ds-sec">Main</div>
+    <button class="ds-nav active" id="nav-overview" onclick="setDashPage('overview')"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg>Overview</button>
+    <button class="ds-nav" id="nav-patients" onclick="setDashPage('patients')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Patients<span class="ds-badge">8</span></button>
+    <button class="ds-nav" id="nav-followups" onclick="setDashPage('followups')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Follow-ups<span class="ds-badge">7</span></button>
+    <button class="ds-nav" id="nav-messages" onclick="setDashPage('messages')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M5 5h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Messages</button>
+    <div class="ds-sec">Manage</div>
+    <button class="ds-nav" id="nav-appointments" onclick="setDashPage('appointments')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v-1M11 2v-1M2 6h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Appointments</button>
+    <button class="ds-nav" id="nav-plans" onclick="setDashPage('plans')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 3h10M3 6h7M3 9h8M3 12h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="13" cy="11" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M12 11l.8.8 1.4-1.4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>Care Plans<span class="ds-badge">3</span></button>
+    <button class="ds-nav" id="nav-intake" onclick="setDashPage('intake')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5h6M5 8h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Intake Forms<span class="ds-badge">3</span></button>
+    <button class="ds-nav" id="nav-analytics" onclick="setDashPage('analytics')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 12l3-4 3 2 3-6 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Analytics</button>
+    <button class="ds-nav" id="nav-settings" onclick="setDashPage('settings')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Settings</button>
+    <div class="dsidebar-bottom"><div class="ds-clinic"><div class="ds-avatar" id="sidebar-clinic-avatar">YP</div><div><div class="ds-cname" id="sidebar-clinic-name">Your Practice</div><div class="ds-cplan">CareLoop Pro</div></div></div></div>
+  </div>
+  <div class="dmain">
+    <div class="dtopbar">
+      <div class="dtopbar-title" id="dash-page-title">Overview</div>
+      <div class="dtopbar-r">
+        <div class="dtopbar-date" id="topbar-date">Friday, March 27, 2026</div>
+        <button class="btn-sm-ghost" onclick="goTo('landing')">← Velion Health</button>
+        <button class="btn-sm" onclick="openFollowupModal()">+ New Follow-up</button>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="dpage active" id="dpage-overview">
+      <div class="d-metrics-5">
+        <div class="d-metric"><div class="dm-label">Monthly revenue</div><div class="dm-value" style="font-size:1.3rem">$18,240</div><div class="dm-change c-up">↑ 12% from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Messages sent</div><div class="dm-value">312</div><div class="dm-change c-up">↑ 18% from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Open rate</div><div class="dm-value">94%</div><div class="dm-change c-up">↑ 3% from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Appointments confirmed</div><div class="dm-value">41</div><div class="dm-change c-up">↑ 12% from last month</div></div>
+        <div class="d-metric"><div class="dm-label">No-shows this month</div><div class="dm-value">3</div><div class="dm-change c-dn">↓ 62% from last month</div></div>
+      </div>
+      <div class="g2">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Recent follow-ups</div><button class="dcard-btn" onclick="setDashPage('followups')">View all →</button></div>
+          <div class="dtabs">
+            <button class="dtab active" onclick="filterFollowups(this,'all')">All</button>
+            <button class="dtab" onclick="filterFollowups(this,'sent')">Sent</button>
+            <button class="dtab" onclick="filterFollowups(this,'pending')">Pending</button>
+            <button class="dtab" onclick="filterFollowups(this,'missed')">Missed</button>
+          </div>
+          <table class="dtable"><thead><tr><th>Patient</th><th>Type</th><th>Sent</th><th>Status</th></tr></thead>
+          <tbody id="overview-followup-body">
+            <tr data-status="sent" onclick="setDashPage('patients');showPatient('Marcus T.','Chiropractic','Mar 26, 2026','32','(512) 555-0101','marcus.t@email.com')"><td><div class="td-name">Marcus T.</div><div class="td-sub">Chiropractic</div></td><td>Post-visit</td><td>Today 9:01 AM</td><td><span class="spill sp-g">Sent</span></td></tr>
+            <tr data-status="sent" onclick="setDashPage('patients');showPatient('Lena R.','Physical therapy','Mar 25, 2026','28','(512) 555-0102','lena.r@email.com')"><td><div class="td-name">Lena R.</div><div class="td-sub">Physical therapy</div></td><td>Reminder</td><td>Today 9:00 AM</td><td><span class="spill sp-g">Confirmed</span></td></tr>
+            <tr data-status="pending" onclick="setDashPage('patients');showPatient('Derek M.','Sports medicine','Mar 20, 2026','25','(512) 555-0103','derek.m@email.com')"><td><div class="td-name">Derek M.</div><div class="td-sub">Sports medicine</div></td><td>1-week check-in</td><td>Scheduled</td><td><span class="spill sp-b">Scheduled</span></td></tr>
+            <tr data-status="sent" onclick="setDashPage('patients');showPatient('Priya S.','Posture assessment','Mar 24, 2026','41','(512) 555-0104','priya.s@email.com')"><td><div class="td-name">Priya S.</div><div class="td-sub">Posture assessment</div></td><td>Exercise reminder</td><td>Yesterday</td><td><span class="spill sp-g">Delivered</span></td></tr>
+            <tr data-status="missed" onclick="setDashPage('patients');showPatient('James K.','Neck pain','Mar 25, 2026','55','(512) 555-0105','james.k@email.com')"><td><div class="td-name">James K.</div><div class="td-sub">Neck pain</div></td><td>Post-visit</td><td>Mar 25</td><td><span class="spill sp-r">No response</span></td></tr>
+          </tbody></table>
+        </div>
+        <div class="dcard" style="display:flex;flex-direction:column">
+          <div class="dcard-header"><div class="dcard-title">Monthly revenue</div><button class="dcard-btn" onclick="setDashPage('analytics')">Full report →</button></div>
+          <div style="padding:1rem 1.25rem 0.5rem;display:flex;align-items:baseline;gap:0.5rem">
+            <div style="font-size:1.5rem;font-weight:500;color:var(--ink);letter-spacing:-0.03em">$18,240</div>
+            <div style="font-size:0.78rem;color:var(--green)">↑ 12% from last month</div>
+          </div>
+          <div style="padding:0 1.25rem 1.25rem;flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:0;min-height:160px">
+            <div style="flex:1;display:flex;align-items:flex-end;gap:8px;min-height:100px">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><div style="width:100%;height:55%;background:var(--blue);border-radius:3px 3px 0 0"></div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><div style="width:100%;height:63%;background:var(--blue);border-radius:3px 3px 0 0"></div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><div style="width:100%;height:59%;background:var(--blue);border-radius:3px 3px 0 0"></div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><div style="width:100%;height:71%;background:var(--blue);border-radius:3px 3px 0 0"></div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><div style="width:100%;height:81%;background:var(--blue);border-radius:3px 3px 0 0"></div></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><div style="width:100%;height:100%;background:var(--green);border-radius:3px 3px 0 0"></div></div>
+            </div>
+            <div style="height:2px;background:var(--rule2);border-radius:1px;margin:4px 0 6px"></div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;text-align:center;font-size:0.62rem;color:var(--ink3);line-height:1.4">Oct<br>$11.5k</div>
+              <div style="flex:1;text-align:center;font-size:0.62rem;color:var(--ink3);line-height:1.4">Nov<br>$13.0k</div>
+              <div style="flex:1;text-align:center;font-size:0.62rem;color:var(--ink3);line-height:1.4">Dec<br>$12.4k</div>
+              <div style="flex:1;text-align:center;font-size:0.62rem;color:var(--ink3);line-height:1.4">Jan<br>$14.4k</div>
+              <div style="flex:1;text-align:center;font-size:0.62rem;color:var(--ink3);line-height:1.4">Feb<br>$16.3k</div>
+              <div style="flex:1;text-align:center;font-size:0.62rem;color:var(--green);font-weight:600;line-height:1.4">Mar<br>$18.2k</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g2b">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Upcoming appointments</div><button class="dcard-btn" onclick="setDashPage('appointments')">View calendar →</button></div>
+          <div class="ulist">
+            <div class="uitem"><div class="udate"><div class="ud-day">28</div><div class="ud-mon">Mar</div></div><div class="uinfo"><div class="u-name">Sarah J.</div><div class="u-type">Chiropractic adjustment</div></div><div class="u-time">10:00 AM</div></div>
+            <div class="uitem"><div class="udate"><div class="ud-day">28</div><div class="ud-mon">Mar</div></div><div class="uinfo"><div class="u-name">Tom W.</div><div class="u-type">Physical therapy</div></div><div class="u-time">11:30 AM</div></div>
+            <div class="uitem"><div class="udate"><div class="ud-day">29</div><div class="ud-mon">Mar</div></div><div class="uinfo"><div class="u-name">Maria L.</div><div class="u-type">Posture assessment</div></div><div class="u-time">2:00 PM</div></div>
+            <div class="uitem"><div class="udate"><div class="ud-day">31</div><div class="ud-mon">Mar</div></div><div class="uinfo"><div class="u-name">Derek M.</div><div class="u-type">Sports injury eval</div></div><div class="u-time">9:00 AM</div></div>
+          </div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Activity feed</div></div>
+          <div class="feed">
+            <div class="fitem"><div class="fdot" style="background:var(--green-tint)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3.5" stroke="#1a6644" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="ftext"><strong>Lena R.</strong> confirmed her Thursday appointment</div><div class="ftime">2 minutes ago</div></div></div>
+            <div class="fitem"><div class="fdot" style="background:var(--blue-tint)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="#1a4fd6" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="ftext">Follow-up sent to <strong>Marcus T.</strong></div><div class="ftime">1 hour ago</div></div></div>
+            <div class="fitem"><div class="fdot" style="background:var(--green-tint)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3.5" stroke="#1a6644" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="ftext"><strong>Sarah J.</strong> submitted intake form</div><div class="ftime">3 hours ago</div></div></div>
+            <div class="fitem"><div class="fdot" style="background:var(--amber-tint)"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2v4M6 8.5v.5" stroke="#92600a" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><div class="ftext"><strong>James K.</strong> has not responded. Flagged for review.</div><div class="ftime">Yesterday 11:00 AM</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATIENTS -->
+    <div class="dpage" id="dpage-patients">
+      <div id="patient-list-view">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">All patients</div><button class="btn-sm" onclick="openModal('add-patient-modal')">+ Add patient</button></div>
+          <div class="dtabs">
+            <button class="dtab active" onclick="filterPatients(this,'all')">All patients</button>
+            <button class="dtab" onclick="filterPatients(this,'active')">Active</button>
+            <button class="dtab" onclick="filterPatients(this,'noresponse')">No response</button>
+          </div>
+          <table class="dtable"><thead><tr><th>Name</th><th>Age</th><th>Phone</th><th>Last visit</th><th>Follow-up status</th></tr></thead>
+          <tbody id="patient-table-body">
+            <tr data-pstatus="active" onclick="showPatient('Marcus T.','Chiropractic','Mar 26, 2026','32','(512) 555-0101','marcus.t@email.com')"><td><div class="td-name">Marcus T.</div><div class="td-sub">Chiropractic</div></td><td>32</td><td>(512) 555-0101</td><td>Mar 26</td><td><span class="spill sp-g">Sent</span></td></tr>
+            <tr data-pstatus="active" onclick="showPatient('Lena R.','Physical therapy','Mar 25, 2026','28','(512) 555-0102','lena.r@email.com')"><td><div class="td-name">Lena R.</div><div class="td-sub">Physical therapy</div></td><td>28</td><td>(512) 555-0102</td><td>Mar 25</td><td><span class="spill sp-g">Confirmed</span></td></tr>
+            <tr data-pstatus="active" onclick="showPatient('Derek M.','Sports medicine','Mar 20, 2026','25','(512) 555-0103','derek.m@email.com')"><td><div class="td-name">Derek M.</div><div class="td-sub">Sports medicine</div></td><td>25</td><td>(512) 555-0103</td><td>Mar 20</td><td><span class="spill sp-b">Scheduled</span></td></tr>
+            <tr data-pstatus="active" onclick="showPatient('Priya S.','Posture assessment','Mar 24, 2026','41','(512) 555-0104','priya.s@email.com')"><td><div class="td-name">Priya S.</div><div class="td-sub">Posture assessment</div></td><td>41</td><td>(512) 555-0104</td><td>Mar 24</td><td><span class="spill sp-g">Delivered</span></td></tr>
+            <tr data-pstatus="noresponse" onclick="showPatient('James K.','Neck pain','Mar 25, 2026','55','(512) 555-0105','james.k@email.com')"><td><div class="td-name">James K.</div><div class="td-sub">Neck pain</div></td><td>55</td><td>(512) 555-0105</td><td>Mar 25</td><td><span class="spill sp-r">No response</span></td></tr>
+            <tr data-pstatus="active" onclick="showPatient('Sarah J.','Chiropractic','Mar 21, 2026','38','(512) 555-0106','sarah.j@email.com')"><td><div class="td-name">Sarah J.</div><div class="td-sub">Chiropractic</div></td><td>38</td><td>(512) 555-0106</td><td>Mar 21</td><td><span class="spill sp-g">Confirmed</span></td></tr>
+            <tr data-pstatus="active" onclick="showPatient('Tom W.','Physical therapy','Mar 18, 2026','47','(512) 555-0107','tom.w@email.com')"><td><div class="td-name">Tom W.</div><div class="td-sub">Physical therapy</div></td><td>47</td><td>(512) 555-0107</td><td>Mar 18</td><td><span class="spill sp-g">Sent</span></td></tr>
+            <tr data-pstatus="active" onclick="showPatient('Maria L.','Posture assessment','Mar 15, 2026','33','(512) 555-0108','maria.l@email.com')"><td><div class="td-name">Maria L.</div><div class="td-sub">Posture assessment</div></td><td>33</td><td>(512) 555-0108</td><td>Mar 15</td><td><span class="spill sp-b">Scheduled</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div id="patient-detail-view" style="display:none">
+        <button class="pp-back" onclick="document.getElementById('patient-list-view').style.display='block';document.getElementById('patient-detail-view').style.display='none'">← Back to all patients</button>
+        <div class="dcard"><div style="padding:2rem">
+          <div class="pp-header">
+            <div class="pp-avatar" id="pp-initials">MT</div>
+            <div style="flex:1"><div class="pp-name-el" id="pp-name">Marcus T.</div><div class="pp-meta-el" id="pp-meta">Chiropractic · Last visit Mar 26, 2026</div></div>
+            <div style="display:flex;gap:0.6rem">
+              <button class="btn-sm-ghost" onclick="openPatientFollowup()">Send follow-up</button>
+              <button class="btn-sm" onclick="openEditProfile()">Edit profile</button>
+            </div>
+          </div>
+          <div class="pp-grid">
+            <div class="pp-stat"><div class="pp-stat-n">4</div><div class="pp-stat-l">Total visits</div></div>
+            <div class="pp-stat"><div class="pp-stat-n">0</div><div class="pp-stat-l">No-shows</div></div>
+            <div class="pp-stat"><div class="pp-stat-n">94%</div><div class="pp-stat-l">Open rate</div></div>
+            <div class="pp-stat"><div class="pp-stat-n">Apr 2</div><div class="pp-stat-l">Next appointment</div></div>
+          </div>
+          <!-- Wellness Plan (shown if patient has one) -->
+          <div id="pp-plan-section" style="display:none;margin-top:1rem"></div>
+          <div style="display:none" id="pp-stats-end">
+          </div>
+          <div class="pp-section">
+            <div class="pp-section-title">Contact & demographics</div>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">Phone</div><div class="info-value" id="pp-phone">(512) 555-0101</div></div>
+              <div class="info-item"><div class="info-label">Email</div><div class="info-value" id="pp-email"><a href="#">marcus.t@email.com</a></div></div>
+              <div class="info-item"><div class="info-label">Age</div><div class="info-value" id="pp-age">32</div></div>
+              <div class="info-item"><div class="info-label">Date of birth</div><div class="info-value" id="pp-dob">Mar 14, 1993</div></div>
+              <div class="info-item"><div class="info-label">Insurance</div><div class="info-value" id="pp-insurance">Blue Cross PPO</div></div>
+              <div class="info-item"><div class="info-label">Preferred contact</div><div class="info-value" id="pp-pref">SMS</div></div>
+            </div>
+          </div>
+          <div class="pp-section">
+            <div class="pp-section-title">Billing</div>
+            <div class="billing-grid">
+              <div class="billing-item"><div class="billing-n">$240</div><div class="billing-l">Balance due</div></div>
+              <div class="billing-item"><div class="billing-n">$1,820</div><div class="billing-l">Paid this year</div></div>
+              <div class="billing-item"><div class="billing-n" id="pp-ins-billing">Blue Cross</div><div class="billing-l">Insurance on file</div></div>
+              <div class="billing-item" style="background:var(--green-tint);border-color:rgba(26,102,68,0.15)"><div class="billing-n" style="color:var(--green);font-size:0.85rem;font-weight:500">Active</div><div class="billing-l">Account status</div></div>
+            </div>
+          </div>
+          <div class="pp-section">
+            <div class="pp-section-title">Clinical notes</div>
+            <textarea class="notes-area" id="pp-notes">Patient presents with recurring tension in right shoulder. Responding well to adjustment. Pain level reduced from 7/10 to 3/10 over last 3 visits. Continue current protocol, add rotator cuff stretches to home care plan.</textarea>
+            <div style="display:flex;justify-content:flex-end;margin-top:0.5rem"><button class="btn-sm" onclick="this.textContent='Saved ✓';setTimeout(()=>this.textContent='Save notes',1800)">Save notes</button></div>
+          </div>
+          <div class="pp-section">
+            <div class="pp-section-title">Documents & files</div>
+            <div class="file-drop" onclick="document.getElementById('pp-file-input').click()">
+              <div class="file-drop-icon">📎</div>
+              <div class="file-drop-label">Click to upload or drag and drop</div>
+              <div class="file-drop-sub">PDF, DOCX, PNG, JPG up to 20MB</div>
+              <input id="pp-file-input" type="file" style="display:none" multiple onchange="handleFiles(this)"/>
+            </div>
+            <div class="file-list" id="pp-file-list">
+              <div class="file-item" onclick="viewFile('intake_form_marcus_t.pdf','pdf')"><div class="file-icon">PDF</div><div class="file-name">intake_form_marcus_t.pdf</div><div class="file-size">142 KB</div><button class="file-view-btn" onclick="event.stopPropagation();viewFile('intake_form_marcus_t.pdf','pdf')">View</button></div>
+              <div class="file-item" onclick="viewFile('xray_cervical_mar2026.png','img')"><div class="file-icon">IMG</div><div class="file-name">xray_cervical_mar2026.png</div><div class="file-size">2.1 MB</div><button class="file-view-btn" onclick="event.stopPropagation();viewFile('xray_cervical_mar2026.png','img')">View</button></div>
+            </div>
+            <div class="file-viewer" id="file-viewer">
+              <div class="fv-header"><div class="fv-title" id="fv-title">File</div><button class="fv-close" onclick="document.getElementById('file-viewer').classList.remove('open')">×</button></div>
+              <div class="fv-body" id="fv-body"></div>
+            </div>
+          </div>
+          <div class="pp-section" style="margin-bottom:0">
+            <div class="pp-section-title">Follow-up history</div>
+            <table class="dtable"><thead><tr><th>Date</th><th>Message type</th><th>Channel</th><th>Status</th></tr></thead>
+            <tbody><tr><td>Mar 27</td><td>Post-visit check-in</td><td>SMS</td><td><span class="spill sp-g">Opened</span></td></tr><tr><td>Mar 24</td><td>Exercise reminder</td><td>SMS</td><td><span class="spill sp-g">Opened</span></td></tr><tr><td>Mar 19</td><td>Appointment reminder</td><td>Email</td><td><span class="spill sp-g">Confirmed</span></td></tr></tbody>
+            </table>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- FOLLOW-UPS -->
+    <div class="dpage" id="dpage-followups">
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Follow-up queue</div><button class="dcard-btn" onclick="openFollowupModal()">+ New follow-up</button></div>
+        <div class="dtabs">
+          <button class="dtab active" onclick="filterFU(this,'all')">All (7)</button>
+          <button class="dtab" onclick="filterFU(this,'sent')">Sent</button>
+          <button class="dtab" onclick="filterFU(this,'scheduled')">Scheduled</button>
+          <button class="dtab" onclick="filterFU(this,'missed')">No response</button>
+        </div>
+        <table class="dtable"><thead><tr><th>Patient</th><th>Message type</th><th>Scheduled for</th><th>Channel</th><th>Status</th></tr></thead>
+        <tbody id="fu-table-body">
+          <tr data-fustatus="sent"><td><div class="td-name">Marcus T.</div></td><td>Post-visit check-in</td><td>Today 9:00 AM</td><td>SMS</td><td><span class="spill sp-g">Sent</span></td></tr>
+          <tr data-fustatus="sent"><td><div class="td-name">Lena R.</div></td><td>Appointment reminder</td><td>Today 9:00 AM</td><td>SMS</td><td><span class="spill sp-g">Confirmed</span></td></tr>
+          <tr data-fustatus="scheduled"><td><div class="td-name">Derek M.</div></td><td>1-week check-in</td><td>Mar 28, 9:00 AM</td><td>Email</td><td><span class="spill sp-b">Scheduled</span></td></tr>
+          <tr data-fustatus="scheduled"><td><div class="td-name">Priya S.</div></td><td>Exercise reminder</td><td>Mar 29, 9:00 AM</td><td>SMS</td><td><span class="spill sp-b">Scheduled</span></td></tr>
+          <tr data-fustatus="scheduled"><td><div class="td-name">Sarah J.</div></td><td>Post-visit check-in</td><td>Mar 30, 9:00 AM</td><td>Email</td><td><span class="spill sp-b">Scheduled</span></td></tr>
+          <tr data-fustatus="sent"><td><div class="td-name">Tom W.</div></td><td>Appointment reminder</td><td>Mar 27, 9:00 AM</td><td>SMS</td><td><span class="spill sp-g">Delivered</span></td></tr>
+          <tr data-fustatus="missed"><td><div class="td-name">James K.</div></td><td>Post-visit check-in</td><td>Mar 25, 9:00 AM</td><td>SMS</td><td><span class="spill sp-r">No response</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="dpage" id="dpage-messages">
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:1.25rem;height:100%">
+        <!-- Thread list -->
+        <div class="dcard" style="overflow:hidden">
+          <div class="dcard-header"><div class="dcard-title">Conversations</div></div>
+          <div class="msg-list" id="msg-thread-list">
+            <div class="msg-item active-thread" id="thread-lena" onclick="openThread('lena')"><div class="msg-avatar">LR</div><div class="msg-content"><div class="msg-name">Lena R.</div><div class="msg-preview">YES, confirmed for Thursday. See you then!</div></div><div><div class="msg-time">9:04 AM</div></div></div>
+            <div class="msg-item" id="thread-marcus" onclick="openThread('marcus')"><div class="msg-avatar">MT</div><div class="msg-content"><div class="msg-name">Marcus T.</div><div class="msg-preview">Way better than expected.</div></div><div><div class="msg-time">9:38 AM</div></div></div>
+            <div class="msg-item" id="thread-priya" onclick="openThread('priya')"><div class="msg-avatar">PS</div><div class="msg-content"><div class="msg-name">Priya S.</div><div class="msg-preview">Thanks for the reminder! I've been keeping up with them.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="msg-time">Yesterday</div><div class="msg-unread"></div></div></div>
+            <div class="msg-item" id="thread-tom" onclick="openThread('tom')"><div class="msg-avatar">TW</div><div class="msg-content"><div class="msg-name">Tom W.</div><div class="msg-preview">Just booked my follow-up.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="msg-time">Mar 25</div><div class="msg-unread"></div></div></div>
+            <div class="msg-item" id="thread-james" onclick="openThread('james')"><div class="msg-avatar" style="background:var(--red-tint);color:var(--red)">JK</div><div class="msg-content"><div class="msg-name">James K. <span style="font-size:0.7rem;color:var(--red)">· No response</span></div><div class="msg-preview">CareLoop: Checking in after your visit on Tuesday...</div></div><div><div class="msg-time">Mar 25</div></div></div>
+          </div>
+        </div>
+        <!-- Conversation view -->
+        <div class="dcard" style="display:flex;flex-direction:column;overflow:hidden" id="msg-convo-panel">
+          <div class="dcard-header" id="msg-convo-header">
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              <div class="msg-avatar" id="msg-convo-avatar">LR</div>
+              <div><div style="font-size:0.88rem;font-weight:500;color:var(--ink)" id="msg-convo-name">Lena R.</div><div style="font-size:0.72rem;color:var(--ink3)" id="msg-convo-sub">Physical therapy · Last visit Mar 25</div></div>
+            </div>
+            <button class="btn-sm-ghost" onclick="setDashPage('patients');showPatient(currentThread.name,currentThread.type,currentThread.date,currentThread.age,currentThread.phone,currentThread.email)">View profile →</button>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;background:var(--cream)" id="msg-convo-body"></div>
+          <div style="padding:1rem;border-top:1px solid var(--rule);display:flex;gap:0.75rem;background:#fff">
+            <input id="msg-reply-input" placeholder="Type a message..." style="flex:1;border:1px solid var(--rule2);border-radius:6px;padding:0.6rem 0.875rem;font-size:0.83rem;font-family:'Figtree',sans-serif;outline:none" onkeydown="if(event.key==='Enter')sendReply()"/>
+            <button class="btn-sm" onclick="sendReply()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="dpage" id="dpage-appointments">
+      <div style="display:grid;grid-template-columns:200px 1fr;gap:1.25rem;align-items:start">
+
+        <!-- SIDE PANEL -->
+        <div style="display:flex;flex-direction:column;gap:1rem">
+
+          <!-- Book -->
+          <div class="dcard">
+            <div style="padding:1rem">
+              <button class="btn-primary" style="width:100%;font-size:0.82rem;padding:0.65rem 1rem" onclick="openAddApptModal()">+ Book appointment</button>
+            </div>
+          </div>
+
+          <!-- Color legend -->
+          <div class="dcard">
+            <div style="padding:0.875rem 1rem;border-bottom:1px solid var(--rule);font-size:0.72rem;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:0.06em">Appointment types</div>
+            <div style="padding:0.75rem;display:flex;flex-direction:column;gap:0.5rem">
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#1a4fd6;flex-shrink:0;display:inline-block"></span>Chiropractic</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#1a6644;flex-shrink:0;display:inline-block"></span>Physical Therapy</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#0ea5e9;flex-shrink:0;display:inline-block"></span>Sports Medicine</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#92600a;flex-shrink:0;display:inline-block"></span>Posture Assessment</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#7c3aed;flex-shrink:0;display:inline-block"></span>New Patient</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#059669;flex-shrink:0;display:inline-block"></span>Follow-up</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#dc2626;flex-shrink:0;display:inline-block"></span>Neck / Back Pain</div>
+            </div>
+          </div>
+
+          <!-- Availability -->
+          <div class="dcard">
+            <div style="padding:0.875rem 1rem;border-bottom:1px solid var(--rule);font-size:0.72rem;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:0.06em">Today's availability</div>
+            <div style="padding:0.75rem;display:flex;flex-direction:column;gap:0.4rem" id="avail-overview"></div>
+          </div>
+
+        </div>
+
+        <!-- MAIN CALENDAR -->
+        <div class="dcard" style="overflow:hidden">
+          <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:1rem">
+              <button class="btn-sm-ghost" style="font-size:0.78rem;padding:0.35rem 0.75rem" onclick="changeCalDay(-1)">←</button>
+              <div id="cal-day-label" style="font-size:0.88rem;font-weight:500;color:var(--ink)">Friday, March 27, 2026</div>
+              <button class="btn-sm-ghost" style="font-size:0.78rem;padding:0.35rem 0.75rem" onclick="changeCalDay(1)">→</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              <button class="btn-sm-ghost" style="font-size:0.75rem;padding:0.35rem 0.75rem" onclick="goToday()">Today</button>
+            </div>
+          </div>
+          <!-- View tabs -->
+          <div style="padding:0.6rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;align-items:center;background:var(--cream);gap:0.35rem">
+            <button id="cal-view-day" class="cal-interval-btn active" style="width:auto;padding:0.3rem 0.75rem;font-size:0.75rem" onclick="setCalView('day')">Day</button>
+            <button id="cal-view-week" class="cal-interval-btn" style="width:auto;padding:0.3rem 0.75rem;font-size:0.75rem" onclick="setCalView('week')">Week</button>
+          </div>
+          <!-- Time grid -->
+          <div style="overflow-y:auto;max-height:620px;position:relative" id="cal-timegrid-scroll">
+            <div style="display:grid;grid-template-columns:52px 1fr;position:relative" id="cal-timegrid">
+              <!-- Time labels column -->
+              <div id="cal-time-labels" style="border-right:1px solid var(--rule)"></div>
+              <!-- Slots column -->
+              <div id="cal-slots" style="position:relative"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Appointment detail tooltip -->
+      <div id="appt-tooltip" style="display:none;position:fixed;background:#fff;border:1px solid var(--rule);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.13);padding:1rem 1.25rem;min-width:240px;z-index:150">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;gap:0.5rem">
+          <div>
+            <div id="tt-name" style="font-size:0.92rem;font-weight:600;color:var(--ink);margin-bottom:3px"></div>
+            <div id="tt-type" style="font-size:0.72rem"></div>
+          </div>
+          <button onclick="document.getElementById('appt-tooltip').style.display='none'" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--ink3);line-height:1;flex-shrink:0">×</button>
+        </div>
+        <div style="background:var(--cream);border-radius:6px;padding:0.5rem 0.75rem;margin-bottom:0.75rem;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem"><span style="color:var(--ink3)">Time</span><span id="tt-time" style="color:var(--ink);font-weight:500"></span></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem"><span style="color:var(--ink3)">Duration</span><span id="tt-dur" style="color:var(--ink);font-weight:500"></span></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem"><span style="color:var(--ink3)">Status</span><span style="color:var(--green);font-weight:500">Confirmed</span></div>
+        </div>
+        <div id="tt-notes" style="display:none;font-size:0.72rem;color:var(--ink2);line-height:1.5;padding:0.5rem 0.75rem;background:var(--cream);border-radius:6px;margin-bottom:0.5rem"></div>
+        <div id="tt-plan" style="display:none;padding:0.5rem 0.75rem;background:var(--blue-tint);border-radius:6px;margin-bottom:0.75rem"></div>
+        <div style="display:flex;gap:0.5rem">
+          <button class="btn-sm-ghost" style="flex:1;font-size:0.72rem" onclick="openEditAppt()">Edit appointment</button>
+          <button class="btn-sm" style="flex:1;font-size:0.72rem" onclick="viewApptPatient()">View patient</button>
+        </div>
+      </div>
+
+      <!-- Conflict warning -->
+      <div id="conflict-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#fee2e2;border:1px solid rgba(153,27,27,0.3);color:var(--red);padding:0.65rem 1.25rem;border-radius:8px;font-size:0.82rem;font-weight:500;z-index:160">
+        ⚠️ Scheduling conflict: this time slot is already booked.
+      </div>
+    </div>
+
+
+    <!-- CARE PLANS -->
+    <div class="dpage" id="dpage-plans">
+      <div class="d-metrics" style="grid-template-columns:repeat(3,1fr)">
+        <div class="d-metric"><div class="dm-label">Active care plans</div><div class="dm-value">3</div><div class="dm-change c-up">↑ 1 from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Avg. plan completion</div><div class="dm-value">68%</div><div class="dm-change" style="color:var(--ink3)">Across active plans</div></div>
+        <div class="d-metric"><div class="dm-label">Visits this month (plan)</div><div class="dm-value">14</div><div class="dm-change c-up">↑ 3 from last month</div></div>
+      </div>
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Active care plans</div><button class="dcard-btn" onclick="openModal('new-plan-modal')">+ New plan</button></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1rem">
+          <!-- Marcus -->
+          <div class="wp-card" style="margin-bottom:0;cursor:pointer" onclick="setDashPage('patients');showPatient('Marcus T.','Chiropractic','Mar 26, 2026','32','(512) 555-0101','marcus.t@email.com')">
+            <div class="wp-header">
+              <div><div class="wp-title">Marcus T.</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">12-Visit Chiropractic Care Plan</div></div>
+              <span class="wp-badge">7 / 12 visits</span>
+            </div>
+            <div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:58%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);margin-top:3px">
+              <span>58% complete</span><span>5 visits remaining</span><span>Plan ends Apr 30, 2026</span>
+            </div>
+          </div>
+          <!-- Sarah -->
+          <div class="wp-card" style="margin-bottom:0;cursor:pointer" onclick="setDashPage('patients');showPatient('Sarah J.','Chiropractic','Mar 21, 2026','38','(512) 555-0106','sarah.j@email.com')">
+            <div class="wp-header">
+              <div><div class="wp-title">Sarah J.</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">10-Visit Spinal Adjustment Plan</div></div>
+              <span class="wp-badge wp-warn">4 / 10 visits</span>
+            </div>
+            <div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:40%;background:var(--amber)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);margin-top:3px">
+              <span>40% complete</span><span>6 visits remaining</span><span>Plan ends May 15, 2026</span>
+            </div>
+          </div>
+          <!-- Tom -->
+          <div class="wp-card" style="margin-bottom:0;cursor:pointer" onclick="setDashPage('patients');showPatient('Tom W.','Physical therapy','Mar 18, 2026','47','(512) 555-0107','tom.w@email.com')">
+            <div class="wp-header">
+              <div><div class="wp-title">Tom W.</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">20-Visit Post-Surgical Rehab Plan</div></div>
+              <span class="wp-badge">12 / 20 visits</span>
+            </div>
+            <div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:60%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);margin-top:3px">
+              <span>60% complete</span><span>8 visits remaining</span><span>Plan ends May 31, 2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTAKE FORMS -->
+    <div class="dpage" id="dpage-intake">
+      <div class="d-metrics" style="grid-template-columns:repeat(3,1fr)">
+        <div class="d-metric"><div class="dm-label">Forms sent this month</div><div class="dm-value" id="intake-stat-sent">14</div><div class="dm-change c-up">↑ 4 from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Completed</div><div class="dm-value">11</div><div class="dm-change" style="color:var(--ink3)">79% completion rate</div></div>
+        <div class="d-metric"><div class="dm-label">Pending</div><div class="dm-value" id="intake-stat-pending">3</div><div class="dm-change c-dn">Awaiting submission</div></div>
+      </div>
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Pending intake forms</div><button class="btn-sm" onclick="openModal('send-intake-modal')">Send form link</button></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem" id="pending-intake-list">
+          <div class="intake-card" onclick="openIntake('sarah-newpt')"><div><div class="intake-title">New Patient Intake</div><div class="intake-sub">Sarah J. · Sent Mar 25 · Expires Apr 1</div></div><span style="font-size:0.7rem;font-weight:500;color:var(--amber)">Pending</span></div>
+          <div class="intake-card" onclick="openIntake('derek-sports')"><div><div class="intake-title">Sports Medicine Intake</div><div class="intake-sub">Derek M. · Sent Apr 2 · Expires Apr 9</div></div><span style="font-size:0.7rem;font-weight:500;color:var(--amber)">Pending</span></div>
+          <div class="intake-card" onclick="openIntake('maria-followup')"><div><div class="intake-title">Follow-Up Intake</div><div class="intake-sub">Maria L. · Sent Feb 18 · Expired Feb 22</div></div><span style="font-size:0.7rem;font-weight:500;color:var(--red)">Overdue</span></div>
+        </div>
+      </div>
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Completed this month</div></div>
+        <table class="dtable"><thead><tr><th>Patient</th><th>Form type</th><th>Submitted</th><th>Auto-saved</th></tr></thead>
+        <tbody>
+          <tr onclick="openIntake('marcus-newpt')"><td><div class="td-name">Marcus T.</div></td><td>New Patient Intake</td><td>Jan 10</td><td><span class="spill sp-g">Saved to profile</span></td></tr>
+          <tr onclick="openIntake('lena-followup')"><td><div class="td-name">Lena R.</div></td><td>Follow-Up Intake</td><td>Feb 6</td><td><span class="spill sp-g">Saved to profile</span></td></tr>
+          <tr onclick="openIntake('priya-newpt')"><td><div class="td-name">Priya S.</div></td><td>New Patient Intake</td><td>Jan 28</td><td><span class="spill sp-g">Saved to profile</span></td></tr>
+          <tr onclick="openIntake('tom-newpt')"><td><div class="td-name">Tom W.</div></td><td>New Patient Intake</td><td>Dec 1</td><td><span class="spill sp-g">Saved to profile</span></td></tr>
+          <tr onclick="openIntake('james-newpt')"><td><div class="td-name">James K.</div></td><td>New Patient Intake</td><td>Feb 22</td><td><span class="spill sp-g">Saved to profile</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="dpage" id="dpage-analytics">
+      <div class="d-metrics">
+        <div class="d-metric"><div class="dm-label">Monthly revenue</div><div class="dm-value" style="font-size:1.3rem">$18,240</div><div class="dm-change c-up">↑ 12% from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Total messages sent</div><div class="dm-value">1,247</div><div class="dm-change c-up">↑ 24% from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Avg open rate</div><div class="dm-value">91%</div><div class="dm-change c-up">↑ 6% from last month</div></div>
+        <div class="d-metric"><div class="dm-label">Patient retention</div><div class="dm-value">88%</div><div class="dm-change c-up">↑ 4% from last month</div></div>
+      </div>
+      <div class="g2">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Revenue: last 6 months</div></div>
+          <div class="bar-chart">
+            <div class="bar-row"><div class="bar-lbl" style="width:50px;font-size:0.7rem">Oct</div><div class="bar-track"><div class="bar-fill" style="width:63%"></div></div><div class="bar-val">$11.5k</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:50px;font-size:0.7rem">Nov</div><div class="bar-track"><div class="bar-fill" style="width:71%"></div></div><div class="bar-val">$13.0k</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:50px;font-size:0.7rem">Dec</div><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><div class="bar-val">$12.4k</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:50px;font-size:0.7rem">Jan</div><div class="bar-track"><div class="bar-fill" style="width:79%"></div></div><div class="bar-val">$14.4k</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:50px;font-size:0.7rem">Feb</div><div class="bar-track"><div class="bar-fill" style="width:89%"></div></div><div class="bar-val">$16.3k</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:50px;font-size:0.7rem">Mar</div><div class="bar-track"><div class="bar-fill bar-fill-green" style="width:100%"></div></div><div class="bar-val" style="color:var(--green);font-weight:600">$18.2k</div></div>
+          </div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">No-show tracking</div></div>
+          <div style="padding:0.75rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between">
+            <div><div style="font-size:1.4rem;font-weight:500;color:var(--ink);letter-spacing:-0.03em">3</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">No-shows this month</div></div>
+            <div><div style="font-size:1.4rem;font-weight:500;color:var(--green);letter-spacing:-0.03em">↓ 62%</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">vs. last month</div></div>
+            <div><div style="font-size:1.4rem;font-weight:500;color:var(--ink);letter-spacing:-0.03em">$480</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">Est. revenue saved</div></div>
+          </div>
+          <div class="nst-row"><div><div class="nst-name">James K.</div><div class="nst-count">2 no-shows total</div></div><div style="display:flex;align-items:center"><div class="nst-bar-wrap"><div class="nst-bar" style="width:100%"></div></div><span class="spill sp-r">High risk</span></div></div>
+          <div class="nst-row"><div><div class="nst-name">Lena R.</div><div class="nst-count">1 no-show total</div></div><div style="display:flex;align-items:center"><div class="nst-bar-wrap"><div class="nst-bar" style="width:50%;background:var(--amber)"></div></div><span class="spill sp-a">Monitor</span></div></div>
+          <div class="nst-row" style="border-bottom:none"><div><div class="nst-name">All others</div><div class="nst-count">0 no-shows</div></div><div style="display:flex;align-items:center"><div class="nst-bar-wrap"><div class="nst-bar" style="width:5%;background:var(--green)"></div></div><span class="spill sp-g">Good</span></div></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Messages sent: last 4 weeks</div></div>
+          <div class="bar-chart">
+            <div class="bar-row"><div class="bar-lbl" style="width:64px;font-size:0.7rem;white-space:nowrap">Mar 1–7</div><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div><div class="bar-val">67</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:64px;font-size:0.7rem;white-space:nowrap">Mar 8–14</div><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><div class="bar-val">81</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:64px;font-size:0.7rem;white-space:nowrap">Mar 15–21</div><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><div class="bar-val">96</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:64px;font-size:0.7rem;white-space:nowrap">Mar 22–27</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-val">112</div></div>
+          </div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Response breakdown</div></div>
+          <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.85rem">
+            <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:0.83rem;color:var(--ink)">Opened & responded</div><div style="display:flex;align-items:center;gap:0.75rem"><div style="width:120px;height:6px;background:var(--cream);border-radius:3px;overflow:hidden"><div style="width:68%;height:100%;background:var(--green);border-radius:3px"></div></div><div style="font-size:0.78rem;color:var(--ink2);width:30px">68%</div></div></div>
+            <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:0.83rem;color:var(--ink)">Opened, no reply</div><div style="display:flex;align-items:center;gap:0.75rem"><div style="width:120px;height:6px;background:var(--cream);border-radius:3px;overflow:hidden"><div style="width:26%;height:100%;background:var(--blue);border-radius:3px"></div></div><div style="font-size:0.78rem;color:var(--ink2);width:30px">26%</div></div></div>
+            <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:0.83rem;color:var(--ink)">Not opened</div><div style="display:flex;align-items:center;gap:0.75rem"><div style="width:120px;height:6px;background:var(--cream);border-radius:3px;overflow:hidden"><div style="width:6%;height:100%;background:var(--rule2);border-radius:3px"></div></div><div style="font-size:0.78rem;color:var(--ink2);width:30px">6%</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="dpage" id="dpage-settings">
+      <div class="dcard"><div style="padding:1.75rem;max-width:580px">
+        <div class="settings-section">
+          <div class="settings-title">Clinic information</div>
+          <div class="form-group"><label>Clinic name</label><input id="settings-clinic-name" class="settings-input" style="width:100%" value="Your Practice" /></div>
+          <div class="form-group"><label>Contact email</label><input class="settings-input" style="width:100%" value="yourpractice@email.com"/></div>
+          <div class="form-group"><label>Phone number</label><input class="settings-input" style="width:100%" value="(512) 555-0192"/></div>
+          <button class="btn-sm" style="margin-top:0.5rem" onclick="saveClinicSettings(this)">Save changes</button>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Follow-up preferences</div>
+          <div class="settings-row"><div><div class="settings-label">Post-visit check-in</div><div class="settings-sub">Send a check-in 24 hours after each visit</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">Appointment reminders</div><div class="settings-sub">SMS + email reminders 48 hours before appointments</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">Exercise reminders</div><div class="settings-sub">Send exercise reminders based on provider notes</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">No-response alerts</div><div class="settings-sub">Flag patients who haven't responded after 48 hours</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">Auto-send intake forms</div><div class="settings-sub">Send digital intake form when appointment is booked</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">Weekend messages</div><div class="settings-sub">Allow CareLoop to send messages on weekends</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Notifications</div>
+          <div class="settings-row"><div><div class="settings-label">Daily digest email</div><div class="settings-sub">Receive a daily summary of follow-up activity</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">No-response alerts</div><div class="settings-sub">Get notified when a patient hasn't responded</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div></div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="demo-modal" onclick="if(event.target===this)closeModal('demo-modal')">
+  <div class="modal"><button class="modal-close" onclick="closeModal('demo-modal')">×</button>
+    <div id="demo-form-content"><h3>Request a demo</h3><p class="modal-sub">Tell us about your practice and we'll be in touch within 24–48 hours.</p>
+      <div class="form-group"><label>Full name</label><input placeholder="Dr. Jane Smith"/></div>
+      <div class="form-group"><label>Clinic name</label><input placeholder="Smith Chiropractic"/></div>
+      <div class="form-group"><label>Email</label><input placeholder="jane@smithchiro.com"/></div>
+      <div class="form-group"><label>Practice type</label><select><option>Chiropractic</option><option>Physical therapy</option><option>Primary care</option><option>Sports medicine</option><option>Other</option></select></div>
+      <div class="form-group"><label>Why are you interested in CareLoop?</label><textarea placeholder="Tell us about your current challenges..."></textarea></div>
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="submitForm('demo-form-content','demo-success')">Submit request</button>
+    </div>
+    <div id="demo-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Request received</h4><p>We'll reach out within 24–48 hours.</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="contact-modal" onclick="if(event.target===this)closeModal('contact-modal')">
+  <div class="modal"><button class="modal-close" onclick="closeModal('contact-modal')">×</button>
+    <div id="contact-form-content"><h3>Get in touch</h3><p class="modal-sub">For inquiries, partnerships, or early access opportunities.</p>
+      <div class="contact-row"><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:velionhealth@gmail.com">velionhealth@gmail.com</a></div></div>
+      <div class="contact-row"><div class="contact-label">Location</div><div class="contact-value">College Station, Texas</div></div>
+      <div class="contact-row"><div class="contact-label">Response</div><div class="contact-value">Within 24–48 hours</div></div>
+      <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--rule)">
+        <div class="form-group"><label>Your name</label><input placeholder="Your name"/></div>
+        <div class="form-group"><label>Your email</label><input placeholder="your@email.com"/></div>
+        <div class="form-group"><label>Message</label><textarea placeholder="What's on your mind?"></textarea></div>
+        <button class="btn-primary" style="width:100%;margin-top:0.25rem" onclick="submitForm('contact-form-content','contact-success')">Send message</button>
+      </div>
+    </div>
+    <div id="contact-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Message sent</h4><p>We'll get back to you within 24–48 hours.</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="about-modal" onclick="if(event.target===this)closeModal('about-modal')">
+  <div class="modal" style="max-width:520px"><button class="modal-close" onclick="closeModal('about-modal')">×</button>
+    <h3>About Velion Health</h3><p class="modal-sub">Building the next generation of independent practice technology.</p>
+    <div style="margin-bottom:1.25rem"><div class="about-status"><div class="about-status-dot"></div><p>Velion Health is currently in development. We are actively building and refining our platform and welcome early feedback and partnership inquiries.</p></div></div>
+    <div style="margin-bottom:1.5rem"><div class="about-section-title">Focus areas</div><div style="display:flex;flex-wrap:wrap;gap:0.5rem"><span class="about-tag">Workflow optimization</span><span class="about-tag">Data-driven insights</span><span class="about-tag">Patient engagement systems</span><span class="about-tag">No-show reduction</span><span class="about-tag">Automated care reminders</span><span class="about-tag">Digital intake forms</span><span class="about-tag">Revenue tracking</span><span class="about-tag">Appointment scheduling</span><span class="about-tag">Clinical documentation</span></div></div>
+    <div style="margin-bottom:1.5rem"><div class="about-section-title">Location</div><p style="font-size:0.875rem;color:var(--ink2)">College Station, Texas</p></div>
+    <button class="btn-primary" style="width:100%" onclick="closeModal('about-modal');openModal('contact-modal')">Get in touch →</button>
+  </div>
+</div>
+<div class="modal-overlay" id="fu-detail-modal" onclick="if(event.target===this)closeModal('fu-detail-modal')">
+  <div class="modal" style="max-width:480px"><button class="modal-close" onclick="closeModal('fu-detail-modal')">×</button>
+    <h3 id="fu-detail-name" style="margin-bottom:0.25rem">Follow-up details</h3>
+    <p class="modal-sub" style="margin-bottom:1rem">Scheduled follow-up information</p>
+    <div id="fu-detail-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="new-plan-modal" onclick="if(event.target===this)closeModal('new-plan-modal')">
+  <div class="modal" style="max-width:480px"><button class="modal-close" onclick="closeModal('new-plan-modal')">×</button>
+    <div id="new-plan-content">
+      <h3>New care plan</h3><p class="modal-sub">Create a structured treatment plan for a patient.</p>
+      <div class="form-group"><label>Patient</label>
+        <div class="patient-search-wrap"><input id="np-search" placeholder="Search patients..." autocomplete="off" oninput="filterDropdown('np-search','np-dropdown')" onfocus="filterDropdown('np-search','np-dropdown')" onblur="setTimeout(()=>document.getElementById('np-dropdown').classList.remove('open'),200)"/><div class="patient-dropdown" id="np-dropdown"></div></div>
+      </div>
+      <div class="form-group"><label>Plan name</label><input id="np-name" placeholder="e.g. 12-Visit Chiropractic Care Plan"/></div>
+      <div class="patient-form-grid">
+        <div class="form-group"><label>Total visits</label><input id="np-visits" type="number" placeholder="12" min="1"/></div>
+        <div class="form-group"><label>Frequency</label><input id="np-freq" placeholder="e.g. 2x per week"/></div>
+        <div class="form-group"><label>Start date</label><input id="np-start" type="date"/></div>
+        <div class="form-group"><label>End date</label><input id="np-end" type="date"/></div>
+      </div>
+      <div class="form-group"><label>Treatment goal</label><textarea id="np-goal" placeholder="Describe the primary goal of this care plan..."></textarea></div>
+      <div class="form-group"><label>Notes (optional)</label><textarea id="np-notes" placeholder="Any additional clinical notes..."></textarea></div>
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="saveNewPlan()">Create care plan</button>
+    </div>
+    <div id="new-plan-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Care plan created</h4><p>The plan has been added to the patient's profile.</p></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="new-followup-modal" onclick="if(event.target===this)closeModal('new-followup-modal')">
+  <div class="modal"><button class="modal-close" onclick="closeModal('new-followup-modal')">×</button>
+    <div id="nf-form-content"><h3>New follow-up</h3><p class="modal-sub">Schedule a personalized follow-up message for a patient.</p>
+      <div class="form-group"><label>Patient name</label>
+        <div class="patient-search-wrap"><input id="nf-search" placeholder="Type to search patients..." autocomplete="off" oninput="filterDropdown('nf-search','nf-dropdown')" onfocus="filterDropdown('nf-search','nf-dropdown')" onblur="setTimeout(()=>document.getElementById('nf-dropdown').classList.remove('open'),200)"/><div class="patient-dropdown" id="nf-dropdown"></div></div>
+      </div>
+      <div class="form-group"><label>Message type</label><select id="nf-type"><option>Post-visit check-in</option><option>Appointment reminder</option><option>Exercise reminder</option><option>Medication reminder</option><option>Custom message</option></select></div>
+      <div class="form-group"><label>Channel</label><select id="nf-channel"><option>SMS</option><option>Email</option><option>Both</option></select></div>
+      <div class="form-group"><label>Send date & time</label><input id="nf-datetime" type="datetime-local"/></div>
+      <div class="form-group"><label>Notes (optional)</label><textarea id="nf-notes" placeholder="Any specific details..."></textarea></div>
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="scheduleFollowUp()">Schedule follow-up</button>
+    </div>
+    <div id="nf-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Follow-up scheduled</h4><p>The message has been queued.</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="patient-followup-modal" onclick="if(event.target===this)closeModal('patient-followup-modal')">
+  <div class="modal"><button class="modal-close" onclick="closeModal('patient-followup-modal')">×</button>
+    <div id="pf-form-content"><h3>Send follow-up</h3><p class="modal-sub">Compose a follow-up message for this patient.</p>
+      <div class="patient-context-banner"><div class="pcb-avatar" id="pf-avatar">MT</div><div><div class="pcb-name" id="pf-banner-name">Marcus T.</div><div class="pcb-sub" id="pf-banner-sub">Chiropractic · Last visit Mar 26, 2026</div></div></div>
+      <div class="form-group"><label>Patient</label>
+        <div class="patient-search-wrap"><input id="pf-search" autocomplete="off" oninput="filterDropdown('pf-search','pf-dropdown')" onfocus="filterDropdown('pf-search','pf-dropdown')" onblur="setTimeout(()=>document.getElementById('pf-dropdown').classList.remove('open'),200)"/><div class="patient-dropdown" id="pf-dropdown"></div></div>
+      </div>
+      <div class="form-group"><label>Message type</label><select id="nf-type"><option>Post-visit check-in</option><option>Appointment reminder</option><option>Exercise reminder</option><option>Medication reminder</option><option>Custom message</option></select></div>
+      <div class="form-group"><label>Channel</label><select id="nf-channel"><option>SMS</option><option>Email</option><option>Both</option></select></div>
+      <div class="form-group"><label>Send date & time</label><input id="nf-datetime" type="datetime-local"/></div>
+      <div class="form-group"><label>Notes (optional)</label><textarea id="nf-notes" placeholder="Any specific details..."></textarea></div>
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="submitForm('pf-form-content','pf-success')">Send follow-up</button>
+    </div>
+    <div id="pf-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Follow-up scheduled</h4><p id="pf-success-msg">The follow-up has been queued.</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="add-patient-modal" onclick="if(event.target===this)closeModal('add-patient-modal')">
+  <div class="modal" style="max-width:540px;padding:2.5rem"><button class="modal-close" onclick="closeModal('add-patient-modal')">×</button>
+    <div id="add-patient-content"><h3>Add new patient</h3><p class="modal-sub">Enter the patient's details to add them to CareLoop.</p>
+      <div class="patient-form-grid">
+        <div class="form-divider">Patient information</div>
+        <div class="form-group"><label>First name</label><input placeholder="Jane"/></div>
+        <div class="form-group"><label>Last name</label><input placeholder="Smith"/></div>
+        <div class="form-group"><label>Date of birth</label><input type="date"/></div>
+        <div class="form-group"><label>Age</label><input placeholder="34"/></div>
+        <div class="form-group"><label>Phone number</label><input placeholder="(512) 555-0100"/></div>
+        <div class="form-group"><label>Email address</label><input placeholder="jane@email.com"/></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Insurance provider</label><input placeholder="Blue Cross PPO"/></div>
+        <div class="form-divider">Visit details</div>
+        <div class="form-group"><label>Visit type</label><select><option>Chiropractic adjustment</option><option>Physical therapy</option><option>Sports medicine</option><option>Posture assessment</option><option>Back pain</option><option>Neck pain</option><option>Other</option></select></div>
+        <div class="form-group"><label>Visit date</label><input type="date"/></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Provider notes</label><textarea placeholder="Any relevant notes..."></textarea></div>
+        <div class="form-divider">Follow-up preferences</div>
+        <div class="form-group"><label>Preferred contact</label><select><option>SMS</option><option>Email</option><option>Both</option></select></div>
+        <div class="form-group"><label>Follow-up sequence</label><select><option>Standard (24hr check-in + reminders)</option><option>Post-surgery</option><option>Chronic care</option><option>Custom</option></select></div>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:0.75rem" onclick="submitForm('add-patient-content','add-patient-success')">Add patient & start follow-up</button>
+    </div>
+    <div id="add-patient-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Patient added</h4><p>Their follow-up sequence will begin within 24 hours.</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="edit-profile-modal" onclick="if(event.target===this)closeModal('edit-profile-modal')">
+  <div class="modal" style="max-width:540px;padding:2.5rem"><button class="modal-close" onclick="closeModal('edit-profile-modal')">×</button>
+    <div id="ep-form-content">
+      <h3>Edit profile</h3><p class="modal-sub">Editing profile for <strong id="ep-patient-name">Marcus T.</strong></p>
+      <div class="patient-form-grid">
+        <div class="form-divider">Contact information</div>
+        <div class="form-group"><label>First name</label><input id="ep-fname"/></div>
+        <div class="form-group"><label>Last name initial</label><input id="ep-lname"/></div>
+        <div class="form-group"><label>Phone number</label><input id="ep-phone"/></div>
+        <div class="form-group"><label>Email address</label><input id="ep-email"/></div>
+        <div class="form-group"><label>Date of birth</label><input type="date" id="ep-dob" onchange="updateAgeFromDOB(this.value)"/></div>
+        <div class="form-group"><label>Age <span style="font-size:0.68rem;color:var(--ink3);font-weight:300">(auto-calculated)</span></label><input id="ep-age" readonly style="background:var(--cream);color:var(--ink3);cursor:default"/></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Insurance provider</label><input id="ep-insurance" value="Blue Cross PPO"/></div>
+        <div class="form-divider">Visit & care</div>
+        <div class="form-group"><label>Visit type</label><select id="ep-visit"><option>Chiropractic adjustment</option><option>Physical therapy</option><option>Sports medicine</option><option>Posture assessment</option><option>Back pain</option><option>Neck pain</option><option>Other</option></select></div>
+        <div class="form-group"><label>Preferred contact</label><select id="ep-contact"><option>SMS</option><option>Email</option><option>Both</option></select></div>
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
+        <button class="btn-outline" style="flex:1" onclick="closeModal('edit-profile-modal')">Cancel</button>
+        <button class="btn-primary" style="flex:2" onclick="saveProfile()">Save changes</button>
+      </div>
+    </div>
+    <div id="ep-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Profile updated</h4><p id="ep-success-msg">Changes saved.</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="send-intake-modal" onclick="if(event.target===this)closeModal('send-intake-modal')">
+  <div class="modal"><button class="modal-close" onclick="closeModal('send-intake-modal')">×</button>
+    <div id="si-form-content"><h3>Send intake form</h3><p class="modal-sub">Send a digital intake form link to a patient before their visit.</p>
+      <div class="form-group"><label>Patient</label>
+        <div class="patient-search-wrap"><input id="si-search" placeholder="Search patients..." autocomplete="off" oninput="filterDropdown('si-search','si-dropdown')" onfocus="filterDropdown('si-search','si-dropdown')" onblur="setTimeout(()=>document.getElementById('si-dropdown').classList.remove('open'),200)"/><div class="patient-dropdown" id="si-dropdown"></div></div>
+      </div>
+      <div class="form-group"><label>Form type</label><select><option>New patient intake</option><option>Follow-up intake</option><option>Sports medicine intake</option><option>Custom form</option></select></div>
+      <div class="form-group"><label>Send via</label><select><option>SMS</option><option>Email</option><option>Both</option></select></div>
+      <div class="form-group"><label>Appointment date</label><input type="date"/></div>
+      <p style="font-size:0.78rem;color:var(--ink3);margin-bottom:1rem">Patient fills the form online before their visit. Responses auto-save to their CareLoop profile.</p>
+      <button class="btn-primary" style="width:100%" onclick="sendIntakeForm()">Send intake form</button>
+    </div>
+    <div id="si-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Form sent</h4><p>The patient will receive a link to complete their intake form. Responses will auto-save to their profile.</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="view-intake-modal" onclick="if(event.target===this)closeModal('view-intake-modal')">
+  <div class="modal" style="max-width:500px"><button class="modal-close" onclick="closeModal('view-intake-modal')">×</button>
+    <h3 id="vi-title">Intake Form</h3><p class="modal-sub" id="vi-sub"></p>
+    <div style="margin-bottom:1.5rem;border:1px solid var(--rule);border-radius:8px;overflow:hidden;padding:0 1rem" id="vi-body"></div>
+    <div style="display:flex;gap:0.75rem">
+      <button class="btn-outline" style="flex:1" onclick="closeModal('view-intake-modal')">Close</button>
+      <button class="btn-primary" style="flex:1" onclick="closeModal('view-intake-modal')">Save to profile</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="book-appt-modal" onclick="if(event.target===this)closeModal('book-appt-modal')">
+  <div class="modal" style="max-width:480px"><button class="modal-close" onclick="closeModal('book-appt-modal')">×</button>
+    <div id="book-appt-content">
+      <h3 id="book-appt-title">Book appointment</h3><p class="modal-sub" id="book-appt-sub">Add an appointment directly to the calendar.</p>
+      <div class="form-group"><label>Patient</label>
+        <div class="patient-search-wrap">
+          <input id="book-pt-search" placeholder="Search patient..." autocomplete="off" oninput="filterDropdown('book-pt-search','book-pt-dropdown')" onfocus="filterDropdown('book-pt-search','book-pt-dropdown')" onblur="setTimeout(()=>document.getElementById('book-pt-dropdown').classList.remove('open'),200)"/>
+          <div class="patient-dropdown" id="book-pt-dropdown"></div>
+        </div>
+      </div>
+      <div class="form-group"><label>Appointment type</label>
+        <select id="book-type">
+          <option value="chiro">Chiropractic Adjustment</option>
+          <option value="pt">Physical Therapy</option>
+          <option value="sports">Sports Medicine</option>
+          <option value="posture">Posture Assessment</option>
+          <option value="newpt">New Patient</option>
+          <option value="followup">Follow-up</option>
+          <option value="neck">Neck / Back Pain</option>
+        </select>
+      </div>
+      <div class="patient-form-grid">
+        <div class="form-group"><label>Date</label><input type="date" id="book-date"/></div>
+        <div class="form-group"><label>Start time</label><input type="time" id="book-time" value="09:00"/></div>
+        <div class="form-group"><label>Duration</label>
+          <select id="book-duration">
+            <option value="15">15 min</option>
+            <option value="30" selected>30 min</option>
+            <option value="45">45 min</option>
+            <option value="60">60 min</option>
+            <option value="90">90 min</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Notes</label><input placeholder="Optional notes"/></div>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:0.75rem" onclick="bookApptFromModal()">Add to calendar</button>
+    </div>
+    <div id="book-appt-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Appointment booked</h4><p id="book-appt-msg">Added to the calendar.</p></div>
+  </div>
+</div>
+
+
+<script>
+const patients=[
+  {name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com'},
+  {name:'Lena R.',type:'Physical therapy',date:'Mar 25, 2026',age:'28',phone:'(512) 555-0102',email:'lena.r@email.com'},
+  {name:'Derek M.',type:'Sports medicine',date:'Mar 20, 2026',age:'25',phone:'(512) 555-0103',email:'derek.m@email.com'},
+  {name:'Priya S.',type:'Posture assessment',date:'Mar 24, 2026',age:'41',phone:'(512) 555-0104',email:'priya.s@email.com'},
+  {name:'James K.',type:'Neck pain',date:'Mar 25, 2026',age:'55',phone:'(512) 555-0105',email:'james.k@email.com'},
+  {name:'Sarah J.',type:'Chiropractic',date:'Mar 21, 2026',age:'38',phone:'(512) 555-0106',email:'sarah.j@email.com'},
+  {name:'Tom W.',type:'Physical therapy',date:'Mar 18, 2026',age:'47',phone:'(512) 555-0107',email:'tom.w@email.com'},
+  {name:'Maria L.',type:'Posture assessment',date:'Mar 15, 2026',age:'33',phone:'(512) 555-0108',email:'maria.l@email.com'},
+];
+
+function goTo(p){document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');window.scrollTo(0,0)}
+const pageTitles={overview:'Overview',patients:'Patients',followups:'Follow-ups',messages:'Messages',appointments:'Appointments',plans:'Care Plans',intake:'Intake Forms',analytics:'Analytics',settings:'Settings'};
+function setDashPage(p){
+  document.querySelectorAll('.dpage').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.ds-nav').forEach(el=>el.classList.remove('active'));
+  document.getElementById('dpage-'+p).classList.add('active');
+  const nav=document.getElementById('nav-'+p);
+  if(nav)nav.classList.add('active');
+  document.getElementById('dash-page-title').textContent=pageTitles[p]||p;
+  if(p==='appointments'){requestAnimationFrame(()=>buildCal());}
+}
+
+let currentPatient={name:'',type:'',date:'',age:'',phone:'',email:''};
+function showPatient(name,type,date,age,phone,email){
+  currentPatient={name,type,date,age,phone,email};
+  document.getElementById('patient-list-view').style.display='none';
+  document.getElementById('patient-detail-view').style.display='block';
+  document.getElementById('pp-initials').textContent=name.split(' ').map(w=>w[0]).join('');
+  document.getElementById('pp-name').textContent=name;
+  document.getElementById('pp-meta').textContent=type+' · Last visit '+date;
+  document.getElementById('pp-phone').textContent=phone;
+  document.getElementById('pp-email').innerHTML='<a href="mailto:'+email+'">'+email+'</a>';
+  document.getElementById('pp-age').textContent=age;
+  document.getElementById('file-viewer').classList.remove('open');
+  // Wellness plan
+  const planSection=document.getElementById('pp-plan-section');
+  const pid=patientPlanMap[name];
+  if(pid&&planSection){
+    const pl=wellnessPlans[pid];
+    const pct=Math.round(pl.completedVisits/pl.totalVisits*100);
+    const remaining=pl.totalVisits-pl.completedVisits;
+    const badgeCls=pct>=100?'wp-done':pct>=60?'':'wp-warn';
+    planSection.style.display='block';
+    planSection.innerHTML='<div class="wp-card">'
+      +'<div class="wp-header"><div class="wp-title">Active Care Plan</div><span class="wp-badge '+badgeCls+'">'+pl.completedVisits+' of '+pl.totalVisits+' visits complete</span></div>'
+      +'<div style="font-size:0.82rem;font-weight:500;color:var(--ink);margin-bottom:0.35rem">'+pl.planName+'</div>'
+      +'<div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:'+pct+'%"></div></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);margin-bottom:0.875rem;margin-top:3px"><span>'+pct+'% complete</span><span>'+remaining+' visits remaining</span></div>'
+      +'<div class="wp-row"><span>Goal</span><span style="text-align:right;max-width:60%">'+pl.goal+'</span></div>'
+      +'<div class="wp-row"><span>Frequency</span><span>'+pl.frequency+'</span></div>'
+      +'<div class="wp-row"><span>Plan period</span><span>'+pl.startDate+' – '+pl.endDate+'</span></div>'
+      +'<div class="wp-row"><span>Next review</span><span>'+pl.nextReview+'</span></div>'
+      +(pl.notes?'<div style="margin-top:0.75rem;padding:0.625rem 0.75rem;background:var(--cream);border-radius:6px;font-size:0.75rem;color:var(--ink2)">'+pl.notes+'</div>':'')
+      +'</div>';
+  } else if(planSection){planSection.style.display='none';}
+}
+
+function openEditProfile(){
+  const {name,phone,email,dob}=currentPatient;
+  const parts=name.split(' ');
+  document.getElementById('ep-patient-name').textContent=name;
+  document.getElementById('ep-fname').value=parts[0]||'';
+  document.getElementById('ep-lname').value=parts[1]||'';
+  document.getElementById('ep-phone').value=phone;
+  document.getElementById('ep-email').value=email;
+  document.getElementById('ep-dob').value=dob||'';
+  openModal('edit-profile-modal');
+}
+
+function updateAgeFromDOB(dobVal){
+  if(!dobVal)return;
+  const dob=new Date(dobVal);
+  const today=new Date();
+  let age=today.getFullYear()-dob.getFullYear();
+  const m=today.getMonth()-dob.getMonth();
+  if(m<0||(m===0&&today.getDate()<dob.getDate()))age--;
+  document.getElementById('ep-age').value=age;
+}
+function saveProfile(){
+  const fname=document.getElementById('ep-fname').value.trim();
+  const lname=document.getElementById('ep-lname').value.trim();
+  const phone=document.getElementById('ep-phone').value.trim();
+  const email=document.getElementById('ep-email').value.trim();
+  const age=document.getElementById('ep-age').value.trim();
+  const dob=document.getElementById('ep-dob').value;
+  const insurance=document.getElementById('ep-insurance').value.trim();
+  const pref=document.getElementById('ep-contact').value;
+  const fullName=(fname+' '+lname).trim()||currentPatient.name;
+  document.getElementById('pp-name').textContent=fullName;
+  document.getElementById('pp-initials').textContent=fullName.split(' ').map(w=>w[0]).join('');
+  if(phone)document.getElementById('pp-phone').textContent=phone;
+  if(email)document.getElementById('pp-email').innerHTML='<a href="mailto:'+email+'">'+email+'</a>';
+  if(age)document.getElementById('pp-age').textContent=age;
+  if(dob){
+    const d=new Date(dob);
+    document.getElementById('pp-dob').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }
+  if(insurance){document.getElementById('pp-insurance').textContent=insurance;document.getElementById('pp-ins-billing').textContent=insurance.split(' ')[0];}
+  if(pref)document.getElementById('pp-pref').textContent=pref;
+  currentPatient.name=fullName;currentPatient.phone=phone||currentPatient.phone;currentPatient.email=email||currentPatient.email;currentPatient.age=age||currentPatient.age;
+  document.getElementById('ep-form-content').style.display='none';
+  document.getElementById('ep-success').style.display='block';
+  document.getElementById('ep-success-msg').textContent='Changes to '+fullName+"'s profile have been saved.";
+  setTimeout(()=>{document.getElementById('ep-form-content').style.display='block';document.getElementById('ep-success').style.display='none';closeModal('edit-profile-modal');},2000);
+}
+
+function openFollowupModal(){document.getElementById('nf-search').value='';document.getElementById('nf-dropdown').classList.remove('open');openModal('new-followup-modal')}
+function openPatientFollowup(){
+  const {name,type,date}=currentPatient;
+  document.getElementById('pf-avatar').textContent=name.split(' ').map(w=>w[0]).join('');
+  document.getElementById('pf-banner-name').textContent=name;
+  document.getElementById('pf-banner-sub').textContent=type+' · Last visit '+date;
+  document.getElementById('pf-search').value=name;
+  document.getElementById('pf-success-msg').textContent='The follow-up for '+name+' has been queued.';
+  openModal('patient-followup-modal');
+}
+
+function filterDropdown(inputId,dropdownId){
+  const q=document.getElementById(inputId).value.toLowerCase().trim();
+  const filtered=q===''?patients:patients.filter(p=>p.name.toLowerCase().includes(q)||p.type.toLowerCase().includes(q));
+  document.getElementById(dropdownId).innerHTML=filtered.length===0?'<div class="pd-none">No patients found</div>':
+    filtered.map(p=>'<div class="pd-item" onmousedown="selectPatient(\''+inputId+'\',\''+dropdownId+'\',\''+p.name+'\',\''+p.type+'\',\''+p.date+'\',\''+p.age+'\',\''+p.phone+'\',\''+p.email+'\')"><div class="pd-avatar">'+p.name.split(' ').map(w=>w[0]).join('')+'</div><div><div class="pd-name">'+p.name+'</div><div class="pd-sub">'+p.type+' · Last visit '+p.date+'</div></div></div>').join('');
+  document.getElementById(dropdownId).classList.add('open');
+}
+function selectPatient(inputId,dropdownId,name,type,date,age,phone,email){
+  document.getElementById(inputId).value=name;
+  document.getElementById(dropdownId).classList.remove('open');
+  if(inputId==='pf-search'){
+    document.getElementById('pf-banner-name').textContent=name;
+    document.getElementById('pf-banner-sub').textContent=type+' · Last visit '+date;
+    document.getElementById('pf-avatar').textContent=name.split(' ').map(w=>w[0]).join('');
+    document.getElementById('pf-success-msg').textContent='The follow-up for '+name+' has been queued.';
+  }
+}
+
+function bookApptFromModal(){
+  const patient=document.getElementById('book-pt-search').value.trim();
+  if(!patient){showToast('Select a patient first');return;}
+  const timeVal=document.getElementById('book-time').value;
+  const dateVal=document.getElementById('book-date').value;
+  const type=document.getElementById('book-type').value;
+  const dur=parseInt(document.getElementById('book-duration').value);
+  if(!timeVal||!dateVal){showToast('Please fill in date and time');return;}
+  const [hh,mm]=timeVal.split(':').map(Number);
+  const startMin=hh*60+mm;
+  const key=dateVal;
+  if(!calData[key])calData[key]=[];
+  const conflict=calData[key].some(a=>startMin<a.startMin+a.durMins&&startMin+dur>a.startMin);
+  calData[key].push({id:nextId++,patient,type,startMin,durMins:dur});
+  // Navigate to the booked date, stay in current view
+  const parts=dateVal.split('-');
+  calCurrentDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  document.getElementById('book-appt-content').style.display='none';
+  document.getElementById('book-appt-success').style.display='block';
+  document.getElementById('book-appt-msg').textContent=patient+' booked for '+fmtTime(startMin)+(conflict?' — ⚠️ double booking, please confirm with patient':'');
+  // Stay on current view — don't switch
+  buildCal();
+  setTimeout(()=>{
+    document.getElementById('book-appt-content').style.display='block';
+    document.getElementById('book-appt-success').style.display='none';
+    closeModal('book-appt-modal');
+  },2000);
+}
+
+const patientList=[
+  {name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com'},
+  {name:'Lena R.',type:'Physical therapy',date:'Mar 25, 2026',age:'28',phone:'(512) 555-0102',email:'lena.r@email.com'},
+  {name:'Derek M.',type:'Sports medicine',date:'Mar 20, 2026',age:'25',phone:'(512) 555-0103',email:'derek.m@email.com'},
+  {name:'Priya S.',type:'Posture assessment',date:'Mar 24, 2026',age:'41',phone:'(512) 555-0104',email:'priya.s@email.com'},
+  {name:'James K.',type:'Neck pain',date:'Mar 25, 2026',age:'55',phone:'(512) 555-0105',email:'james.k@email.com'},
+  {name:'Sarah J.',type:'Chiropractic',date:'Mar 21, 2026',age:'38',phone:'(512) 555-0106',email:'sarah.j@email.com'},
+  {name:'Tom W.',type:'Physical therapy',date:'Mar 18, 2026',age:'47',phone:'(512) 555-0107',email:'tom.w@email.com'},
+  {name:'Maria L.',type:'Posture assessment',date:'Mar 15, 2026',age:'33',phone:'(512) 555-0108',email:'maria.l@email.com'},
+];
+// ── INTAKE FORMS ────────────────────────────────────────────────────────────
+const intakeData = {
+  'marcus-newpt':{
+    title:'New Patient Intake', patient:'Marcus T.', submitted:'Jan 10, 2026',
+    fields:[
+      {l:'Full name',v:'Marcus Thompson'},{l:'Date of birth',v:'March 14, 1993'},
+      {l:'Phone',v:'(512) 555-0101'},{l:'Email',v:'marcus.t@email.com'},
+      {l:'Insurance',v:'Blue Cross PPO · ID #BCB-4421'},
+      {l:'Primary care physician',v:'Dr. Elena Ruiz, Austin Family Medicine'},
+      {l:'Chief complaint',v:'Right shoulder tension and limited range of motion, onset 3 weeks ago.'},
+      {l:'Pain level',v:'7/10'},{l:'Pain description',v:'Dull ache with sharp flare on rotation'},
+      {l:'Previous treatment',v:'None prior to this practice'},
+      {l:'Medications',v:'Ibuprofen 400mg as needed'},
+      {l:'Allergies',v:'None reported'},{l:'Emergency contact',v:'Lisa Thompson · (512) 555-0199'}
+    ]
+  },
+  'sarah-newpt':{
+    title:'New Patient Intake', patient:'Sarah J.', submitted:'Pending',
+    pending:true,
+    fields:[
+      {l:'Form sent',v:'Mar 25, 2026'},{l:'Appointment',v:'Chiropractic Adjustment'},
+      {l:'Expires',v:'Apr 1, 2026'},{l:'Status',v:'Awaiting patient submission'},
+      {l:'Sent via',v:'SMS'}
+    ]
+  },
+  'derek-sports':{
+    title:'Sports Medicine Intake', patient:'Derek M.', submitted:'Pending',
+    pending:true,
+    fields:[
+      {l:'Form sent',v:'Apr 2, 2026'},{l:'Appointment',v:'Sports Injury Evaluation'},
+      {l:'Expires',v:'Apr 9, 2026'},{l:'Status',v:'Awaiting patient submission'},
+      {l:'Sent via',v:'SMS'}
+    ]
+  },
+  'maria-followup':{
+    title:'Follow-Up Intake', patient:'Maria L.', submitted:'Overdue',
+    pending:true,
+    fields:[
+      {l:'Form sent',v:'Feb 18, 2026'},{l:'Appointment',v:'Posture Assessment'},
+      {l:'Expired',v:'Feb 22, 2026'},{l:'Status',v:'Overdue — patient has not submitted'},
+      {l:'Sent via',v:'Email'},{l:'Action required',v:'Resend or contact patient directly'}
+    ]
+  },
+  'lena-followup':{
+    title:'Follow-Up Intake', patient:'Lena R.', submitted:'Feb 6, 2026',
+    fields:[
+      {l:'Full name',v:'Lena Rodriguez'},{l:'Date of birth',v:'Sep 14, 1998'},
+      {l:'Phone',v:'(512) 555-0102'},{l:'Email',v:'lena.r@email.com'},
+      {l:'Last visit date',v:'Jan 30, 2026'},{l:'Visit type',v:'Physical Therapy – Knee Rehab'},
+      {l:'Exercises completed since last visit',v:'Completed 4 of 5 prescribed exercises daily'},
+      {l:'Pain level since last visit',v:'3/10 (improved from 5/10)'},
+      {l:'New symptoms or concerns',v:'Mild swelling after extended walking'},
+      {l:'Sleep quality',v:'Good – no disruption from pain'},
+      {l:'Care plan adherence',v:'Strong – patient highly engaged'}
+    ]
+  },
+  'priya-newpt':{
+    title:'New Patient Intake', patient:'Priya S.', submitted:'Jan 28, 2026',
+    fields:[
+      {l:'Full name',v:'Priya Sharma'},{l:'Date of birth',v:'Mar 7, 1985'},
+      {l:'Phone',v:'(512) 555-0104'},{l:'Email',v:'priya.s@email.com'},
+      {l:'Insurance',v:'BCBS · ID #BCB-3312'},
+      {l:'Primary care physician',v:'Dr. Aisha Patel, Round Rock Women&#39;s Health'},
+      {l:'Chief complaint',v:'Forward head posture and chronic neck tension from prolonged screen use.'},
+      {l:'Pain level',v:'4/10'},{l:'Pain description',v:'Dull, persistent tension across neck and upper shoulders'},
+      {l:'Previous treatment',v:'Yoga, limited relief'},{l:'Medications',v:'None current'},
+      {l:'Allergies',v:'None reported'}
+    ]
+  },
+  'tom-newpt':{
+    title:'New Patient Intake', patient:'Tom W.', submitted:'Dec 1, 2025',
+    fields:[
+      {l:'Full name',v:'Thomas Williams'},{l:'Date of birth',v:'Aug 19, 1979'},
+      {l:'Phone',v:'(512) 555-0107'},{l:'Email',v:'tom.w@email.com'},
+      {l:'Insurance',v:'Medicare Advantage · ID #MA-5541'},
+      {l:'Referring physician',v:'Dr. James Cho, Austin Orthopedics'},
+      {l:'Chief complaint',v:'Post-surgical rehabilitation following ACL reconstruction, right knee.'},
+      {l:'Surgery date',v:'Nov 15, 2025'},{l:'Surgeon',v:'Dr. James Cho'},
+      {l:'Current range of motion',v:'30° flexion, 0° extension'},
+      {l:'Weight-bearing status',v:'Partial – with crutches'},
+      {l:'Rehab goals',v:'Full range of motion and return to recreational tennis within 6 months'},
+      {l:'Medications',v:'Meloxicam 15mg, Aspirin 81mg'},{l:'Allergies',v:'Sulfa drugs'}
+    ]
+  },
+  'james-newpt':{
+    title:'New Patient Intake', patient:'James K.', submitted:'Feb 22, 2026',
+    fields:[
+      {l:'Full name',v:'James Kim'},{l:'Date of birth',v:'Jan 5, 1971'},
+      {l:'Phone',v:'(512) 555-0105'},{l:'Email',v:'james.k@email.com'},
+      {l:'Insurance',v:'Cigna PPO · ID #CIG-8807'},
+      {l:'Primary care physician',v:'Dr. Patricia Nguyen, South Austin Internal Medicine'},
+      {l:'Chief complaint',v:'Chronic neck and upper back pain, significantly worse over past 6 months.'},
+      {l:'Pain level',v:'8/10 at worst, 5/10 average'},
+      {l:'Pain description',v:'Radiating from cervical spine to left shoulder, occasional numbness in left hand'},
+      {l:'Previous imaging',v:'X-ray Jan 2026 – mild cervical spondylosis noted'},
+      {l:'Previous treatment',v:'OTC NSAIDs, limited relief. No prior chiropractic care.'},
+      {l:'Medications',v:'Naproxen 500mg as needed'},{l:'Allergies',v:'None reported'}
+    ]
+  }
+};
+
+let intakeSentCount = 14;
+let intakePendingCount = 3;
+
+function openIntake(id){
+  const d=intakeData[id];
+  if(!d)return;
+  document.getElementById('vi-title').textContent=d.title;
+  document.getElementById('vi-sub').textContent=d.patient+' · '+d.submitted;
+  const pendingBanner=d.pending
+    ?'<div style="background:var(--amber-tint);border:1px solid rgba(146,96,10,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:0.75rem;font-size:0.78rem;color:var(--amber);font-weight:500">This form has not yet been submitted by the patient. The fields below show form tracking details only.</div>'
+    :'';
+  document.getElementById('vi-body').innerHTML=pendingBanner+d.fields.map(f=>'<div class="fv-field"><div class="fv-label">'+f.l+'</div><div class="fv-val">'+f.v+'</div></div>').join('');
+  openModal('view-intake-modal');
+}
+
+function sendIntakeForm(){
+  const patient=document.getElementById('si-search').value.trim();
+  const formType=document.querySelector('#si-form-content select').value;
+  const apptDate=document.querySelector('#si-form-content input[type=date]').value;
+  if(!patient){showToast('Please select a patient first');return;}
+  // Add to pending list
+  const list=document.getElementById('pending-intake-list');
+  const dateStr=apptDate?new Date(apptDate+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+  const expiryDate=apptDate?new Date(new Date(apptDate+'T00:00').getTime()+7*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+  const card=document.createElement('div');
+  card.className='intake-card';
+  card.innerHTML='<div><div class="intake-title">'+formType.replace(/\w/g,c=>c.toUpperCase())+'</div>'
+    +'<div class="intake-sub">'+patient+' · Sent '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})+(expiryDate?' · Expires '+expiryDate:'')+'</div></div>'
+    +'<span style="font-size:0.7rem;font-weight:500;color:var(--amber)">Pending</span>';
+  list.appendChild(card);
+  // Update stats
+  intakeSentCount++;intakePendingCount++;
+  const sentEl=document.getElementById('intake-stat-sent');
+  const pendEl=document.getElementById('intake-stat-pending');
+  if(sentEl)sentEl.textContent=intakeSentCount;
+  if(pendEl)pendEl.textContent=intakePendingCount;
+  // Show success
+  document.getElementById('si-form-content').style.display='none';
+  document.getElementById('si-success').style.display='block';
+  setTimeout(()=>{
+    document.getElementById('si-form-content').style.display='block';
+    document.getElementById('si-success').style.display='none';
+    closeModal('send-intake-modal');
+  },2200);
+}
+
+function saveClinicSettings(btn){
+  const input=document.getElementById('settings-clinic-name');
+  const name=(input?input.value.trim():'')||'Your Practice';
+  const nameEl=document.getElementById('sidebar-clinic-name');
+  const avatarEl=document.getElementById('sidebar-clinic-avatar');
+  if(nameEl)nameEl.textContent=name;
+  if(avatarEl){
+    const words=name.split(' ').filter(w=>w.length>0);
+    const initials=words.length>=2
+      ?words[0][0].toUpperCase()+words[words.length-1][0].toUpperCase()
+      :name.slice(0,2).toUpperCase();
+    avatarEl.textContent=initials;
+  }
+  btn.textContent='Saved ✓';
+  setTimeout(()=>btn.textContent='Save changes',2000);
+}
+// ── FOLLOW-UP SYSTEM ────────────────────────────────────────────────────────
+const followUpData=[];
+
+function scheduleFollowUp(){
+  const patient=document.getElementById('nf-search').value.trim();
+  if(!patient){showToast('Select a patient first');return;}
+  const type=document.getElementById('nf-type').value;
+  const channel=document.getElementById('nf-channel').value;
+  const dt=document.getElementById('nf-datetime').value;
+  const notes=document.getElementById('nf-notes').value.trim();
+  const now=new Date();
+  let sendStr='Scheduled';
+  let statusKey='scheduled';
+  let statusLabel='Scheduled';
+  let statusClass='sp-b';
+  if(dt){
+    const d=new Date(dt);
+    const isToday=d.toDateString()===now.toDateString();
+    const isPast=d<now;
+    sendStr=isToday?'Today '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    if(isPast){statusKey='sent';statusLabel='Sent';statusClass='sp-g';}
+  }
+  const fu={id:Date.now(),patient,type,channel,sendStr,notes,statusKey,statusLabel,statusClass,timestamp:dt||now.toISOString()};
+  followUpData.unshift(fu);
+  // Add to follow-ups table
+  const tbody=document.getElementById('fu-table-body');
+  const row=document.createElement('tr');
+  row.dataset.fustatus=statusKey;
+  row.style.cursor='pointer';
+  row.onclick=()=>openFollowUpDetail(fu.id);
+  row.innerHTML='<td><div class="td-name">'+patient+'</div></td><td>'+type+'</td><td>'+sendStr+'</td><td>'+channel+'</td><td><span class="spill '+statusClass+'">'+statusLabel+'</span></td>';
+  tbody.insertBefore(row,tbody.firstChild);
+  // Update tab counts
+  const allCount=tbody.querySelectorAll('tr').length;
+  const allTab=tbody.closest('.dcard').querySelector('.dtab');
+  if(allTab)allTab.textContent='All ('+allCount+')';
+  // Navigate to follow-ups
+  closeModal('new-followup-modal');
+  document.getElementById('nf-search').value='';
+  document.getElementById('nf-notes').value='';
+  showToast('Follow-up scheduled for '+patient);
+  setTimeout(()=>setDashPage('followups'),800);
+}
+
+function openFollowUpDetail(id){
+  const fu=followUpData.find(f=>f.id===id);
+  if(!fu)return;
+  const d=new Date(fu.timestamp);
+  const dateStr=isNaN(d.getTime())?fu.sendStr:d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const body=document.getElementById('fu-detail-body');
+  body.innerHTML='';
+  // Fields card
+  const card=document.createElement('div');
+  card.style.cssText='background:var(--cream);border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin-bottom:1rem';
+  const rows=[
+    {l:'Patient',v:fu.patient},
+    {l:'Type',v:fu.type},
+    {l:'Channel',v:fu.channel},
+    {l:'Scheduled',v:dateStr},
+    {l:'Status',v:'<span class="spill '+fu.statusClass+'">'+fu.statusLabel+'</span>'},
+  ];
+  if(fu.notes)rows.push({l:'Notes',v:fu.notes});
+  card.innerHTML=rows.map(r=>'<div class="fv-field"><div class="fv-label">'+r.l+'</div><div class="fv-val">'+r.v+'</div></div>').join('');
+  body.appendChild(card);
+  // Buttons
+  const btns=document.createElement('div');
+  btns.style.cssText='display:flex;gap:0.75rem';
+  const closeBtn=document.createElement('button');
+  closeBtn.className='btn-outline';closeBtn.style.flex='1';closeBtn.textContent='Close';
+  closeBtn.onclick=()=>closeModal('fu-detail-modal');
+  const viewBtn=document.createElement('button');
+  viewBtn.className='btn-primary';viewBtn.style.flex='1';viewBtn.textContent='View patient';
+  viewBtn.onclick=()=>{closeModal('fu-detail-modal');setDashPage('patients');const m=patientList.find(p=>p.name===fu.patient);if(m)showPatient(m.name,m.type,m.date,m.age,m.phone,m.email);};
+  btns.appendChild(closeBtn);btns.appendChild(viewBtn);
+  body.appendChild(btns);
+  document.getElementById('fu-detail-name').textContent=fu.patient+' — '+fu.type;
+  openModal('fu-detail-modal');
+}
+
+
+
+
+// ── FULL TIME-SLOT CALENDAR ──────────────────────────────────────────────────
+// ── WELLNESS PLANS ─────────────────────────────────────────────────────────
+const wellnessPlans = {
+  'wp-marcus':{patient:'Marcus T.',planName:'12-Visit Chiropractic Care Plan',type:'chiro',totalVisits:12,completedVisits:7,startDate:'Jan 15, 2026',endDate:'Apr 30, 2026',goal:'Resolve right shoulder tension and restore full range of motion.',frequency:'2x per week',nextReview:'Apr 15, 2026',notes:'Patient progressing well. Pain reduced from 7/10 to 3/10.'},
+  'wp-sarah':{patient:'Sarah J.',planName:'10-Visit Spinal Adjustment Plan',type:'chiro',totalVisits:10,completedVisits:4,startDate:'Feb 10, 2026',endDate:'May 15, 2026',goal:'Address recurring upper back tension and improve posture.',frequency:'1\u20132x per week',nextReview:'Apr 10, 2026',notes:'Upper back tension improving. Continue current protocol.'},
+  'wp-tom':{patient:'Tom W.',planName:'20-Visit Post-Surgical Rehab Plan',type:'pt',totalVisits:20,completedVisits:12,startDate:'Dec 1, 2025',endDate:'May 31, 2026',goal:'Full knee function restoration following ACL surgery.',frequency:'2\u20133x per week',nextReview:'Apr 20, 2026',notes:'Week 16 of rehab. Strength at ~80% of pre-injury baseline.'},
+};
+const patientPlanMap = {'Marcus T.':'wp-marcus','Sarah J.':'wp-sarah','Tom W.':'wp-tom'};
+
+const SLOT_H = 20;
+const START_HOUR = 7, END_HOUR = 19;
+const typeColors = {chiro:'#1a4fd6',pt:'#1a6644',sports:'#0ea5e9',posture:'#92600a',newpt:'#7c3aed',followup:'#059669',neck:'#dc2626'};
+const typeLabels = {chiro:'Chiropractic',pt:'Physical Therapy',sports:'Sports Medicine',posture:'Posture Assessment',newpt:'New Patient',followup:'Follow-up',neck:'Neck / Back Pain'};
+
+let calCurrentDate = new Date(2026,2,27);
+let calIntervalMins = 15;
+let calSelectedType = 'chiro';
+let calSelectedPatient = null;
+let calView = 'day';
+
+const calData = {
+  '2026-03-22':[{id:101,patient:'James K.',type:'neck',startMin:9*60,durMins:45},{id:102,patient:'Maria L.',type:'posture',startMin:11*60,durMins:60}],
+  '2026-03-23':[{id:103,patient:'Marcus T.',type:'chiro',startMin:8*60,durMins:30},{id:104,patient:'Lena R.',type:'pt',startMin:9*60+30,durMins:45},{id:105,patient:'Tom W.',type:'pt',startMin:11*60,durMins:60},{id:106,patient:'Priya S.',type:'posture',startMin:14*60,durMins:30}],
+  '2026-03-24':[{id:107,patient:'Sarah J.',type:'chiro',startMin:8*60+30,durMins:30},{id:108,patient:'Derek M.',type:'sports',startMin:10*60,durMins:60},{id:109,patient:'James K.',type:'neck',startMin:13*60,durMins:45}],
+  '2026-03-25':[{id:110,patient:'Maria L.',type:'posture',startMin:9*60,durMins:60},{id:111,patient:'Marcus T.',type:'followup',startMin:11*60,durMins:30},{id:112,patient:'Tom W.',type:'pt',startMin:14*60+30,durMins:45},{id:113,patient:'Lena R.',type:'followup',startMin:16*60,durMins:30}],
+  '2026-03-26':[{id:114,patient:'Derek M.',type:'sports',startMin:8*60,durMins:60},{id:115,patient:'Priya S.',type:'posture',startMin:10*60,durMins:45},{id:116,patient:'Sarah J.',type:'chiro',startMin:13*60,durMins:30},{id:117,patient:'James K.',type:'neck',startMin:15*60,durMins:60}],
+  '2026-03-27':[{id:1,patient:'Sarah J.',type:'chiro',startMin:8*60,durMins:30,planId:'wp-sarah',visitNum:4,notes:'Recurring tension in upper back. Responding well to adjustment protocol.'},{id:2,patient:'Tom W.',type:'pt',startMin:9*60+30,durMins:45,planId:'wp-tom',visitNum:12,notes:'Post-knee surgery rehab. Week 12 of recovery protocol.'},{id:3,patient:'Marcus T.',type:'chiro',startMin:11*60,durMins:30,planId:'wp-marcus',visitNum:7,notes:'Right shoulder tension. Continue current adjustment plan.'},{id:4,patient:'Priya S.',type:'posture',startMin:14*60,durMins:60,notes:'Follow-up posture assessment. Review wall angel exercise progress.'}],
+  '2026-03-28':[{id:5,patient:'Lena R.',type:'followup',startMin:10*60,durMins:30},{id:6,patient:'Derek M.',type:'sports',startMin:13*60,durMins:60}],
+  '2026-03-29':[{id:201,patient:'Marcus T.',type:'chiro',startMin:9*60,durMins:30},{id:202,patient:'Maria L.',type:'posture',startMin:11*60+30,durMins:45}],
+  '2026-03-30':[{id:203,patient:'Tom W.',type:'pt',startMin:8*60,durMins:60},{id:204,patient:'Sarah J.',type:'chiro',startMin:10*60,durMins:30},{id:205,patient:'Priya S.',type:'followup',startMin:13*60,durMins:30},{id:206,patient:'James K.',type:'neck',startMin:15*60+30,durMins:45}],
+  '2026-03-31':[{id:7,patient:'Derek M.',type:'sports',startMin:9*60,durMins:60},{id:207,patient:'Lena R.',type:'pt',startMin:11*60,durMins:45},{id:208,patient:'Marcus T.',type:'followup',startMin:14*60,durMins:30}],
+  '2026-04-01':[{id:209,patient:'Priya S.',type:'posture',startMin:8*60+30,durMins:60},{id:210,patient:'Sarah J.',type:'chiro',startMin:10*60+30,durMins:30},{id:211,patient:'Tom W.',type:'pt',startMin:13*60,durMins:45}],
+  '2026-04-02':[{id:212,patient:'Marcus T.',type:'chiro',startMin:11*60,durMins:30},{id:213,patient:'James K.',type:'neck',startMin:13*60+30,durMins:45},{id:214,patient:'Maria L.',type:'posture',startMin:15*60,durMins:30}],
+};
+let nextId = 300;
+let draggingAppt = null, dragOffsetY = 0, draggingApptKey = null;
+let _calBuilt = false;
+
+function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function minToY(min){return Math.round((min-START_HOUR*60)/15)*SLOT_H}
+function snapMin(min){return Math.round(min/calIntervalMins)*calIntervalMins}
+function fmtTime(min){const h=Math.floor(min/60),m=min%60,ampm=h>=12?'PM':'AM',hh=h>12?h-12:(h===0?12:h);return hh+':'+(m===0?'00':String(m).padStart(2,'0'))+' '+ampm}
+
+function setCalView(v){
+  calView=v;
+  document.getElementById('cal-view-day').classList.toggle('active',v==='day');
+  document.getElementById('cal-view-week').classList.toggle('active',v==='week');
+  buildCal();
+}
+
+function buildCal(){
+  if(calView==='week'){buildWeekCal();return;}
+  buildDayCal();
+}
+
+function buildDayCal(){
+  const key=dateKey(calCurrentDate);
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-day-label').textContent=days[calCurrentDate.getDay()]+', '+months[calCurrentDate.getMonth()]+' '+calCurrentDate.getDate()+', '+calCurrentDate.getFullYear();
+  const totalSlots=(END_HOUR-START_HOUR)*4;
+  const totalH=totalSlots*SLOT_H;
+  const labelsEl=document.getElementById('cal-time-labels');
+  labelsEl.innerHTML='';labelsEl.style.height=totalH+'px';
+  for(let h=START_HOUR;h<END_HOUR;h++){
+    const lbl=document.createElement('div');
+    lbl.className='cal-time-label';lbl.style.height=(SLOT_H*4)+'px';
+    lbl.textContent=h<12?h+' AM':(h===12?'12 PM':(h-12)+' PM');
+    labelsEl.appendChild(lbl);
+  }
+  const slotsEl=document.getElementById('cal-slots');
+  slotsEl.innerHTML='';slotsEl.style.height=totalH+'px';slotsEl.style.position='relative';
+  let hoverTooltip=document.getElementById('_hover-time');
+  if(!hoverTooltip){
+    hoverTooltip=document.createElement('div');hoverTooltip.id='_hover-time';
+    hoverTooltip.style.cssText='position:absolute;left:4px;background:var(--ink);color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:4px;pointer-events:none;z-index:50;display:none;font-family:Figtree,sans-serif';
+    slotsEl.appendChild(hoverTooltip);
+  }
+  slotsEl.onmousemove=(e)=>{
+    if(e.target.classList.contains('cal-appt-block')||e.target.closest('.cal-appt-block')){hoverTooltip.style.display='none';return;}
+    const rect=slotsEl.getBoundingClientRect();
+    const y=e.clientY-rect.top;
+    const slotIndex=Math.floor(y/SLOT_H);
+    const rawMin=START_HOUR*60+slotIndex*15;
+    const clamped=Math.max(START_HOUR*60,Math.min(END_HOUR*60-calIntervalMins,rawMin));
+    hoverTooltip.textContent=fmtTime(clamped)+' \u2013 '+fmtTime(clamped+calIntervalMins);
+    hoverTooltip.style.display='block';
+    hoverTooltip.style.top=(y-24)+'px';
+  };
+  slotsEl.onmouseleave=()=>{hoverTooltip.style.display='none'};
+  for(let i=0;i<totalSlots;i++){
+    const slot=document.createElement('div');
+    const slotMin=START_HOUR*60+i*15;
+    slot.style.cssText='position:absolute;left:0;right:0;height:'+SLOT_H+'px;top:'+(i*SLOT_H)+'px;border-bottom:1px solid '+(i%4===3?'var(--rule)':'rgba(228,225,217,0.5)')+';box-sizing:border-box';
+    slot.onclick=(e)=>{if(draggingAppt)return;};
+    slot.ondragover=(e)=>{e.preventDefault();slot.style.background='var(--blue-tint)'};
+    slot.ondragleave=()=>slot.style.background='';
+    slot.ondrop=(e)=>{
+      e.preventDefault();slot.style.background='';
+      if(!draggingAppt)return;
+      const snapped=Math.round(slotMin/calIntervalMins)*calIntervalMins;
+      const clamped=Math.max(START_HOUR*60,Math.min(END_HOUR*60-draggingAppt.durMins,snapped));
+      if(draggingApptKey&&draggingApptKey!==key){
+        if(calData[draggingApptKey])calData[draggingApptKey]=calData[draggingApptKey].filter(a=>a.id!==draggingAppt.id);
+        if(!calData[key])calData[key]=[];
+        calData[key].push(draggingAppt);
+      }
+      const conflict=(calData[key]||[]).some(a=>a.id!==draggingAppt.id&&clamped<a.startMin+a.durMins&&clamped+draggingAppt.durMins>a.startMin);
+      if(conflict)showToast('Double booking at '+fmtTime(clamped)+'. Please confirm with the patient.');
+      draggingAppt.startMin=clamped;draggingApptKey=key;draggingAppt=null;buildCal();
+    };
+    slotsEl.appendChild(slot);
+  }
+  const now=new Date();
+  if(dateKey(now)===key){
+    const nowMin=now.getHours()*60+now.getMinutes();
+    if(nowMin>=START_HOUR*60&&nowMin<=END_HOUR*60){
+      const ind=document.createElement('div');
+      ind.style.cssText='position:absolute;left:0;right:0;top:'+minToY(nowMin)+'px;height:2px;background:var(--red);z-index:20;pointer-events:none';
+      ind.innerHTML='<div style="width:8px;height:8px;border-radius:50%;background:var(--red);position:absolute;left:-4px;top:-3px"></div>';
+      slotsEl.appendChild(ind);
+    }
+  }
+  (calData[key]||[]).forEach(appt=>renderApptBlock(appt,slotsEl,key));
+  updateAvailPanel(key);
+}
+
+function buildWeekCal(){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dow=calCurrentDate.getDay();
+  const weekStart=new Date(calCurrentDate);weekStart.setDate(calCurrentDate.getDate()-dow);
+  const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
+  document.getElementById('cal-day-label').textContent=months[weekStart.getMonth()]+' '+weekStart.getDate()+' \u2013 '+months[weekEnd.getMonth()]+' '+weekEnd.getDate()+', '+weekEnd.getFullYear();
+  const totalSlots=(END_HOUR-START_HOUR)*4;
+  const totalH=totalSlots*SLOT_H;
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const labelsEl=document.getElementById('cal-time-labels');
+  labelsEl.innerHTML='';labelsEl.style.height=(totalH+32)+'px';labelsEl.style.paddingTop='32px';
+  for(let h=START_HOUR;h<END_HOUR;h++){
+    const lbl=document.createElement('div');
+    lbl.className='cal-time-label';lbl.style.height=(SLOT_H*4)+'px';
+    lbl.textContent=h<12?h+' AM':(h===12?'12 PM':(h-12)+' PM');
+    labelsEl.appendChild(lbl);
+  }
+  const slotsEl=document.getElementById('cal-slots');
+  slotsEl.innerHTML='';slotsEl.style.height=(totalH+32)+'px';slotsEl.style.position='relative';
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(7,1fr);height:100%;position:relative';
+  for(let d=0;d<7;d++){
+    const dayDate=new Date(weekStart);dayDate.setDate(weekStart.getDate()+d);
+    const key=dateKey(dayDate);
+    const isToday=dateKey(new Date(2026,2,27))===key;
+    const col=document.createElement('div');
+    col.style.cssText='position:relative;border-right:1px solid var(--rule);height:100%';
+    const hdr=document.createElement('div');
+    hdr.style.cssText='height:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px solid var(--rule);background:'+(isToday?'var(--blue-tint)':'var(--cream)')+';position:sticky;top:0;z-index:5';
+    hdr.innerHTML='<div style="font-size:0.65rem;font-weight:600;text-transform:uppercase;color:'+(isToday?'var(--blue)':'var(--ink3)')+'">'+dayNames[d]+'</div><div style="font-size:0.8rem;font-weight:'+(isToday?'600':'400')+';color:'+(isToday?'var(--blue)':'var(--ink)')+'">'+dayDate.getDate()+'</div>';
+    col.appendChild(hdr);
+    const slotWrap=document.createElement('div');
+    slotWrap.style.cssText='position:absolute;top:32px;left:0;right:0;bottom:0';
+    for(let i=0;i<totalSlots;i++){
+      const s=document.createElement('div');
+      const slotMin=START_HOUR*60+i*15;
+      s.style.cssText='position:absolute;left:0;right:0;height:'+SLOT_H+'px;top:'+(i*SLOT_H)+'px;border-bottom:1px solid '+(i%4===3?'rgba(228,225,217,0.8)':'rgba(228,225,217,0.3)')+';box-sizing:border-box;cursor:pointer';
+      s.onclick=()=>{calCurrentDate=new Date(dayDate);openAddApptModal();};
+      s.ondragover=(e)=>{e.preventDefault();s.style.background='var(--blue-tint)'};
+      s.ondragleave=()=>s.style.background='';
+      s.ondrop=(e)=>{
+        e.preventDefault();s.style.background='';
+        if(!draggingAppt)return;
+        const oldKey=draggingApptKey||dateKey(calCurrentDate);
+        if(calData[oldKey])calData[oldKey]=calData[oldKey].filter(a=>a.id!==draggingAppt.id);
+        const clamped=Math.max(START_HOUR*60,Math.min(END_HOUR*60-draggingAppt.durMins,slotMin));
+        if(!calData[key])calData[key]=[];
+        draggingAppt.startMin=clamped;calData[key].push(draggingAppt);
+        draggingAppt=null;draggingApptKey=null;buildCal();
+      };
+      slotWrap.appendChild(s);
+    }
+    (calData[key]||[]).forEach(appt=>{
+      const top=minToY(appt.startMin);
+      const height=Math.max(SLOT_H,Math.round(appt.durMins/15)*SLOT_H);
+      const color=typeColors[appt.type]||typeColors.chiro;
+      const plan=appt.planId?wellnessPlans[appt.planId]:null;
+      const block=document.createElement('div');
+      block.style.cssText='position:absolute;left:2px;right:2px;top:'+top+'px;height:'+(height-2)+'px;background:'+color+';border-radius:4px;padding:2px 4px;color:#fff;font-size:0.62rem;overflow:hidden;cursor:pointer;z-index:10;font-family:Figtree,sans-serif';
+      if(height<=SLOT_H){
+        block.innerHTML='<div style="font-weight:600;font-size:0.62rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+appt.patient+' · '+fmtTime(appt.startMin)+'</div>';
+      } else {
+        block.innerHTML='<div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+appt.patient+'</div>'
+          +'<div style="opacity:0.85;font-size:0.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+fmtTime(appt.startMin)+' \u2013 '+fmtTime(appt.startMin+appt.durMins)+'</div>';
+      }
+      block.draggable=true;
+      block.ondragstart=(e)=>{draggingAppt=appt;draggingApptKey=key;const rect=block.getBoundingClientRect();dragOffsetY=e.clientY-rect.top;e.dataTransfer.effectAllowed='move';setTimeout(()=>block.style.opacity='0.4',0);};
+      block.ondragend=()=>{block.style.opacity='1';draggingAppt=null;};
+      block.onclick=(e)=>{e.stopPropagation();showApptTooltip(appt,e);};
+      slotWrap.appendChild(block);
+    });
+    col.appendChild(slotWrap);
+    grid.appendChild(col);
+  }
+  slotsEl.appendChild(grid);
+  updateAvailPanel(dateKey(calCurrentDate));
+}
+
+function renderApptBlock(appt,slotsEl,key){
+  const top=minToY(appt.startMin); // integer
+  const height=Math.max(SLOT_H,Math.round(appt.durMins/15)*SLOT_H);
+  const plan=appt.planId?wellnessPlans[appt.planId]:null;
+  const color=typeColors[appt.type]||typeColors.chiro;
+  const block=document.createElement('div');
+  block.className='cal-appt-block';
+  block.style.cssText='top:'+top+'px;height:'+(height-3)+'px;background:'+color+';left:4px;right:4px;position:absolute;border-radius:6px;padding:4px 7px;cursor:grab;color:#fff;overflow:hidden;user-select:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);z-index:10;font-size:0.72rem';
+  if(height<=SLOT_H){
+    block.innerHTML='<div style="font-weight:600;font-size:0.65rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+appt.patient+' · '+fmtTime(appt.startMin)+'</div>';
+  } else if(height<=SLOT_H*2){
+    block.innerHTML='<div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+appt.patient+'</div>'
+      +'<div style="opacity:0.9;font-size:0.65rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+fmtTime(appt.startMin)+' – '+fmtTime(appt.startMin+appt.durMins)+'</div>';
+  } else {
+    block.innerHTML='<div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+appt.patient+'</div>'
+      +'<div style="opacity:0.85;font-size:0.65rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+typeLabels[appt.type]+'</div>'
+      +'<div style="opacity:0.75;font-size:0.63rem">'+fmtTime(appt.startMin)+' – '+fmtTime(appt.startMin+appt.durMins)+'</div>';
+  }
+  block.draggable=true;
+  block.ondragstart=(e)=>{draggingAppt=appt;const rect=block.getBoundingClientRect();dragOffsetY=e.clientY-rect.top;e.dataTransfer.effectAllowed='move';setTimeout(()=>block.style.opacity='0.4',0);};
+  block.ondragend=()=>{block.style.opacity='1';draggingAppt=null;};
+  block.onclick=(e)=>{e.stopPropagation();showApptTooltip(appt,e);};
+  slotsEl.appendChild(block);
+}
+
+function addApptAtSlot(startMin){
+  const patient=calSelectedPatient||document.getElementById('cal-pt-search').value||'';
+  if(!patient){showToast('Select a patient first');return;}
+  const key=dateKey(calCurrentDate);
+  const conflict=(calData[key]||[]).some(a=>startMin<a.startMin+a.durMins&&startMin+calIntervalMins>a.startMin);
+  if(!calData[key])calData[key]=[];
+  calData[key].push({id:nextId++,patient,type:calSelectedType,startMin,durMins:calIntervalMins});
+  buildCal();
+  if(conflict){
+    showToast('⚠️ Double booking at '+fmtTime(startMin)+'. Please confirm with the patient.');
+  } else {
+    showToast('Appointment added: '+fmtTime(startMin));
+  }
+}
+
+function openAddApptModal(){
+  document.getElementById('book-appt-title').textContent='Book appointment';
+  document.getElementById('book-appt-sub').textContent='Add an appointment directly to the calendar.';
+  const d=calCurrentDate;
+  document.getElementById('book-date').value=dateKey(d);
+  document.getElementById('book-pt-search').value='';
+  document.getElementById('book-time').value='09:00';
+  document.getElementById('book-duration').value='30';
+  document.getElementById('book-appt-modal').classList.add('open');
+}
+
+function updateAvailPanel(key){
+  const el=document.getElementById('avail-overview');
+  if(!el)return;
+  const appts=calData[key]||[];
+  const totalSlots=(END_HOUR-START_HOUR)*4;
+  const busySlots=appts.reduce((s,a)=>s+Math.ceil(a.durMins/15),0);
+  const pct=Math.min(100,Math.round((busySlots/totalSlots)*100));
+  el.innerHTML='<div class="avail-slot"><div class="avail-dot" style="background:var(--green)"></div><span>'+(totalSlots-busySlots)+' open slots</span></div>'
+    +'<div class="avail-slot"><div class="avail-dot" style="background:var(--blue)"></div><span>'+appts.length+' booked</span></div>'
+    +'<div class="avail-slot"><div class="avail-dot" style="background:var(--rule2)"></div><span>'+pct+'% utilized</span></div>'
+    +'<div style="height:6px;background:var(--cream);border-radius:3px;overflow:hidden;margin-top:4px"><div style="height:100%;width:'+pct+'%;background:var(--blue);border-radius:3px;transition:width 0.3s"></div></div>';
+}
+
+let _activeAppt=null;
+function showApptTooltip(appt,e){
+  _activeAppt=appt;
+  // Hide slot time indicator while over an appointment block
+  const ht=document.getElementById('_hover-time');
+  if(ht)ht.style.display='none';
+  const tt=document.getElementById('appt-tooltip');
+  document.getElementById('tt-name').textContent=appt.patient;
+  document.getElementById('tt-type').innerHTML='<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+(typeColors[appt.type]||'#999')+';margin-right:5px"></span>'+(typeLabels[appt.type]||appt.type);
+  document.getElementById('tt-time').textContent=fmtTime(appt.startMin)+' – '+fmtTime(appt.startMin+appt.durMins);
+  document.getElementById('tt-dur').textContent=appt.durMins+' min';
+  const notesEl=document.getElementById('tt-notes');
+  if(appt.notes){notesEl.textContent=appt.notes;notesEl.style.display='block';}else{notesEl.style.display='none';}
+  const ttPlan=document.getElementById('tt-plan');
+  const plan=appt.planId?wellnessPlans[appt.planId]:null;
+  if(plan&&ttPlan){
+    const pct=Math.round(appt.visitNum/plan.totalVisits*100);
+    const remaining=plan.totalVisits-appt.visitNum;
+    ttPlan.style.display='block';
+    ttPlan.innerHTML='<div style="font-size:0.68rem;font-weight:600;color:var(--ink);margin-bottom:4px">Care Plan</div>'
+      +'<div style="font-size:0.72rem;color:var(--ink2);margin-bottom:6px">'+plan.planName+'</div>'
+      +'<div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:'+pct+'%"></div></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--ink3);margin-top:3px">'
+      +'<span>Visit '+appt.visitNum+' of '+plan.totalVisits+'</span><span>'+remaining+' remaining</span></div>';
+  } else if(ttPlan){ttPlan.style.display='none';}
+  tt.style.display='block';
+  const x=Math.min(e.clientX+16,window.innerWidth-260);
+  const y=Math.min(e.clientY-20,window.innerHeight-200);
+  tt.style.left=x+'px';tt.style.top=y+'px';
+}
+function openEditAppt(){
+  document.getElementById('appt-tooltip').style.display='none';
+  if(!_activeAppt)return;
+  // Pre-fill book modal with current appointment data for editing
+  const d=dateKey(calCurrentDate);
+  document.getElementById('book-date').value=d;
+  const hh=Math.floor(_activeAppt.startMin/60);
+  const mm=_activeAppt.startMin%60;
+  document.getElementById('book-time').value=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+  document.getElementById('book-duration').value=_activeAppt.durMins;
+  document.getElementById('book-type').value=_activeAppt.type;
+  document.getElementById('book-pt-search').value=_activeAppt.patient;
+  // Remove old entry so re-booking replaces it
+  const key=dateKey(calCurrentDate);
+  if(calData[key])calData[key]=calData[key].filter(a=>a.id!==_activeAppt.id);
+  document.getElementById('book-appt-title').textContent='Edit appointment';
+  document.getElementById('book-appt-sub').textContent='Update the details for this appointment.';
+  document.getElementById('book-appt-modal').classList.add('open');
+}
+function viewApptPatient(){
+  document.getElementById('appt-tooltip').style.display='none';
+  if(!_activeAppt)return;
+  // Find matching patient data and navigate directly to their profile
+  const name=_activeAppt.patient;
+  const match=patientList.find(p=>p.name===name);
+  if(match){
+    setDashPage('patients');
+    showPatient(match.name,match.type,match.date,match.age,match.phone,match.email);
+  } else {
+    setDashPage('patients');
+  }
+}
+
+function setInterval(btn){
+  document.querySelectorAll('.cal-interval-btn').forEach(b=>{if(b.id==='cal-view-day'||b.id==='cal-view-week')return;b.classList.remove('active')});
+  btn.classList.add('active');calIntervalMins=parseInt(btn.dataset.mins);
+}
+function setApptType(btn){
+  document.querySelectorAll('.cal-type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');calSelectedType=btn.dataset.type;
+}
+function changeCalDay(dir){calCurrentDate=new Date(calCurrentDate.getTime()+dir*(calView==='week'?7:1)*86400000);buildCal();}
+function goToday(){calCurrentDate=new Date(2026,2,27);buildCal();}
+
+
+
+// MESSAGE THREADS
+const threadData={
+  lena:{name:'Lena R.',type:'Physical therapy',date:'Mar 25, 2026',age:'28',phone:'(512) 555-0102',email:'lena.r@email.com',avatar:'LR',avatarStyle:'',messages:[
+    {dir:'out',text:'Hi Lena — your appointment is Thursday at 10am. Reply YES to confirm.',time:'Mar 25 · 9:00 AM'},
+    {dir:'in',text:'YES — confirmed for Thursday. See you then!',time:'Mar 25 · 9:04 AM'},
+    {dir:'out',text:'Perfect. See you Thursday. Please reach out if anything changes.',time:'Mar 25 · 9:05 AM'},
+  ]},
+  marcus:{name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com',avatar:'MT',avatarStyle:'',messages:[
+    {dir:'out',text:"Hi Marcus, checking in after your visit yesterday. How's the shoulder feeling?",time:'Today · 9:01 AM'},
+    {dir:'in',text:'Way better than expected. Thanks for reaching out.',time:'Today · 9:38 AM'},
+    {dir:'out',text:'Great to hear. Keep up with the stretches. Your next appointment is Apr 2 at 11am.',time:'Today · 9:40 AM'},
+  ]},
+  priya:{name:'Priya S.',type:'Posture assessment',date:'Mar 24, 2026',age:'41',phone:'(512) 555-0104',email:'priya.s@email.com',avatar:'PS',avatarStyle:'',messages:[
+    {dir:'out',text:'Hi Priya — reminder about your posture exercises today. Try 3 sets of wall angels.',time:'Yesterday · 9:00 AM'},
+    {dir:'out',text:'Your follow-up appointment is Apr 1 at 3:30pm.',time:'Yesterday · 9:01 AM'},
+    {dir:'in',text:'Thanks for the reminder! I have been keeping up with them. See you Apr 1.',time:'Yesterday · 11:22 AM'},
+  ]},
+  tom:{name:'Tom W.',type:'Physical therapy',date:'Mar 18, 2026',age:'47',phone:'(512) 555-0107',email:'tom.w@email.com',avatar:'TW',avatarStyle:'',messages:[
+    {dir:'out',text:'Hi Tom — your next PT session is Mar 28 at 11:30am. Would you like to confirm?',time:'Mar 25 · 9:00 AM'},
+    {dir:'in',text:'Just booked my follow-up. Looking forward to it.',time:'Mar 25 · 2:14 PM'},
+  ]},
+  james:{name:'James K.',type:'Neck pain',date:'Mar 25, 2026',age:'55',phone:'(512) 555-0105',email:'james.k@email.com',avatar:'JK',avatarStyle:'background:var(--red-tint);color:var(--red)',messages:[
+    {dir:'out',text:'Hi James — checking in after your visit on Tuesday. How is the neck feeling?',time:'Mar 25 · 9:00 AM'},
+  ]},
+};
+let currentThread=threadData.lena;
+
+function openThread(key){
+  const t=threadData[key];if(!t)return;
+  currentThread=t;
+  document.querySelectorAll('.msg-item').forEach(el=>el.classList.remove('active-thread'));
+  const el=document.getElementById('thread-'+key);
+  if(el){el.classList.add('active-thread');const dot=el.querySelector('.msg-unread');if(dot)dot.remove();}
+  document.getElementById('msg-convo-avatar').textContent=t.avatar;
+  document.getElementById('msg-convo-avatar').setAttribute('style',t.avatarStyle||'');
+  document.getElementById('msg-convo-name').textContent=t.name;
+  document.getElementById('msg-convo-sub').textContent=t.type+' · Last visit '+t.date;
+  renderThread(t.messages);
+}
+function renderThread(msgs){
+  const body=document.getElementById('msg-convo-body');
+  body.innerHTML=msgs.map(m=>'<div class="thread-group '+m.dir+'"><div class="thread-bubble-'+m.dir+'">'+m.text+'</div><div class="thread-time">'+m.time+'</div></div>').join('');
+  body.scrollTop=body.scrollHeight;
+}
+function sendReply(){
+  const input=document.getElementById('msg-reply-input');
+  const text=input.value.trim();if(!text)return;
+  const now=new Date();
+  const time='Today · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  currentThread.messages.push({dir:'out',text,time});
+  renderThread(currentThread.messages);
+  input.value='';
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  if(document.getElementById('msg-convo-body'))openThread('lena');
+  // Live date in topbar
+  const dateEl=document.getElementById('topbar-date');
+  if(dateEl){
+    const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const now=new Date();
+    dateEl.textContent=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+  }
+  // Also bind existing fu rows to patient nav
+  document.querySelectorAll('#fu-table-body tr').forEach(row=>{
+    if(!row.dataset.fuBound){
+      row.dataset.fuBound='1';row.style.cursor='pointer';
+      row.addEventListener('click',()=>{
+        const name=row.querySelector('.td-name')?.textContent?.trim();
+        if(!name)return;
+        const m=patientList.find(p=>p.name===name);
+        if(m){setDashPage('patients');showPatient(m.name,m.type,m.date,m.age,m.phone,m.email);}
+      });
+    }
+  });
+});
+
+function saveNewPlan(){
+  const patient=document.getElementById('np-search').value.trim();
+  const name=document.getElementById('np-name').value.trim();
+  if(!patient||!name){showToast('Please fill in patient and plan name');return;}
+  const visits=parseInt(document.getElementById('np-visits').value)||10;
+  const freq=document.getElementById('np-freq').value.trim()||'Weekly';
+  const startRaw=document.getElementById('np-start').value;
+  const endRaw=document.getElementById('np-end').value;
+  const goal=document.getElementById('np-goal').value.trim();
+  const notes=document.getElementById('np-notes').value.trim();
+  const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'TBD';
+  // Add to plan list card
+  const list=document.querySelector('#dpage-plans .dcard > div[style*="flex-direction:column"]');
+  if(list){
+    const card=document.createElement('div');
+    card.className='wp-card';card.style.cssText='margin-bottom:0;cursor:pointer';
+    card.innerHTML='<div class="wp-header"><div><div class="wp-title">'+patient+'</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">'+name+'</div></div><span class="wp-badge wp-warn">0 / '+visits+' visits</span></div>'
+      +'<div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:0%"></div></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);margin-top:3px"><span>0% complete</span><span>'+visits+' visits remaining</span><span>Ends '+fmt(endRaw)+'</span></div>';
+    list.appendChild(card);
+  }
+  document.getElementById('new-plan-content').style.display='none';
+  document.getElementById('new-plan-success').style.display='block';
+  setTimeout(()=>{
+    document.getElementById('new-plan-content').style.display='block';
+    document.getElementById('new-plan-success').style.display='none';
+    document.getElementById('np-search').value='';
+    document.getElementById('np-name').value='';
+    document.getElementById('np-visits').value='';
+    document.getElementById('np-freq').value='';
+    document.getElementById('np-goal').value='';
+    document.getElementById('np-notes').value='';
+    closeModal('new-plan-modal');
+    showToast('Care plan created for '+patient);
+  },2000);
+}
+function filterFollowups(btn,filter){btn.closest('.dtabs').querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#overview-followup-body tr').forEach(row=>{row.style.display=(filter==='all'||row.dataset.status===filter)?'':'none'})}
+function filterPatients(btn,filter){btn.closest('.dtabs').querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#patient-table-body tr').forEach(row=>{row.style.display=(filter==='all'||row.dataset.pstatus===filter)?'':'none'})}
+function filterFU(btn,filter){
+  btn.closest('.dtabs').querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#fu-table-body tr').forEach(row=>{
+    row.style.display=(filter==='all'||row.dataset.fustatus===filter)?'':'none';
+  });
+}
+
+// Make existing fu rows clickable — navigate to patient profile
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('#fu-table-body tr').forEach(row=>{
+    if(!row.dataset.fuBound){
+      row.dataset.fuBound='1';
+      row.style.cursor='pointer';
+      row.addEventListener('click',()=>{
+        const name=row.querySelector('.td-name')?.textContent?.trim();
+        if(!name)return;
+        const m=patientList.find(p=>p.name===name);
+        if(m){setDashPage('patients');showPatient(m.name,m.type,m.date,m.age,m.phone,m.email);}
+      });
+    }
+  });
+});
+
+// File viewer
+const fileObjectMap={};
+function viewFile(name,type,fileObj){
+  const viewer=document.getElementById('file-viewer');
+  document.getElementById('fv-title').textContent=name;
+  const body=document.getElementById('fv-body');
+  const ext=name.split('.').pop().toUpperCase();
+  if(fileObj&&['PNG','JPG','JPEG','GIF','WEBP'].includes(ext)){
+    const url=URL.createObjectURL(fileObj);
+    body.innerHTML='<img src="'+url+'" style="width:100%;border-radius:6px;display:block" alt="'+name+'"/>';
+  } else if(fileObj&&ext==='PDF'){
+    body.innerHTML='<div class="fv-pdf"><div class="fv-pdf-title">'+name+'</div><p style="font-size:0.82rem;color:var(--ink2);margin-top:0.5rem">PDF uploaded to patient profile.</p></div>';
+  } else if(type==='pdf'){
+    body.innerHTML='<div class="fv-pdf"><div class="fv-pdf-title">Patient Intake Form: Marcus T.</div><div class="fv-field"><div class="fv-label">Full name</div><div class="fv-val">Marcus Thompson</div></div><div class="fv-field"><div class="fv-label">Date of birth</div><div class="fv-val">March 14, 1993</div></div><div class="fv-field"><div class="fv-label">Insurance</div><div class="fv-val">Blue Cross PPO</div></div><div class="fv-field"><div class="fv-label">Chief complaint</div><div class="fv-val">Right shoulder tension, limited range of motion</div></div><div class="fv-field"><div class="fv-label">Pain level</div><div class="fv-val">7/10</div></div><div class="fv-field"><div class="fv-label">Medications</div><div class="fv-val">Ibuprofen as needed</div></div></div>';
+  } else {
+    body.innerHTML='<div style="width:100%;background:linear-gradient(135deg,#dde8ff 0%,#c2d6fa 60%,#dde8ff 100%);border-radius:6px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><div style="font-size:0.88rem;font-weight:600;color:var(--ink2)">Cervical Spine X-ray</div><div style="font-size:0.75rem;color:var(--ink3);margin-top:4px">March 2026 · Radiology</div><div style="font-size:0.72rem;color:var(--ink3)">Image rendering requires a connected imaging system</div></div>';
+  }
+  viewer.classList.add('open');
+  viewer.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function handleFiles(input){
+  const list=document.getElementById('pp-file-list');
+  Array.from(input.files).forEach(f=>{
+    const ext=f.name.split('.').pop().toUpperCase();
+    const size=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';
+    const ftype=['PNG','JPG','JPEG','GIF','WEBP'].includes(ext)?'img':'pdf';
+    const fileId='file-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+    fileObjectMap[fileId]=f;
+    const item=document.createElement('div');item.className='file-item';
+    item.innerHTML='<div class="file-icon">'+ext+'</div><div class="file-name">'+f.name+'</div><div class="file-size">'+size+'</div><button class="file-view-btn" onclick="event.stopPropagation();viewFile(\''+f.name+'\',\''+ftype+'\',fileObjectMap[\''+fileId+'\'])">View</button>';
+    item.onclick=()=>viewFile(f.name,ftype,fileObjectMap[fileId]);
+    list.appendChild(item);
+  });
+}
+
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function submitForm(formId,successId){
+  document.getElementById(formId).style.display='none';
+  document.getElementById(successId).style.display='block';
+  setTimeout(()=>{document.getElementById(formId).style.display='block';document.getElementById(successId).style.display='none'},3000);
+}
+</script>
+</body>
+</html>
