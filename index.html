@@ -386,9 +386,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   /* CTA section */
   .l-cta{padding:2.5rem 1.25rem;text-align:center}
  
-  /* Footer */
-  .l-footer{flex-direction:column;gap:0.875rem;text-align:center;padding:1.25rem}
-  .foot-links{justify-content:center;gap:1rem}
+  /* Footer — !important needed to beat inline styles */
+  .l-footer{flex-direction:column!important;gap:0.875rem;text-align:center;padding:1.25rem;justify-content:center!important}
+  .foot-links{position:static!important;transform:none!important;left:auto!important;justify-content:center;gap:1.25rem}
   .foot-copy{text-align:center;font-size:0.7rem}
   .foot-logo{justify-content:center}
  
@@ -398,7 +398,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
  
   /* Dashboard — show message on mobile */
   .dsidebar{display:none!important}
-  .dmain{margin-left:0!important;padding:2rem 1.25rem}
+  .dtopbar{display:none!important}
+  .dmain{margin-left:0!important;padding:0!important}
   .dpage{display:none!important}
   #mobile-dash-msg{display:block!important}
 }
@@ -543,7 +544,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
  
 <!-- DASHBOARD -->
 <div class="page" id="page-dashboard">
-<div id="mobile-dash-msg" style="display:none;padding:3rem 1.5rem;text-align:center;max-width:320px;margin:4rem auto;border:1px solid var(--rule);border-radius:12px;background:var(--cream)"><div style="font-size:1.5rem;margin-bottom:1rem">💻</div><div style="font-size:0.95rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem">Desktop experience</div><p style="font-size:0.85rem;color:var(--ink2);line-height:1.7">The CareLoop dashboard is designed for desktop. Open on a laptop or desktop to explore the full platform.</p></div>
+<div id="mobile-dash-msg" style="display:none;padding:3rem 1.5rem;text-align:center;max-width:320px;margin:4rem auto 2rem;border:1px solid var(--rule);border-radius:12px;background:var(--cream)"><div style="font-size:1.5rem;margin-bottom:1rem">💻</div><div style="font-size:0.95rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem">Desktop experience</div><p style="font-size:0.85rem;color:var(--ink2);line-height:1.7;margin-bottom:1.5rem">The CareLoop dashboard is designed for desktop. Open on a laptop or desktop to explore the full platform.</p><button class="btn-primary" style="width:100%" onclick="goTo('landing')">Back to Velion Health</button></div>
 <div class="dash-page"><div class="dash-shell">
   <div class="dsidebar">
     <div class="dsidebar-logo" onclick="goTo('landing')"><div class="ds-mark"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><div class="ds-logo-text">CareLoop</div><div class="ds-logo-sub">by Velion Health</div><div class="ds-back">← back to site</div></div></div>
