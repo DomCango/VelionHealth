@@ -1058,6 +1058,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
       <div class="form-group"><label>Full name</label><input id="demo-name" placeholder="Dr. Jane Smith"/></div>
       <div class="form-group"><label>Clinic name</label><input id="demo-clinic" placeholder="Smith Chiropractic"/></div>
       <div class="form-group"><label>Email</label><input id="demo-email" type="email" placeholder="jane@smithchiro.com"/></div>
+      <div class="form-group"><label>Phone number</label><input id="demo-phone" type="tel" placeholder="(555) 123-4567"/></div>
       <div class="form-group"><label>Practice type</label><select id="demo-ptype"><option>Chiropractic</option><option>Physical therapy</option><option>Primary care</option><option>Sports medicine</option><option>Other</option></select></div>
       <div class="form-group"><label>Why are you interested in CareLoop?</label><textarea id="demo-msg" placeholder="Tell us about your current challenges..."></textarea></div>
       <button id="demo-submit-btn" class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="submitDemoRequest()">Submit request</button>
@@ -1072,10 +1073,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
       <div class="contact-row"><div class="contact-label">Location</div><div class="contact-value">College Station, Texas</div></div>
       <div class="contact-row"><div class="contact-label">Response</div><div class="contact-value">Within 24–48 hours</div></div>
       <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--rule)">
-        <div class="form-group"><label>Your name</label><input placeholder="Your name"/></div>
-        <div class="form-group"><label>Your email</label><input placeholder="your@email.com"/></div>
-        <div class="form-group"><label>Message</label><textarea placeholder="What's on your mind?"></textarea></div>
-        <button class="btn-primary" style="width:100%;margin-top:0.25rem" onclick="submitForm('contact-form-content','contact-success')">Send message</button>
+        <div class="form-group"><label>Your name</label><input id="contact-name" placeholder="Your name"/></div>
+        <div class="form-group"><label>Your email</label><input id="contact-email" type="email" placeholder="your@email.com"/></div>
+        <div class="form-group"><label>Phone number</label><input id="contact-phone" type="tel" placeholder="(555) 123-4567"/></div>
+        <div class="form-group"><label>Message</label><textarea id="contact-msg" placeholder="What's on your mind?"></textarea></div>
+        <button id="contact-submit-btn" class="btn-primary" style="width:100%;margin-top:0.25rem" onclick="submitContactForm()">Send message</button>
       </div>
     </div>
     <div id="contact-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Message sent</h4><p>We'll get back to you within 24–48 hours.</p></div>
@@ -2209,6 +2211,41 @@ function handleFiles(input){
   });
 }
  
+async function submitContactForm(){
+  const name=document.getElementById('contact-name').value.trim();
+  const email=document.getElementById('contact-email').value.trim();
+  const phone=document.getElementById('contact-phone').value.trim();
+  const msg=document.getElementById('contact-msg').value.trim();
+  if(!name||!email){showToast('Please fill in your name and email');return;}
+  const btn=document.getElementById('contact-submit-btn');
+  btn.textContent='Sending...';btn.disabled=true;
+  try{
+    const res=await fetch('https://formspree.io/f/meebbwoo',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({name:name,email:email,phone:phone,message:msg,_subject:'New Contact Message from '+name+' (velionhealth.co)'})
+    });
+    if(res.ok){
+      document.getElementById('contact-form-content').style.display='none';
+      document.getElementById('contact-success').style.display='block';
+      setTimeout(()=>{
+        document.getElementById('contact-form-content').style.display='block';
+        document.getElementById('contact-success').style.display='none';
+        document.getElementById('contact-name').value='';
+        document.getElementById('contact-email').value='';
+        document.getElementById('contact-phone').value='';
+        document.getElementById('contact-msg').value='';
+        closeModal('contact-modal');
+      },3000);
+    } else {
+      showToast('Something went wrong. Please email velionhealth@gmail.com directly.');
+    }
+  }catch(err){
+    showToast('Something went wrong. Please email velionhealth@gmail.com directly.');
+  }
+  btn.textContent='Send message';btn.disabled=false;
+}
+ 
 async function submitDemoRequest(){
   const name=document.getElementById('demo-name').value.trim();
   const clinic=document.getElementById('demo-clinic').value.trim();
@@ -2222,7 +2259,7 @@ async function submitDemoRequest(){
     const res=await fetch('https://formspree.io/f/meebbwoo',{
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({name:name,clinic:clinic,email:email,practice_type:ptype,message:msg,_subject:'New CareLoop Demo Request from '+name})
+      body:JSON.stringify({name:name,clinic:clinic,email:email,phone:document.getElementById('demo-phone').value.trim(),practice_type:ptype,message:msg,_subject:'New CareLoop Demo Request from '+name})
     });
     if(res.ok){
       document.getElementById('demo-form-content').style.display='none';
@@ -2233,6 +2270,7 @@ async function submitDemoRequest(){
         document.getElementById('demo-name').value='';
         document.getElementById('demo-clinic').value='';
         document.getElementById('demo-email').value='';
+        document.getElementById('demo-phone').value='';
         document.getElementById('demo-msg').value='';
         closeModal('demo-modal');
       },3000);
