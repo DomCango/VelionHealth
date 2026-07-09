@@ -2220,7 +2220,7 @@ async function submitContactForm(){
   const btn=document.getElementById('contact-submit-btn');
   btn.textContent='Sending...';btn.disabled=true;
   try{
-    const res=await fetch('https://formspree.io/f/meebbwoo',{
+    const res=await fetch('https://formspree.io/f/xjgqqqgr',{
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify({name:name,email:email,phone:phone,message:msg,_subject:'New Contact Message from '+name+' (velionhealth.co)'})
