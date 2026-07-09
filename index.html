@@ -34,7 +34,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 /* HERO */
 .hero{padding:4.5rem 2.5rem 4rem;max-width:1080px;margin:0 auto;display:grid;grid-template-columns:55% 1fr;gap:4rem;align-items:center}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:1.5rem}
-.hero-tag::before{content:'';width:18px;height:1.5px;background:var(--blue)}
 .hero h1{font-family:'Fraunces',serif;font-size:clamp(2.4rem,4.5vw,3.6rem);font-weight:300;line-height:1.1;letter-spacing:-0.03em;color:var(--ink);margin-bottom:1.25rem}
 .hero h1 em{font-style:italic;color:var(--blue)}
 .hero-sub{font-size:1rem;color:var(--ink2);line-height:1.75;font-weight:300;max-width:430px;margin-bottom:2.25rem}
@@ -346,7 +345,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   .l-nav-links li:first-child{display:none}
   .btn-nav{padding:0.3rem 0.7rem;font-size:0.76rem}
  
-  /* Hero — single column, no chat mockup */
+  /* Hero: single column, no chat mockup */
   .hero{grid-template-columns:1fr;gap:1.5rem;padding:2.5rem 1.25rem 2rem;text-align:center;max-width:100%}
   .hero h1{font-size:2.1rem;margin-bottom:1rem}
   .hero-sub{font-size:0.88rem;max-width:100%;margin-bottom:1.5rem}
@@ -354,7 +353,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   .hero > div:last-child{display:none}
   .hero-tag{justify-content:center}
  
-  /* Stats — stack vertically */
+  /* Stats: stack vertically */
   .l-stats{padding:1.75rem 1.25rem}
   .l-stats-inner{grid-template-columns:1fr;gap:0;max-width:100%}
   .l-stat{border-left:none!important;border-bottom:1px solid var(--rule);padding:1.1rem 0}
@@ -386,7 +385,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   /* CTA section */
   .l-cta{padding:2.5rem 1.25rem;text-align:center}
  
-  /* Footer — !important needed to beat inline styles */
+  /* Footer: !important needed to beat inline styles */
   .l-footer{flex-direction:column!important;gap:0.875rem;text-align:center;padding:1.25rem;justify-content:center!important}
   .foot-links{position:static!important;transform:none!important;left:auto!important;justify-content:center;gap:1.25rem}
   .foot-copy{text-align:center;font-size:0.7rem}
@@ -396,7 +395,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   .modal{margin:0.75rem;width:calc(100vw - 1.5rem)!important;max-width:calc(100vw - 1.5rem)!important;max-height:88vh;overflow-y:auto;padding:1.25rem}
   .patient-form-grid{grid-template-columns:1fr}
  
-  /* Dashboard — show message on mobile */
+  /* Dashboard: show message on mobile */
   .dsidebar{display:none!important}
   .dtopbar{display:none!important}
   .dmain{margin-left:0!important;padding:0!important}
@@ -445,7 +444,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="chat-card">
       <div class="chat-header"><div class="chat-avatar">CL</div><div><div class="chat-name">CareLoop</div><div class="chat-status">Active</div></div></div>
       <div class="chat-body">
-        <div class="bubble b-out">Hi Marcus — checking in after your visit yesterday. How's the shoulder feeling?<div class="b-time">CareLoop · 9:00 AM</div></div>
+        <div class="bubble b-out">Hi Marcus, checking in after your visit yesterday. How's the shoulder feeling?<div class="b-time">CareLoop · 9:00 AM</div></div>
         <div class="bubble b-in">Way better than expected. Thanks for reaching out.<div class="b-time">Patient · 9:18 AM</div></div>
         <div class="b-divider">3 days later</div>
         <div class="bubble b-out">Great! Your next appointment is Thursday at 2pm. Reply YES to confirm.<div class="b-time">CareLoop · 9:20 AM</div></div>
@@ -497,7 +496,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div>
       </div>
     </div>
-    <div class="product-footer"><div class="status-badge"><div class="sdot" style="background:var(--amber)"></div><span style="color:var(--amber)">CareLoop — currently in development</span></div><div style="font-size:0.78rem;color:var(--ink3)">Early access inquiries welcome &middot; <a href="mailto:velionhealth@gmail.com">velionhealth@gmail.com</a></div></div>
+    <div class="product-footer"><div class="status-badge"><div class="sdot" style="background:var(--amber)"></div><span style="color:var(--amber)">CareLoop · Currently in development</span></div><div style="font-size:0.78rem;color:var(--ink3)">Early access inquiries welcome &middot; <a href="mailto:velionhealth@gmail.com">velionhealth@gmail.com</a></div></div>
   </div>
 </section>
 <div class="l-why">
@@ -534,7 +533,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="step"><div class="step-n">5</div><div><div class="step-t">Know exactly how your practice is performing</div><p class="step-d">Revenue trends, message open rates, appointment volume, and no-show data are surfaced in a live analytics dashboard, so decisions are driven by data.</p></div></div>
   </div>
 </section>
-<div class="l-cta"><div class="l-cta-inner"><h2>Ready to run a more efficient practice?</h2><p>CareLoop gives your clinic everything it needs: scheduling, patient engagement, intake, analytics, and more — up and running in under an hour.</p><button class="btn-white" onclick="openModal('demo-modal')">Request a demo</button></div></div>
+<div class="l-cta"><div class="l-cta-inner"><h2>Ready to run a more efficient practice?</h2><p>CareLoop gives your clinic everything it needs: scheduling, patient engagement, intake, analytics, and more. Up and running in under an hour.</p><button class="btn-white" onclick="openModal('demo-modal')">Request a demo</button></div></div>
 <div class="l-footer" style="display:flex;align-items:center;justify-content:space-between">
   <div class="foot-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><div class="foot-mark"><svg viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
   <div class="foot-links" style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:1.5rem"><a onclick="document.getElementById('l-story-section').scrollIntoView({behavior:'smooth'})">About</a><a onclick="openModal('contact-modal')">Contact</a><a onclick="openModal('demo-modal')">Request demo</a></div>
@@ -1056,12 +1055,12 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 <div class="modal-overlay" id="demo-modal" onclick="if(event.target===this)closeModal('demo-modal')">
   <div class="modal"><button class="modal-close" onclick="closeModal('demo-modal')">×</button>
     <div id="demo-form-content"><h3>Request a demo</h3><p class="modal-sub">Tell us about your practice and we'll be in touch within 24–48 hours.</p>
-      <div class="form-group"><label>Full name</label><input placeholder="Dr. Jane Smith"/></div>
-      <div class="form-group"><label>Clinic name</label><input placeholder="Smith Chiropractic"/></div>
-      <div class="form-group"><label>Email</label><input placeholder="jane@smithchiro.com"/></div>
-      <div class="form-group"><label>Practice type</label><select><option>Chiropractic</option><option>Physical therapy</option><option>Primary care</option><option>Sports medicine</option><option>Other</option></select></div>
-      <div class="form-group"><label>Why are you interested in CareLoop?</label><textarea placeholder="Tell us about your current challenges..."></textarea></div>
-      <button class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="submitForm('demo-form-content','demo-success')">Submit request</button>
+      <div class="form-group"><label>Full name</label><input id="demo-name" placeholder="Dr. Jane Smith"/></div>
+      <div class="form-group"><label>Clinic name</label><input id="demo-clinic" placeholder="Smith Chiropractic"/></div>
+      <div class="form-group"><label>Email</label><input id="demo-email" type="email" placeholder="jane@smithchiro.com"/></div>
+      <div class="form-group"><label>Practice type</label><select id="demo-ptype"><option>Chiropractic</option><option>Physical therapy</option><option>Primary care</option><option>Sports medicine</option><option>Other</option></select></div>
+      <div class="form-group"><label>Why are you interested in CareLoop?</label><textarea id="demo-msg" placeholder="Tell us about your current challenges..."></textarea></div>
+      <button id="demo-submit-btn" class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="submitDemoRequest()">Submit request</button>
     </div>
     <div id="demo-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Request received</h4><p>We'll reach out within 24–48 hours.</p></div>
   </div>
@@ -1426,8 +1425,8 @@ function bookApptFromModal(){
   calCurrentDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   document.getElementById('book-appt-content').style.display='none';
   document.getElementById('book-appt-success').style.display='block';
-  document.getElementById('book-appt-msg').textContent=patient+' booked for '+fmtTime(startMin)+(conflict?' — ⚠️ double booking, please confirm with patient':'');
-  // Stay on current view — don't switch
+  document.getElementById('book-appt-msg').textContent=patient+' booked for '+fmtTime(startMin)+(conflict?' · Double booking, please confirm with patient':'');
+  // Stay on current view, don't switch
   buildCal();
   setTimeout(()=>{
     document.getElementById('book-appt-content').style.display='block';
@@ -1485,7 +1484,7 @@ const intakeData = {
     pending:true,
     fields:[
       {l:'Form sent',v:'Feb 18, 2026'},{l:'Appointment',v:'Posture Assessment'},
-      {l:'Expired',v:'Feb 22, 2026'},{l:'Status',v:'Overdue — patient has not submitted'},
+      {l:'Expired',v:'Feb 22, 2026'},{l:'Status',v:'Overdue: patient has not submitted'},
       {l:'Sent via',v:'Email'},{l:'Action required',v:'Resend or contact patient directly'}
     ]
   },
@@ -1684,7 +1683,7 @@ function openFollowUpDetail(id){
   viewBtn.onclick=()=>{closeModal('fu-detail-modal');setDashPage('patients');const m=patientList.find(p=>p.name===fu.patient);if(m)showPatient(m.name,m.type,m.date,m.age,m.phone,m.email);};
   btns.appendChild(closeBtn);btns.appendChild(viewBtn);
   body.appendChild(btns);
-  document.getElementById('fu-detail-name').textContent=fu.patient+' — '+fu.type;
+  document.getElementById('fu-detail-name').textContent=fu.patient+' · '+fu.type;
   openModal('fu-detail-modal');
 }
  
@@ -2039,8 +2038,8 @@ function goToday(){calCurrentDate=new Date(2026,2,27);buildCal();}
 // MESSAGE THREADS
 const threadData={
   lena:{name:'Lena R.',type:'Physical therapy',date:'Mar 25, 2026',age:'28',phone:'(512) 555-0102',email:'lena.r@email.com',avatar:'LR',avatarStyle:'',messages:[
-    {dir:'out',text:'Hi Lena — your appointment is Thursday at 10am. Reply YES to confirm.',time:'Mar 25 · 9:00 AM'},
-    {dir:'in',text:'YES — confirmed for Thursday. See you then!',time:'Mar 25 · 9:04 AM'},
+    {dir:'out',text:'Hi Lena, your appointment is Thursday at 10am. Reply YES to confirm.',time:'Mar 25 · 9:00 AM'},
+    {dir:'in',text:'YES, confirmed for Thursday. See you then!',time:'Mar 25 · 9:04 AM'},
     {dir:'out',text:'Perfect. See you Thursday. Please reach out if anything changes.',time:'Mar 25 · 9:05 AM'},
   ]},
   marcus:{name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com',avatar:'MT',avatarStyle:'',messages:[
@@ -2049,16 +2048,16 @@ const threadData={
     {dir:'out',text:'Great to hear. Keep up with the stretches. Your next appointment is Apr 2 at 11am.',time:'Today · 9:40 AM'},
   ]},
   priya:{name:'Priya S.',type:'Posture assessment',date:'Mar 24, 2026',age:'41',phone:'(512) 555-0104',email:'priya.s@email.com',avatar:'PS',avatarStyle:'',messages:[
-    {dir:'out',text:'Hi Priya — reminder about your posture exercises today. Try 3 sets of wall angels.',time:'Yesterday · 9:00 AM'},
+    {dir:'out',text:'Hi Priya, reminder about your posture exercises today. Try 3 sets of wall angels.',time:'Yesterday · 9:00 AM'},
     {dir:'out',text:'Your follow-up appointment is Apr 1 at 3:30pm.',time:'Yesterday · 9:01 AM'},
     {dir:'in',text:'Thanks for the reminder! I have been keeping up with them. See you Apr 1.',time:'Yesterday · 11:22 AM'},
   ]},
   tom:{name:'Tom W.',type:'Physical therapy',date:'Mar 18, 2026',age:'47',phone:'(512) 555-0107',email:'tom.w@email.com',avatar:'TW',avatarStyle:'',messages:[
-    {dir:'out',text:'Hi Tom — your next PT session is Mar 28 at 11:30am. Would you like to confirm?',time:'Mar 25 · 9:00 AM'},
+    {dir:'out',text:'Hi Tom, your next PT session is Mar 28 at 11:30am. Would you like to confirm?',time:'Mar 25 · 9:00 AM'},
     {dir:'in',text:'Just booked my follow-up. Looking forward to it.',time:'Mar 25 · 2:14 PM'},
   ]},
   james:{name:'James K.',type:'Neck pain',date:'Mar 25, 2026',age:'55',phone:'(512) 555-0105',email:'james.k@email.com',avatar:'JK',avatarStyle:'background:var(--red-tint);color:var(--red)',messages:[
-    {dir:'out',text:'Hi James — checking in after your visit on Tuesday. How is the neck feeling?',time:'Mar 25 · 9:00 AM'},
+    {dir:'out',text:'Hi James, checking in after your visit on Tuesday. How is the neck feeling?',time:'Mar 25 · 9:00 AM'},
   ]},
 };
 let currentThread=threadData.lena;
@@ -2159,7 +2158,7 @@ function filterFU(btn,filter){
   });
 }
  
-// Make existing fu rows clickable — navigate to patient profile
+// Make existing fu rows clickable: navigate to patient profile
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('#fu-table-body tr').forEach(row=>{
     if(!row.dataset.fuBound){
@@ -2208,6 +2207,56 @@ function handleFiles(input){
     item.onclick=()=>viewFile(f.name,ftype,fileObjectMap[fileId]);
     list.appendChild(item);
   });
+}
+ 
+async function submitDemoRequest(){
+  const name=document.getElementById('demo-name').value.trim();
+  const clinic=document.getElementById('demo-clinic').value.trim();
+  const email=document.getElementById('demo-email').value.trim();
+  const ptype=document.getElementById('demo-ptype').value;
+  const msg=document.getElementById('demo-msg').value.trim();
+  if(!name||!email){showToast('Please fill in your name and email');return;}
+  const btn=document.getElementById('demo-submit-btn');
+  btn.textContent='Sending...';btn.disabled=true;
+  try{
+    const res=await fetch('https://formspree.io/f/meebbwoo',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({name:name,clinic:clinic,email:email,practice_type:ptype,message:msg,_subject:'New CareLoop Demo Request from '+name})
+    });
+    if(res.ok){
+      document.getElementById('demo-form-content').style.display='none';
+      document.getElementById('demo-success').style.display='block';
+      setTimeout(()=>{
+        document.getElementById('demo-form-content').style.display='block';
+        document.getElementById('demo-success').style.display='none';
+        document.getElementById('demo-name').value='';
+        document.getElementById('demo-clinic').value='';
+        document.getElementById('demo-email').value='';
+        document.getElementById('demo-msg').value='';
+        closeModal('demo-modal');
+      },3000);
+    } else {
+      showToast('Something went wrong. Please email velionhealth@gmail.com directly.');
+    }
+  }catch(err){
+    showToast('Something went wrong. Please email velionhealth@gmail.com directly.');
+  }
+  btn.textContent='Submit request';btn.disabled=false;
+}
+ 
+function showToast(msg){
+  let t=document.getElementById('_toast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='_toast';
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:0.75rem 1.25rem;border-radius:8px;font-size:0.85rem;z-index:500;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity 0.3s;font-family:Figtree,sans-serif;max-width:calc(100vw - 2rem);text-align:center';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.style.opacity='1';
+  clearTimeout(t._hideTimer);
+  t._hideTimer=setTimeout(()=>{t.style.opacity='0'},3000);
 }
  
 function openModal(id){document.getElementById(id).classList.add('open')}
