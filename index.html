@@ -4,6 +4,17 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Velion Health</title>
+<meta name="description" content="Velion Health builds CareLoop, a clinical operations platform for independent medical practices: scheduling, automated patient messaging, digital intake, and analytics in one system."/>
+<link rel="canonical" href="https://www.velionhealth.co/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Velion Health"/>
+<meta property="og:description" content="CareLoop by Velion Health: appointment scheduling, AI-automated patient messaging, digital intake forms, and practice analytics in one platform."/>
+<meta property="og:url" content="https://www.velionhealth.co/"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Velion Health"/>
+<meta name="twitter:description" content="CareLoop by Velion Health: clinical operations software for independent practices."/>
+<meta name="theme-color" content="#1a4fd6"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231a4fd6'/%3E%3Cpath d='M16 9v14M9 16h14' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -342,6 +353,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   /* Nav */
   .l-nav{padding:0 1.1rem;height:52px}
   .l-nav-links{gap:0.9rem}
+  .l-nav-links a{padding:0.6rem 0.25rem;display:inline-block}
+  .foot-links a{padding:0.5rem 0.25rem;display:inline-block}
   .l-nav-links li:first-child{display:none}
   .btn-nav{padding:0.3rem 0.7rem;font-size:0.76rem}
  
@@ -694,7 +707,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
             <div class="pp-section-title">Contact & demographics</div>
             <div class="info-grid">
               <div class="info-item"><div class="info-label">Phone</div><div class="info-value" id="pp-phone">(512) 555-0101</div></div>
-              <div class="info-item"><div class="info-label">Email</div><div class="info-value" id="pp-email"><a href="#">marcus.t@email.com</a></div></div>
+              <div class="info-item"><div class="info-label">Email</div><div class="info-value" id="pp-email"><a href="mailto:marcus.t@email.com">marcus.t@email.com</a></div></div>
               <div class="info-item"><div class="info-label">Age</div><div class="info-value" id="pp-age">32</div></div>
               <div class="info-item"><div class="info-label">Date of birth</div><div class="info-value" id="pp-dob">Mar 14, 1993</div></div>
               <div class="info-item"><div class="info-label">Insurance</div><div class="info-value" id="pp-insurance">Blue Cross PPO</div></div>
@@ -1053,7 +1066,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
  
 <!-- MODALS -->
 <div class="modal-overlay" id="demo-modal" onclick="if(event.target===this)closeModal('demo-modal')">
-  <div class="modal"><button class="modal-close" onclick="closeModal('demo-modal')">×</button>
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('demo-modal')">×</button>
     <div id="demo-form-content"><h3>Request a demo</h3><p class="modal-sub">Tell us about your practice and we'll be in touch within 24–48 hours.</p>
       <div class="form-group"><label>Full name</label><input id="demo-name" placeholder="Dr. Jane Smith"/></div>
       <div class="form-group"><label>Clinic name</label><input id="demo-clinic" placeholder="Smith Chiropractic"/></div>
@@ -1067,7 +1080,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="contact-modal" onclick="if(event.target===this)closeModal('contact-modal')">
-  <div class="modal"><button class="modal-close" onclick="closeModal('contact-modal')">×</button>
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('contact-modal')">×</button>
     <div id="contact-form-content"><h3>Get in touch</h3><p class="modal-sub">For inquiries, partnerships, or early access opportunities.</p>
       <div class="contact-row"><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:velionhealth@gmail.com">velionhealth@gmail.com</a></div></div>
       <div class="contact-row"><div class="contact-label">Location</div><div class="contact-value">College Station, Texas</div></div>
@@ -1084,7 +1097,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="about-modal" onclick="if(event.target===this)closeModal('about-modal')">
-  <div class="modal" style="max-width:520px"><button class="modal-close" onclick="closeModal('about-modal')">×</button>
+  <div class="modal" style="max-width:520px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('about-modal')">×</button>
     <h3>About Velion Health</h3><p class="modal-sub">Building the next generation of independent practice technology.</p>
     <div style="margin-bottom:1.25rem"><div class="about-status"><div class="about-status-dot"></div><p>Velion Health is currently in development. We are actively building and refining our platform and welcome early feedback and partnership inquiries.</p></div></div>
     <div style="margin-bottom:1.5rem"><div class="about-section-title">Focus areas</div><div style="display:flex;flex-wrap:wrap;gap:0.5rem"><span class="about-tag">Workflow optimization</span><span class="about-tag">Data-driven insights</span><span class="about-tag">Patient engagement systems</span><span class="about-tag">No-show reduction</span><span class="about-tag">Automated care reminders</span><span class="about-tag">Digital intake forms</span><span class="about-tag">Revenue tracking</span><span class="about-tag">Appointment scheduling</span><span class="about-tag">Clinical documentation</span></div></div>
@@ -1093,7 +1106,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="fu-detail-modal" onclick="if(event.target===this)closeModal('fu-detail-modal')">
-  <div class="modal" style="max-width:480px"><button class="modal-close" onclick="closeModal('fu-detail-modal')">×</button>
+  <div class="modal" style="max-width:480px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('fu-detail-modal')">×</button>
     <h3 id="fu-detail-name" style="margin-bottom:0.25rem">Follow-up details</h3>
     <p class="modal-sub" style="margin-bottom:1rem">Scheduled follow-up information</p>
     <div id="fu-detail-body"></div>
@@ -1101,7 +1114,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </div>
  
 <div class="modal-overlay" id="new-plan-modal" onclick="if(event.target===this)closeModal('new-plan-modal')">
-  <div class="modal" style="max-width:480px"><button class="modal-close" onclick="closeModal('new-plan-modal')">×</button>
+  <div class="modal" style="max-width:480px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('new-plan-modal')">×</button>
     <div id="new-plan-content">
       <h3>New care plan</h3><p class="modal-sub">Create a structured treatment plan for a patient.</p>
       <div class="form-group"><label>Patient</label>
@@ -1123,7 +1136,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </div>
  
 <div class="modal-overlay" id="new-followup-modal" onclick="if(event.target===this)closeModal('new-followup-modal')">
-  <div class="modal"><button class="modal-close" onclick="closeModal('new-followup-modal')">×</button>
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('new-followup-modal')">×</button>
     <div id="nf-form-content"><h3>New follow-up</h3><p class="modal-sub">Schedule a personalized follow-up message for a patient.</p>
       <div class="form-group"><label>Patient name</label>
         <div class="patient-search-wrap"><input id="nf-search" placeholder="Type to search patients..." autocomplete="off" oninput="filterDropdown('nf-search','nf-dropdown')" onfocus="filterDropdown('nf-search','nf-dropdown')" onblur="setTimeout(()=>document.getElementById('nf-dropdown').classList.remove('open'),200)"/><div class="patient-dropdown" id="nf-dropdown"></div></div>
@@ -1138,7 +1151,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="patient-followup-modal" onclick="if(event.target===this)closeModal('patient-followup-modal')">
-  <div class="modal"><button class="modal-close" onclick="closeModal('patient-followup-modal')">×</button>
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('patient-followup-modal')">×</button>
     <div id="pf-form-content"><h3>Send follow-up</h3><p class="modal-sub">Compose a follow-up message for this patient.</p>
       <div class="patient-context-banner"><div class="pcb-avatar" id="pf-avatar">MT</div><div><div class="pcb-name" id="pf-banner-name">Marcus T.</div><div class="pcb-sub" id="pf-banner-sub">Chiropractic · Last visit Mar 26, 2026</div></div></div>
       <div class="form-group"><label>Patient</label>
@@ -1154,7 +1167,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="add-patient-modal" onclick="if(event.target===this)closeModal('add-patient-modal')">
-  <div class="modal" style="max-width:540px;padding:2.5rem"><button class="modal-close" onclick="closeModal('add-patient-modal')">×</button>
+  <div class="modal" style="max-width:540px;padding:2.5rem"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('add-patient-modal')">×</button>
     <div id="add-patient-content"><h3>Add new patient</h3><p class="modal-sub">Enter the patient's details to add them to CareLoop.</p>
       <div class="patient-form-grid">
         <div class="form-divider">Patient information</div>
@@ -1179,7 +1192,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="edit-profile-modal" onclick="if(event.target===this)closeModal('edit-profile-modal')">
-  <div class="modal" style="max-width:540px;padding:2.5rem"><button class="modal-close" onclick="closeModal('edit-profile-modal')">×</button>
+  <div class="modal" style="max-width:540px;padding:2.5rem"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('edit-profile-modal')">×</button>
     <div id="ep-form-content">
       <h3>Edit profile</h3><p class="modal-sub">Editing profile for <strong id="ep-patient-name">Marcus T.</strong></p>
       <div class="patient-form-grid">
@@ -1204,7 +1217,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="send-intake-modal" onclick="if(event.target===this)closeModal('send-intake-modal')">
-  <div class="modal"><button class="modal-close" onclick="closeModal('send-intake-modal')">×</button>
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('send-intake-modal')">×</button>
     <div id="si-form-content"><h3>Send intake form</h3><p class="modal-sub">Send a digital intake form link to a patient before their visit.</p>
       <div class="form-group"><label>Patient</label>
         <div class="patient-search-wrap"><input id="si-search" placeholder="Search patients..." autocomplete="off" oninput="filterDropdown('si-search','si-dropdown')" onfocus="filterDropdown('si-search','si-dropdown')" onblur="setTimeout(()=>document.getElementById('si-dropdown').classList.remove('open'),200)"/><div class="patient-dropdown" id="si-dropdown"></div></div>
@@ -1219,7 +1232,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 <div class="modal-overlay" id="view-intake-modal" onclick="if(event.target===this)closeModal('view-intake-modal')">
-  <div class="modal" style="max-width:500px"><button class="modal-close" onclick="closeModal('view-intake-modal')">×</button>
+  <div class="modal" style="max-width:500px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('view-intake-modal')">×</button>
     <h3 id="vi-title">Intake Form</h3><p class="modal-sub" id="vi-sub"></p>
     <div style="margin-bottom:1.5rem;border:1px solid var(--rule);border-radius:8px;overflow:hidden;padding:0 1rem" id="vi-body"></div>
     <div style="display:flex;gap:0.75rem">
@@ -1230,7 +1243,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </div>
  
 <div class="modal-overlay" id="book-appt-modal" onclick="if(event.target===this)closeModal('book-appt-modal')">
-  <div class="modal" style="max-width:480px"><button class="modal-close" onclick="closeModal('book-appt-modal')">×</button>
+  <div class="modal" style="max-width:480px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('book-appt-modal')">×</button>
     <div id="book-appt-content">
       <h3 id="book-appt-title">Book appointment</h3><p class="modal-sub" id="book-appt-sub">Add an appointment directly to the calendar.</p>
       <div class="form-group"><label>Patient</label>
@@ -2076,9 +2089,10 @@ function openThread(key){
   document.getElementById('msg-convo-sub').textContent=t.type+' · Last visit '+t.date;
   renderThread(t.messages);
 }
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function renderThread(msgs){
   const body=document.getElementById('msg-convo-body');
-  body.innerHTML=msgs.map(m=>'<div class="thread-group '+m.dir+'"><div class="thread-bubble-'+m.dir+'">'+m.text+'</div><div class="thread-time">'+m.time+'</div></div>').join('');
+  body.innerHTML=msgs.map(m=>'<div class="thread-group '+m.dir+'"><div class="thread-bubble-'+m.dir+'">'+escHtml(m.text)+'</div><div class="thread-time">'+m.time+'</div></div>').join('');
   body.scrollTop=body.scrollHeight;
 }
 function sendReply(){
@@ -2217,6 +2231,7 @@ async function submitContactForm(){
   const phone=document.getElementById('contact-phone').value.trim();
   const msg=document.getElementById('contact-msg').value.trim();
   if(!name||!email){showToast('Please fill in your name and email');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('Please enter a valid email address');return;}
   const btn=document.getElementById('contact-submit-btn');
   btn.textContent='Sending...';btn.disabled=true;
   try{
@@ -2253,6 +2268,7 @@ async function submitDemoRequest(){
   const ptype=document.getElementById('demo-ptype').value;
   const msg=document.getElementById('demo-msg').value.trim();
   if(!name||!email){showToast('Please fill in your name and email');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('Please enter a valid email address');return;}
   const btn=document.getElementById('demo-submit-btn');
   btn.textContent='Sending...';btn.disabled=true;
   try{
@@ -2308,5 +2324,7 @@ function submitForm(formId,successId){
 </body>
 </html>
  
+
+
 
 
