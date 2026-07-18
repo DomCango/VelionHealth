@@ -148,6 +148,10 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 .form-group input,.form-group textarea,.form-group select{border:1px solid var(--rule2);border-radius:6px;padding:0.6rem 0.75rem;font-size:0.85rem;font-family:'Figtree',sans-serif;color:var(--ink);outline:none;transition:border-color 0.15s;background:#fff;width:100%}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--blue)}
 .form-group textarea{resize:vertical;min-height:80px}
+.day-picker{display:flex;gap:0.4rem}
+.day-chip{width:2.1rem;height:2.1rem;border:1px solid var(--rule2);border-radius:6px;background:#fff;color:var(--ink2);font-size:0.72rem;font-weight:500;font-family:'Figtree',sans-serif;cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s}
+.day-chip:hover{border-color:var(--ink2)}
+.day-chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .form-success{text-align:center;padding:1rem 0}
 .form-success-icon{font-size:2rem;margin-bottom:0.75rem}
 .form-success h4{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:300;margin-bottom:0.5rem}
@@ -284,7 +288,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 .fv-pdf-title{font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--rule)}
 .fv-field{display:grid;grid-template-columns:140px 1fr;gap:0;padding:0.5rem 0;border-bottom:1px solid var(--rule)}.fv-field:last-child{border-bottom:none}
 .fv-label{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);padding-top:1px;line-height:1.5}
-.fv-val{font-size:0.82rem;color:var(--ink);line-height:1.5}
+.fv-val{font-size:0.82rem;color:var(--ink);line-height:1.5;white-space:pre-line}
 .fv-img{width:100%;border-radius:6px;background:linear-gradient(135deg,#e8f0fe 0%,#c5d8fa 50%,#e8f0fe 100%);height:180px;display:flex;align-items:center;justify-content:center;font-size:0.82rem;color:var(--ink3);border:1px solid var(--rule)}
 /* PATIENT SEARCH */
 .patient-search-wrap{position:relative}
@@ -313,7 +317,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 .cal-time-label{height:var(--slot-h);display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 6px 0 0;font-size:0.65rem;color:var(--ink3);font-weight:500}
 .avail-slot{display:flex;align-items:center;gap:6px;font-size:0.72rem;padding:0.25rem 0;color:var(--ink2)}
 .avail-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
- 
+
 /* NO-SHOW */
 .nst-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.25rem;border-bottom:1px solid var(--rule)}.nst-row:last-child{border-bottom:none}
 .nst-name{font-size:0.83rem;font-weight:500;color:var(--ink)}.nst-count{font-size:0.78rem;color:var(--ink3)}
@@ -331,8 +335,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 .rev-lbl{font-size:0.62rem;color:var(--ink3);text-align:center;width:100%}
 .msg-item.active-thread{background:var(--blue-tint);border-left:3px solid var(--blue)}
 .thread-group{display:flex;flex-direction:column;gap:2px}.thread-group.out{align-items:flex-end}.thread-group.in{align-items:flex-start}
-.thread-bubble-out{background:var(--blue);color:#fff;align-self:flex-end;border-radius:10px 10px 3px 10px;padding:0.65rem 0.875rem;font-size:0.82rem;line-height:1.5;max-width:75%}
-.thread-bubble-in{background:#fff;color:var(--ink);border:1px solid var(--rule);align-self:flex-start;border-radius:10px 10px 10px 3px;padding:0.65rem 0.875rem;font-size:0.82rem;line-height:1.5;max-width:75%}
+.thread-bubble-out{background:var(--blue);color:#fff;align-self:flex-end;border-radius:10px 10px 3px 10px;padding:0.65rem 0.875rem;font-size:0.82rem;line-height:1.5;max-width:75%;white-space:pre-line}
+.thread-bubble-in{background:#fff;color:var(--ink);border:1px solid var(--rule);align-self:flex-start;border-radius:10px 10px 10px 3px;padding:0.65rem 0.875rem;font-size:0.82rem;line-height:1.5;max-width:75%;white-space:pre-line}
 .thread-time{font-size:0.62rem;color:var(--ink3);opacity:0.6;margin-top:2px}
 /* MSG LIST */
 .msg-list{display:flex;flex-direction:column}
@@ -347,7 +351,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 .toggle{width:36px;height:20px;background:var(--rule2);border-radius:10px;cursor:pointer;position:relative;transition:background 0.2s;border:none;flex-shrink:0}.toggle.on{background:var(--blue)}
 .toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left 0.2s}.toggle.on::after{left:19px}
 .settings-input{border:1px solid var(--rule2);border-radius:6px;padding:0.45rem 0.75rem;font-size:0.83rem;font-family:'Figtree',sans-serif;color:var(--ink);outline:none}.settings-input:focus{border-color:var(--blue)}
- 
+
 /* ── MOBILE RESPONSIVE ──────────────────────────────────────────────────── */
 @media(max-width:768px){
   /* Nav */
@@ -357,7 +361,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   .foot-links a{padding:0.5rem 0.25rem;display:inline-block}
   .l-nav-links li:first-child{display:none}
   .btn-nav{padding:0.3rem 0.7rem;font-size:0.76rem}
- 
+
   /* Hero: single column, no chat mockup */
   .hero{grid-template-columns:1fr;gap:1.5rem;padding:2.5rem 1.25rem 2rem;text-align:center;max-width:100%}
   .hero h1{font-size:2.1rem;margin-bottom:1rem}
@@ -365,28 +369,28 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   .hero-btns{justify-content:center;flex-wrap:wrap;gap:0.6rem}
   .hero > div:last-child{display:none}
   .hero-tag{justify-content:center}
- 
+
   /* Stats: stack vertically */
   .l-stats{padding:1.75rem 1.25rem}
   .l-stats-inner{grid-template-columns:1fr;gap:0;max-width:100%}
   .l-stat{border-left:none!important;border-bottom:1px solid var(--rule);padding:1.1rem 0}
   .l-stat:last-child{border-bottom:none}
   .l-stat-n{font-size:2rem}
- 
+
   /* Product section */
   .l-product{padding:2.5rem 1.25rem;max-width:100%}
   .product-grid{grid-template-columns:1fr;gap:1.5rem}
   .sec-sub{max-width:100%;margin-bottom:2rem}
   .product-footer{flex-direction:column;gap:0.6rem;text-align:center;padding:0.875rem 1.25rem}
   .status-badge{justify-content:center}
- 
+
   /* Why CareLoop */
   .l-why{padding:2.5rem 1.25rem}
   .l-why-inner{max-width:100%}
   .why-grid{grid-template-columns:1fr;background:transparent;border:none;border-radius:0;gap:0.75rem;margin-top:1.5rem}
   .why-card{border:1px solid var(--rule);border-radius:12px;padding:1.5rem}
   .sec-title{font-size:1.75rem}
- 
+
   /* Our Story */
   .l-about{grid-template-columns:1fr;gap:1.75rem;padding:2.5rem 1.25rem;max-width:100%}
   .focus-tags{gap:0.35rem;margin-top:1rem}
@@ -394,20 +398,20 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   .step{padding:1rem 1.1rem}
   .step-t{font-size:0.82rem}
   .step-d{font-size:0.75rem}
- 
+
   /* CTA section */
   .l-cta{padding:2.5rem 1.25rem;text-align:center}
- 
+
   /* Footer: !important needed to beat inline styles */
   .l-footer{flex-direction:column!important;gap:0.875rem;text-align:center;padding:1.25rem;justify-content:center!important}
   .foot-links{position:static!important;transform:none!important;left:auto!important;justify-content:center;gap:1.25rem}
   .foot-copy{text-align:center;font-size:0.7rem}
   .foot-logo{justify-content:center}
- 
+
   /* Modals */
   .modal{margin:0.75rem;width:calc(100vw - 1.5rem)!important;max-width:calc(100vw - 1.5rem)!important;max-height:88vh;overflow-y:auto;padding:1.25rem}
   .patient-form-grid{grid-template-columns:1fr}
- 
+
   /* Dashboard: show message on mobile */
   .dsidebar{display:none!important}
   .dtopbar{display:none!important}
@@ -415,7 +419,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   .dpage{display:none!important}
   #mobile-dash-msg{display:block!important}
 }
- 
+
 @media(max-width:480px){
   .l-nav{padding:0 1rem}
   .l-nav-links{gap:0.6rem}
@@ -431,7 +435,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </style>
 </head>
 <body>
- 
+
 <!-- LANDING PAGE -->
 <div class="page active" id="page-landing">
 <nav class="l-nav">
@@ -553,7 +557,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   <div class="foot-copy">© 2025 Velion Health, Inc. · College Station, TX</div>
 </div>
 </div>
- 
+
 <!-- DASHBOARD -->
 <div class="page" id="page-dashboard">
 <div id="mobile-dash-msg" style="display:none;padding:3rem 1.5rem;text-align:center;max-width:320px;margin:4rem auto 2rem;border:1px solid var(--rule);border-radius:12px;background:var(--cream)"><div style="font-size:1.5rem;margin-bottom:1rem">💻</div><div style="font-size:0.95rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem">Desktop experience</div><p style="font-size:0.85rem;color:var(--ink2);line-height:1.7;margin-bottom:1.5rem">The CareLoop dashboard is designed for desktop. Open on a laptop or desktop to explore the full platform.</p><button class="btn-primary" style="width:100%" onclick="goTo('landing')">Back to Velion Health</button></div>
@@ -582,7 +586,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <button class="btn-sm" onclick="openFollowupModal()">+ New Follow-up</button>
       </div>
     </div>
- 
+
     <!-- OVERVIEW -->
     <div class="dpage active" id="dpage-overview">
       <div class="d-metrics-5">
@@ -658,28 +662,23 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div>
       </div>
     </div>
- 
+
     <!-- PATIENTS -->
     <div class="dpage" id="dpage-patients">
       <div id="patient-list-view">
         <div class="dcard">
           <div class="dcard-header"><div class="dcard-title">All patients</div><button class="btn-sm" onclick="openModal('add-patient-modal')">+ Add patient</button></div>
-          <div class="dtabs">
-            <button class="dtab active" onclick="filterPatients(this,'all')">All patients</button>
-            <button class="dtab" onclick="filterPatients(this,'active')">Active</button>
-            <button class="dtab" onclick="filterPatients(this,'noresponse')">No response</button>
-          </div>
-          <table class="dtable"><thead><tr><th>Name</th><th>Age</th><th>Phone</th><th>Last visit</th><th>Follow-up status</th></tr></thead>
+          <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Name</th><th>Visit type</th><th>Age</th><th>Date of birth</th><th>Phone</th><th>Email</th><th>Last visit</th></tr></thead>
           <tbody id="patient-table-body">
-            <tr data-pstatus="active" onclick="showPatient('Marcus T.','Chiropractic','Mar 26, 2026','32','(512) 555-0101','marcus.t@email.com')"><td><div class="td-name">Marcus T.</div><div class="td-sub">Chiropractic</div></td><td>32</td><td>(512) 555-0101</td><td>Mar 26</td><td><span class="spill sp-g">Sent</span></td></tr>
-            <tr data-pstatus="active" onclick="showPatient('Lena R.','Physical therapy','Mar 25, 2026','28','(512) 555-0102','lena.r@email.com')"><td><div class="td-name">Lena R.</div><div class="td-sub">Physical therapy</div></td><td>28</td><td>(512) 555-0102</td><td>Mar 25</td><td><span class="spill sp-g">Confirmed</span></td></tr>
-            <tr data-pstatus="active" onclick="showPatient('Derek M.','Sports medicine','Mar 20, 2026','25','(512) 555-0103','derek.m@email.com')"><td><div class="td-name">Derek M.</div><div class="td-sub">Sports medicine</div></td><td>25</td><td>(512) 555-0103</td><td>Mar 20</td><td><span class="spill sp-b">Scheduled</span></td></tr>
-            <tr data-pstatus="active" onclick="showPatient('Priya S.','Posture assessment','Mar 24, 2026','41','(512) 555-0104','priya.s@email.com')"><td><div class="td-name">Priya S.</div><div class="td-sub">Posture assessment</div></td><td>41</td><td>(512) 555-0104</td><td>Mar 24</td><td><span class="spill sp-g">Delivered</span></td></tr>
-            <tr data-pstatus="noresponse" onclick="showPatient('James K.','Neck pain','Mar 25, 2026','55','(512) 555-0105','james.k@email.com')"><td><div class="td-name">James K.</div><div class="td-sub">Neck pain</div></td><td>55</td><td>(512) 555-0105</td><td>Mar 25</td><td><span class="spill sp-r">No response</span></td></tr>
-            <tr data-pstatus="active" onclick="showPatient('Sarah J.','Chiropractic','Mar 21, 2026','38','(512) 555-0106','sarah.j@email.com')"><td><div class="td-name">Sarah J.</div><div class="td-sub">Chiropractic</div></td><td>38</td><td>(512) 555-0106</td><td>Mar 21</td><td><span class="spill sp-g">Confirmed</span></td></tr>
-            <tr data-pstatus="active" onclick="showPatient('Tom W.','Physical therapy','Mar 18, 2026','47','(512) 555-0107','tom.w@email.com')"><td><div class="td-name">Tom W.</div><div class="td-sub">Physical therapy</div></td><td>47</td><td>(512) 555-0107</td><td>Mar 18</td><td><span class="spill sp-g">Sent</span></td></tr>
-            <tr data-pstatus="active" onclick="showPatient('Maria L.','Posture assessment','Mar 15, 2026','33','(512) 555-0108','maria.l@email.com')"><td><div class="td-name">Maria L.</div><div class="td-sub">Posture assessment</div></td><td>33</td><td>(512) 555-0108</td><td>Mar 15</td><td><span class="spill sp-b">Scheduled</span></td></tr>
-          </tbody></table>
+            <tr onclick="showPatient('Marcus T.','Chiropractic','Mar 26, 2026','32','(512) 555-0101','marcus.t@email.com')"><td><div class="td-name">Marcus T.</div></td><td>Chiropractic</td><td>32</td><td>Mar 14, 1993</td><td>(512) 555-0101</td><td>marcus.t@email.com</td><td>Mar 26</td></tr>
+            <tr onclick="showPatient('Lena R.','Physical therapy','Mar 25, 2026','28','(512) 555-0102','lena.r@email.com')"><td><div class="td-name">Lena R.</div></td><td>Physical therapy</td><td>28</td><td>Sep 14, 1998</td><td>(512) 555-0102</td><td>lena.r@email.com</td><td>Mar 25</td></tr>
+            <tr onclick="showPatient('Derek M.','Sports medicine','Mar 20, 2026','25','(512) 555-0103','derek.m@email.com')"><td><div class="td-name">Derek M.</div></td><td>Sports medicine</td><td>25</td><td>—</td><td>(512) 555-0103</td><td>derek.m@email.com</td><td>Mar 20</td></tr>
+            <tr onclick="showPatient('Priya S.','Posture assessment','Mar 24, 2026','41','(512) 555-0104','priya.s@email.com')"><td><div class="td-name">Priya S.</div></td><td>Posture assessment</td><td>41</td><td>Mar 7, 1985</td><td>(512) 555-0104</td><td>priya.s@email.com</td><td>Mar 24</td></tr>
+            <tr onclick="showPatient('James K.','Neck pain','Mar 25, 2026','55','(512) 555-0105','james.k@email.com')"><td><div class="td-name">James K.</div></td><td>Neck pain</td><td>55</td><td>Jan 5, 1971</td><td>(512) 555-0105</td><td>james.k@email.com</td><td>Mar 25</td></tr>
+            <tr onclick="showPatient('Sarah J.','Chiropractic','Mar 21, 2026','38','(512) 555-0106','sarah.j@email.com')"><td><div class="td-name">Sarah J.</div></td><td>Chiropractic</td><td>38</td><td>—</td><td>(512) 555-0106</td><td>sarah.j@email.com</td><td>Mar 21</td></tr>
+            <tr onclick="showPatient('Tom W.','Physical therapy','Mar 18, 2026','47','(512) 555-0107','tom.w@email.com')"><td><div class="td-name">Tom W.</div></td><td>Physical therapy</td><td>47</td><td>Aug 19, 1979</td><td>(512) 555-0107</td><td>tom.w@email.com</td><td>Mar 18</td></tr>
+            <tr onclick="showPatient('Maria L.','Posture assessment','Mar 15, 2026','33','(512) 555-0108','maria.l@email.com')"><td><div class="td-name">Maria L.</div></td><td>Posture assessment</td><td>33</td><td>—</td><td>(512) 555-0108</td><td>maria.l@email.com</td><td>Mar 15</td></tr>
+          </tbody></table></div>
         </div>
       </div>
       <div id="patient-detail-view" style="display:none">
@@ -717,10 +716,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
           <div class="pp-section">
             <div class="pp-section-title">Billing</div>
             <div class="billing-grid">
-              <div class="billing-item"><div class="billing-n">$240</div><div class="billing-l">Balance due</div></div>
+              <div class="billing-item"><div class="billing-n" id="pp-balance">$240</div><div class="billing-l">Balance due</div></div>
               <div class="billing-item"><div class="billing-n">$1,820</div><div class="billing-l">Paid this year</div></div>
               <div class="billing-item"><div class="billing-n" id="pp-ins-billing">Blue Cross</div><div class="billing-l">Insurance on file</div></div>
               <div class="billing-item" style="background:var(--green-tint);border-color:rgba(26,102,68,0.15)"><div class="billing-n" style="color:var(--green);font-size:0.85rem;font-weight:500">Active</div><div class="billing-l">Account status</div></div>
+            </div>
+            <button class="btn-sm" style="margin-top:0.75rem" onclick="openPaymentModal()">Collect payment</button>
+            <div id="pp-txn-section" style="margin-top:1rem;display:none">
+              <div class="pp-section-title" style="margin-bottom:0.5rem">Transaction history</div>
+              <div id="pp-txn-list" style="border:1px solid var(--rule);border-radius:8px;overflow:hidden"></div>
             </div>
           </div>
           <div class="pp-section">
@@ -754,7 +758,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div></div>
       </div>
     </div>
- 
+
     <!-- FOLLOW-UPS -->
     <div class="dpage" id="dpage-followups">
       <div class="dcard">
@@ -777,7 +781,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </tbody></table>
       </div>
     </div>
- 
+
     <!-- MESSAGES -->
     <div class="dpage" id="dpage-messages">
       <div style="display:grid;grid-template-columns:300px 1fr;gap:1.25rem;height:100%">
@@ -786,9 +790,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
           <div class="dcard-header"><div class="dcard-title">Conversations</div></div>
           <div class="msg-list" id="msg-thread-list">
             <div class="msg-item active-thread" id="thread-lena" onclick="openThread('lena')"><div class="msg-avatar">LR</div><div class="msg-content"><div class="msg-name">Lena R.</div><div class="msg-preview">YES, confirmed for Thursday. See you then!</div></div><div><div class="msg-time">9:04 AM</div></div></div>
-            <div class="msg-item" id="thread-marcus" onclick="openThread('marcus')"><div class="msg-avatar">MT</div><div class="msg-content"><div class="msg-name">Marcus T.</div><div class="msg-preview">Way better than expected.</div></div><div><div class="msg-time">9:38 AM</div></div></div>
+            <div class="msg-item" id="thread-marcus" onclick="openThread('marcus')"><div class="msg-avatar">MT</div><div class="msg-content"><div class="msg-name">Marcus T.</div><div class="msg-preview">Reminder to complete your rotator cuff stretches today.</div></div><div><div class="msg-time">Mar 29</div></div></div>
             <div class="msg-item" id="thread-priya" onclick="openThread('priya')"><div class="msg-avatar">PS</div><div class="msg-content"><div class="msg-name">Priya S.</div><div class="msg-preview">Thanks for the reminder! I've been keeping up with them.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="msg-time">Yesterday</div><div class="msg-unread"></div></div></div>
-            <div class="msg-item" id="thread-tom" onclick="openThread('tom')"><div class="msg-avatar">TW</div><div class="msg-content"><div class="msg-name">Tom W.</div><div class="msg-preview">Just booked my follow-up.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="msg-time">Mar 25</div><div class="msg-unread"></div></div></div>
+            <div class="msg-item" id="thread-tom" onclick="openThread('tom')"><div class="msg-avatar">TW</div><div class="msg-content"><div class="msg-name">Tom W.</div><div class="msg-preview">Reminder from the clinic regarding your medication schedule.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="msg-time">Mar 30</div><div class="msg-unread"></div></div></div>
             <div class="msg-item" id="thread-james" onclick="openThread('james')"><div class="msg-avatar" style="background:var(--red-tint);color:var(--red)">JK</div><div class="msg-content"><div class="msg-name">James K. <span style="font-size:0.7rem;color:var(--red)">· No response</span></div><div class="msg-preview">CareLoop: Checking in after your visit on Tuesday...</div></div><div><div class="msg-time">Mar 25</div></div></div>
           </div>
         </div>
@@ -809,21 +813,21 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div>
       </div>
     </div>
- 
+
     <!-- APPOINTMENTS -->
     <div class="dpage" id="dpage-appointments">
       <div style="display:grid;grid-template-columns:200px 1fr;gap:1.25rem;align-items:start">
- 
+
         <!-- SIDE PANEL -->
         <div style="display:flex;flex-direction:column;gap:1rem">
- 
+
           <!-- Book -->
           <div class="dcard">
             <div style="padding:1rem">
               <button class="btn-primary" style="width:100%;font-size:0.82rem;padding:0.65rem 1rem" onclick="openAddApptModal()">+ Book appointment</button>
             </div>
           </div>
- 
+
           <!-- Color legend -->
           <div class="dcard">
             <div style="padding:0.875rem 1rem;border-bottom:1px solid var(--rule);font-size:0.72rem;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:0.06em">Appointment types</div>
@@ -837,15 +841,15 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
               <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:#dc2626;flex-shrink:0;display:inline-block"></span>Neck / Back Pain</div>
             </div>
           </div>
- 
+
           <!-- Availability -->
           <div class="dcard">
             <div style="padding:0.875rem 1rem;border-bottom:1px solid var(--rule);font-size:0.72rem;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:0.06em">Today's availability</div>
             <div style="padding:0.75rem;display:flex;flex-direction:column;gap:0.4rem" id="avail-overview"></div>
           </div>
- 
+
         </div>
- 
+
         <!-- MAIN CALENDAR -->
         <div class="dcard" style="overflow:hidden">
           <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between">
@@ -873,9 +877,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
             </div>
           </div>
         </div>
- 
+
       </div>
- 
+
       <!-- Appointment detail tooltip -->
       <div id="appt-tooltip" style="display:none;position:fixed;background:#fff;border:1px solid var(--rule);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.13);padding:1rem 1.25rem;min-width:240px;z-index:150">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;gap:0.5rem">
@@ -897,14 +901,14 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
           <button class="btn-sm" style="flex:1;font-size:0.72rem" onclick="viewApptPatient()">View patient</button>
         </div>
       </div>
- 
+
       <!-- Conflict warning -->
       <div id="conflict-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#fee2e2;border:1px solid rgba(153,27,27,0.3);color:var(--red);padding:0.65rem 1.25rem;border-radius:8px;font-size:0.82rem;font-weight:500;z-index:160">
         ⚠️ Scheduling conflict: this time slot is already booked.
       </div>
     </div>
- 
- 
+
+
     <!-- CARE PLANS -->
     <div class="dpage" id="dpage-plans">
       <div class="d-metrics" style="grid-template-columns:repeat(3,1fr)">
@@ -951,7 +955,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div>
       </div>
     </div>
- 
+
     <!-- INTAKE FORMS -->
     <div class="dpage" id="dpage-intake">
       <div class="d-metrics" style="grid-template-columns:repeat(3,1fr)">
@@ -968,6 +972,12 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div>
       </div>
       <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Your form templates</div><button class="btn-sm" onclick="openTemplateBuilder()">+ New template</button></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem" id="template-list">
+          <div id="template-empty" style="font-size:0.82rem;color:var(--ink3)">No custom templates yet. Create one to control exactly what your patients are asked.</div>
+        </div>
+      </div>
+      <div class="dcard">
         <div class="dcard-header"><div class="dcard-title">Completed this month</div></div>
         <table class="dtable"><thead><tr><th>Patient</th><th>Form type</th><th>Submitted</th><th>Auto-saved</th></tr></thead>
         <tbody>
@@ -979,7 +989,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </tbody></table>
       </div>
     </div>
- 
+
     <!-- ANALYTICS -->
     <div class="dpage" id="dpage-analytics">
       <div class="d-metrics">
@@ -1032,7 +1042,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div>
       </div>
     </div>
- 
+
     <!-- SETTINGS -->
     <div class="dpage" id="dpage-settings">
       <div class="dcard"><div style="padding:1.75rem;max-width:580px">
@@ -1059,11 +1069,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         </div>
       </div></div>
     </div>
- 
+
   </div>
 </div></div>
 </div>
- 
+
 <!-- MODALS -->
 <div class="modal-overlay" id="demo-modal" onclick="if(event.target===this)closeModal('demo-modal')">
   <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('demo-modal')">×</button>
@@ -1112,7 +1122,42 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div id="fu-detail-body"></div>
   </div>
 </div>
- 
+
+<div class="modal-overlay" id="template-modal" onclick="if(event.target===this)closeModal('template-modal')">
+  <div class="modal" style="max-width:520px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('template-modal')">×</button>
+    <h3 id="tb-title">New form template</h3><p class="modal-sub">Build the exact form your patients will receive.</p>
+    <div class="form-group"><label>Template name</label><input id="tb-name" placeholder="e.g. New Patient Intake (Custom)"/></div>
+    <div class="form-group"><label>Fields</label><div id="tb-fields" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+      <button class="btn-sm" style="margin-top:0.5rem" onclick="tbAddField()">+ Add field</button>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
+      <button class="btn-outline" style="flex:1" onclick="previewTemplate()">Preview</button>
+      <button class="btn-primary" style="flex:1" onclick="saveTemplate()">Save template</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="template-preview-modal" onclick="if(event.target===this)closeModal('template-preview-modal')">
+  <div class="modal" style="max-width:460px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('template-preview-modal')">×</button>
+    <h3 id="tp-title">Preview</h3><p class="modal-sub">This is what the patient will see.</p>
+    <div id="tp-body"></div>
+    <button class="btn-outline" style="width:100%;margin-top:1rem" onclick="closeModal('template-preview-modal')">Close preview</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="payment-modal" onclick="if(event.target===this)closeModal('payment-modal')">
+  <div class="modal" style="max-width:440px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('payment-modal')">×</button>
+    <div id="payment-content">
+      <h3>Collect payment</h3><p class="modal-sub" id="payment-sub">Record a payment toward this patient's balance.</p>
+      <div style="background:var(--amber-tint);border:1px solid rgba(146,96,10,0.2);border-radius:8px;padding:0.6rem 0.875rem;margin-bottom:1rem;font-size:0.75rem;color:var(--amber);font-weight:500">Demo mode: Stripe is not connected. No real charge occurs. Card fields activate once Stripe credentials are added.</div>
+      <div class="form-group"><label>Amount (USD)</label><input id="pay-amount" type="number" min="0.5" step="0.01" placeholder="120.00"/></div>
+      <div class="form-group"><label>Payment method</label><select id="pay-method"><option>Card on file (Stripe · demo)</option><option>Card at front desk (demo)</option><option>Cash</option><option>Check</option></select></div>
+      <div class="form-group"><label>Description (optional)</label><input id="pay-desc" placeholder="e.g. Visit copay"/></div>
+      <button id="pay-btn" class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="processPayment()">Collect payment</button>
+    </div>
+    <div id="payment-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Payment recorded</h4><p id="payment-success-msg">The balance has been updated.</p></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="new-plan-modal" onclick="if(event.target===this)closeModal('new-plan-modal')">
   <div class="modal" style="max-width:480px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('new-plan-modal')">×</button>
     <div id="new-plan-content">
@@ -1134,7 +1179,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div id="new-plan-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Care plan created</h4><p>The plan has been added to the patient's profile.</p></div>
   </div>
 </div>
- 
+
 <div class="modal-overlay" id="new-followup-modal" onclick="if(event.target===this)closeModal('new-followup-modal')">
   <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('new-followup-modal')">×</button>
     <div id="nf-form-content"><h3>New follow-up</h3><p class="modal-sub">Schedule a personalized follow-up message for a patient.</p>
@@ -1143,7 +1188,19 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
       </div>
       <div class="form-group"><label>Message type</label><select id="nf-type"><option>Post-visit check-in</option><option>Appointment reminder</option><option>Exercise reminder</option><option>Medication reminder</option><option>Custom message</option></select></div>
       <div class="form-group"><label>Channel</label><select id="nf-channel"><option>SMS</option><option>Email</option><option>Both</option></select></div>
-      <div class="form-group"><label>Send date & time</label><input id="nf-datetime" type="datetime-local"/></div>
+      <div class="form-group"><label>Schedule type</label><select id="nf-schedule-type" onchange="toggleScheduleType()"><option value="onetime">One-time</option><option value="recurring">Recurring</option></select></div>
+      <div class="form-group" id="nf-onetime-wrap"><label>Send date & time</label><input id="nf-datetime" type="datetime-local"/></div>
+      <div id="nf-recurring-wrap" style="display:none">
+        <div class="form-group"><label>Frequency</label><select id="nf-frequency" onchange="toggleCustomDays()"><option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Custom">Custom days</option></select></div>
+        <div class="form-group" id="nf-customdays-wrap" style="display:none"><label>Repeat on</label><div class="day-picker" id="nf-day-picker">
+          <button type="button" class="day-chip" data-day="Sun" onclick="toggleDay(this)">S</button><button type="button" class="day-chip" data-day="Mon" onclick="toggleDay(this)">M</button><button type="button" class="day-chip" data-day="Tue" onclick="toggleDay(this)">T</button><button type="button" class="day-chip" data-day="Wed" onclick="toggleDay(this)">W</button><button type="button" class="day-chip" data-day="Thu" onclick="toggleDay(this)">T</button><button type="button" class="day-chip" data-day="Fri" onclick="toggleDay(this)">F</button><button type="button" class="day-chip" data-day="Sat" onclick="toggleDay(this)">S</button>
+        </div></div>
+        <div class="form-group"><label>Time of day</label><input id="nf-time" type="time" value="08:00"/></div>
+        <div style="display:flex;gap:0.75rem">
+          <div class="form-group" style="flex:1"><label>Start date</label><input id="nf-start-date" type="date"/></div>
+          <div class="form-group" style="flex:1"><label>End date</label><input id="nf-end-date" type="date"/></div>
+        </div>
+      </div>
       <div class="form-group"><label>Notes (optional)</label><textarea id="nf-notes" placeholder="Any specific details..."></textarea></div>
       <button class="btn-primary" style="width:100%;margin-top:0.5rem" onclick="scheduleFollowUp()">Schedule follow-up</button>
     </div>
@@ -1171,22 +1228,22 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div id="add-patient-content"><h3>Add new patient</h3><p class="modal-sub">Enter the patient's details to add them to CareLoop.</p>
       <div class="patient-form-grid">
         <div class="form-divider">Patient information</div>
-        <div class="form-group"><label>First name</label><input placeholder="Jane"/></div>
-        <div class="form-group"><label>Last name</label><input placeholder="Smith"/></div>
-        <div class="form-group"><label>Date of birth</label><input type="date"/></div>
-        <div class="form-group"><label>Age</label><input placeholder="34"/></div>
-        <div class="form-group"><label>Phone number</label><input placeholder="(512) 555-0100"/></div>
-        <div class="form-group"><label>Email address</label><input placeholder="jane@email.com"/></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Insurance provider</label><input placeholder="Blue Cross PPO"/></div>
+        <div class="form-group"><label>First name</label><input id="np-fname" placeholder="Jane"/></div>
+        <div class="form-group"><label>Last name</label><input id="np-lname" placeholder="Smith"/></div>
+        <div class="form-group"><label>Date of birth</label><input id="np-dob" type="date"/></div>
+        <div class="form-group"><label>Age</label><input id="np-age" placeholder="34"/></div>
+        <div class="form-group"><label>Phone number</label><input id="np-phone" placeholder="(512) 555-0100"/></div>
+        <div class="form-group"><label>Email address</label><input id="np-email" placeholder="jane@email.com"/></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Insurance provider</label><input id="np-insurance" placeholder="Blue Cross PPO"/></div>
         <div class="form-divider">Visit details</div>
-        <div class="form-group"><label>Visit type</label><select><option>Chiropractic adjustment</option><option>Physical therapy</option><option>Sports medicine</option><option>Posture assessment</option><option>Back pain</option><option>Neck pain</option><option>Other</option></select></div>
-        <div class="form-group"><label>Visit date</label><input type="date"/></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Provider notes</label><textarea placeholder="Any relevant notes..."></textarea></div>
+        <div class="form-group"><label>Visit type</label><select id="np-vtype"><option>Chiropractic</option><option>Physical therapy</option><option>Sports medicine</option><option>Posture assessment</option><option>Back pain</option><option>Neck pain</option><option>Other</option></select></div>
+        <div class="form-group"><label>Visit date</label><input id="np-vdate" type="date"/></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Provider notes</label><textarea id="np-notes" placeholder="Any relevant notes..."></textarea></div>
         <div class="form-divider">Follow-up preferences</div>
-        <div class="form-group"><label>Preferred contact</label><select><option>SMS</option><option>Email</option><option>Both</option></select></div>
-        <div class="form-group"><label>Follow-up sequence</label><select><option>Standard (24hr check-in + reminders)</option><option>Post-surgery</option><option>Chronic care</option><option>Custom</option></select></div>
+        <div class="form-group"><label>Preferred contact</label><select id="np-pref"><option>SMS</option><option>Email</option><option>Both</option></select></div>
+        <div class="form-group"><label>Follow-up sequence</label><select id="np-seq"><option>Standard (24hr check-in + reminders)</option><option>Post-surgery</option><option>Chronic care</option><option>Custom</option></select></div>
       </div>
-      <button class="btn-primary" style="width:100%;margin-top:0.75rem" onclick="submitForm('add-patient-content','add-patient-success')">Add patient & start follow-up</button>
+      <button class="btn-primary" style="width:100%;margin-top:0.75rem" onclick="addNewPatient()">Add patient & start follow-up</button>
     </div>
     <div id="add-patient-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Patient added</h4><p>Their follow-up sequence will begin within 24 hours.</p></div>
   </div>
@@ -1241,7 +1298,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     </div>
   </div>
 </div>
- 
+
 <div class="modal-overlay" id="book-appt-modal" onclick="if(event.target===this)closeModal('book-appt-modal')">
   <div class="modal" style="max-width:480px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('book-appt-modal')">×</button>
     <div id="book-appt-content">
@@ -1282,8 +1339,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div id="book-appt-success" class="form-success" style="display:none"><div class="form-success-icon">✓</div><h4>Appointment booked</h4><p id="book-appt-msg">Added to the calendar.</p></div>
   </div>
 </div>
- 
- 
+
+
 <script>
 const patients=[
   {name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com'},
@@ -1295,7 +1352,65 @@ const patients=[
   {name:'Tom W.',type:'Physical therapy',date:'Mar 18, 2026',age:'47',phone:'(512) 555-0107',email:'tom.w@email.com'},
   {name:'Maria L.',type:'Posture assessment',date:'Mar 15, 2026',age:'33',phone:'(512) 555-0108',email:'maria.l@email.com'},
 ];
- 
+let patientExtra={
+  'Marcus T.':{dob:'1993-03-14'},
+  'Lena R.':{dob:'1998-09-14'},
+  'Priya S.':{dob:'1985-03-07'},
+  'Tom W.':{dob:'1979-08-19'},
+  'James K.':{dob:'1971-01-05'},
+}; // per-patient: dob, insurance, pref, notes, status
+
+// ── PERSISTENCE (localStorage; works on the live site) ─────────────────────
+const VH_KEY='velion_state_v1';
+function vhState(){return {customPatients:patients.filter(p=>p._custom),patientOverrides:window._vhOverrides||{},patientExtra,customAppts:window._vhAppts||{},customFollowups:window._vhFollowups||[],customPlans:window._vhPlans||[],customThreads:window._vhThreads||{},templates:window._vhTemplates||[],sentForms:window._vhSentForms||[],transactions:window._vhTxns||{},balances:window._vhBalances||{}};}
+function vhSave(){try{localStorage.setItem(VH_KEY,JSON.stringify(vhState()));}catch(e){}}
+function vhLoad(){try{return JSON.parse(localStorage.getItem(VH_KEY))||null;}catch(e){return null;}}
+window._vhOverrides={};window._vhAppts={};window._vhFollowups=[];window._vhPlans=[];window._vhThreads={};window._vhTemplates=[];window._vhSentForms=[];window._vhTxns={};window._vhBalances={};
+
+function renderPatientTable(){
+  const tb=document.getElementById('patient-table-body');
+  if(!tb)return;
+  tb.innerHTML=patients.map(p=>{
+    const ex=patientExtra[p.name]||{};
+    const shortDate=(p.date||'').replace(/, \d{4}$/,'');
+    const dobStr=ex.dob?new Date(ex.dob+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+    return '<tr><td><div class="td-name">'+escHtml(p.name)+'</div></td><td>'+escHtml(p.type)+'</td><td>'+escHtml(p.age||'')+'</td><td>'+dobStr+'</td><td>'+escHtml(p.phone||'')+'</td><td>'+escHtml(p.email||'')+'</td><td>'+escHtml(shortDate)+'</td></tr>';
+  }).join('');
+  Array.from(tb.querySelectorAll('tr')).forEach((row,i)=>{
+    const p=patients[i];
+    row.style.cursor='pointer';
+    row.onclick=()=>showPatient(p.name,p.type,p.date,p.age,p.phone,p.email);
+  });
+}
+function addNewPatient(){
+  const fname=document.getElementById('np-fname').value.trim();
+  const lname=document.getElementById('np-lname').value.trim();
+  if(!fname){showToast('Please enter a first name');return;}
+  const name=(fname+' '+(lname?lname[0].toUpperCase()+'.':'')).trim();
+  if(patients.some(p=>p.name.toLowerCase()===name.toLowerCase())){showToast('A patient named '+name+' already exists');return;}
+  const dob=document.getElementById('np-dob').value;
+  let age=document.getElementById('np-age').value.trim();
+  if(!age&&dob){const d=new Date(dob+'T00:00'),t=new Date();age=String(t.getFullYear()-d.getFullYear()-((t.getMonth()<d.getMonth()||(t.getMonth()===d.getMonth()&&t.getDate()<d.getDate()))?1:0));}
+  const phone=document.getElementById('np-phone').value.trim();
+  const email=document.getElementById('np-email').value.trim();
+  const vdate=document.getElementById('np-vdate').value;
+  const dateStr=vdate?new Date(vdate+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const p={name,type:document.getElementById('np-vtype').value,date:dateStr,age:age||'',phone,email,_custom:true};
+  patients.push(p);
+  patientExtra[name]={dob,insurance:document.getElementById('np-insurance').value.trim(),pref:document.getElementById('np-pref').value,notes:document.getElementById('np-notes').value.trim(),status:'Scheduled'};
+  renderPatientTable();vhSave();
+  document.getElementById('add-patient-content').style.display='none';
+  document.getElementById('add-patient-success').style.display='block';
+  setTimeout(()=>{
+    document.getElementById('add-patient-content').style.display='block';
+    document.getElementById('add-patient-success').style.display='none';
+    ['np-fname','np-lname','np-dob','np-age','np-phone','np-email','np-insurance','np-vdate','np-notes'].forEach(id=>document.getElementById(id).value='');
+    closeModal('add-patient-modal');
+    setDashPage('patients');
+    showToast(name+' added to Patients');
+  },1800);
+}
+
 function goTo(p){document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');window.scrollTo(0,0)}
 const pageTitles={overview:'Overview',patients:'Patients',followups:'Follow-ups',messages:'Messages',appointments:'Appointments',plans:'Care Plans',intake:'Intake Forms',analytics:'Analytics',settings:'Settings'};
 function setDashPage(p){
@@ -1307,10 +1422,20 @@ function setDashPage(p){
   document.getElementById('dash-page-title').textContent=pageTitles[p]||p;
   if(p==='appointments'){requestAnimationFrame(()=>buildCal());}
 }
- 
+
 let currentPatient={name:'',type:'',date:'',age:'',phone:'',email:''};
 function showPatient(name,type,date,age,phone,email){
   currentPatient={name,type,date,age,phone,email};
+  const ex=patientExtra[name];
+  if(ex&&ex.dob)currentPatient.dob=ex.dob;
+  setTimeout(()=>{
+    renderBalance();renderTransactions();
+    if(ex){
+      if(ex.dob){const d=new Date(ex.dob+'T00:00');const el=document.getElementById('pp-dob');if(el)el.textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+      if(ex.insurance){const i1=document.getElementById('pp-insurance'),i2=document.getElementById('pp-ins-billing');if(i1)i1.textContent=ex.insurance;if(i2)i2.textContent=ex.insurance.split(' ')[0];}
+      if(ex.pref){const p1=document.getElementById('pp-pref');if(p1)p1.textContent=ex.pref;}
+    }
+  },50);
   document.getElementById('patient-list-view').style.display='none';
   document.getElementById('patient-detail-view').style.display='block';
   document.getElementById('pp-initials').textContent=name.split(' ').map(w=>w[0]).join('');
@@ -1342,7 +1467,7 @@ function showPatient(name,type,date,age,phone,email){
       +'</div>';
   } else if(planSection){planSection.style.display='none';}
 }
- 
+
 function openEditProfile(){
   const {name,phone,email,dob}=currentPatient;
   const parts=name.split(' ');
@@ -1354,10 +1479,10 @@ function openEditProfile(){
   document.getElementById('ep-dob').value=dob||'';
   openModal('edit-profile-modal');
 }
- 
+
 function updateAgeFromDOB(dobVal){
   if(!dobVal)return;
-  const dob=new Date(dobVal);
+  const dob=new Date(dobVal+'T00:00');
   const today=new Date();
   let age=today.getFullYear()-dob.getFullYear();
   const m=today.getMonth()-dob.getMonth();
@@ -1380,19 +1505,50 @@ function saveProfile(){
   if(email)document.getElementById('pp-email').innerHTML='<a href="mailto:'+email+'">'+email+'</a>';
   if(age)document.getElementById('pp-age').textContent=age;
   if(dob){
-    const d=new Date(dob);
+    const d=new Date(dob+'T00:00');
     document.getElementById('pp-dob').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   }
   if(insurance){document.getElementById('pp-insurance').textContent=insurance;document.getElementById('pp-ins-billing').textContent=insurance.split(' ')[0];}
   if(pref)document.getElementById('pp-pref').textContent=pref;
-  currentPatient.name=fullName;currentPatient.phone=phone||currentPatient.phone;currentPatient.email=email||currentPatient.email;currentPatient.age=age||currentPatient.age;
+  const rec=patients.find(p=>p.name===currentPatient.name);
+  if(rec){rec.name=fullName;if(phone)rec.phone=phone;if(email)rec.email=email;if(age)rec.age=age;}
+  if(currentPatient.name!==fullName&&patientExtra[currentPatient.name]){patientExtra[fullName]=patientExtra[currentPatient.name];delete patientExtra[currentPatient.name];}
+  patientExtra[fullName]=patientExtra[fullName]||{};
+  if(dob)patientExtra[fullName].dob=dob;
+  if(insurance)patientExtra[fullName].insurance=insurance;
+  if(pref)patientExtra[fullName].pref=pref;
+  window._vhOverrides[fullName]={name:fullName,phone:phone||currentPatient.phone,email:email||currentPatient.email,age:age||currentPatient.age,prev:currentPatient.name};
+  currentPatient.name=fullName;currentPatient.phone=phone||currentPatient.phone;currentPatient.email=email||currentPatient.email;currentPatient.age=age||currentPatient.age;currentPatient.dob=dob||currentPatient.dob;
+  renderPatientTable();vhSave();
   document.getElementById('ep-form-content').style.display='none';
   document.getElementById('ep-success').style.display='block';
   document.getElementById('ep-success-msg').textContent='Changes to '+fullName+"'s profile have been saved.";
   setTimeout(()=>{document.getElementById('ep-form-content').style.display='block';document.getElementById('ep-success').style.display='none';closeModal('edit-profile-modal');},2000);
 }
- 
-function openFollowupModal(){document.getElementById('nf-search').value='';document.getElementById('nf-dropdown').classList.remove('open');openModal('new-followup-modal')}
+
+function openFollowupModal(){
+  document.getElementById('nf-search').value='';
+  document.getElementById('nf-dropdown').classList.remove('open');
+  document.getElementById('nf-schedule-type').value='onetime';
+  document.getElementById('nf-frequency').value='Daily';
+  document.getElementById('nf-datetime').value='';
+  document.getElementById('nf-start-date').value='';
+  document.getElementById('nf-end-date').value='';
+  document.querySelectorAll('#nf-day-picker .day-chip').forEach(b=>b.classList.remove('active'));
+  toggleScheduleType();
+  toggleCustomDays();
+  openModal('new-followup-modal');
+}
+function toggleScheduleType(){
+  const v=document.getElementById('nf-schedule-type').value;
+  document.getElementById('nf-onetime-wrap').style.display=v==='recurring'?'none':'block';
+  document.getElementById('nf-recurring-wrap').style.display=v==='recurring'?'block':'none';
+}
+function toggleCustomDays(){
+  const v=document.getElementById('nf-frequency').value;
+  document.getElementById('nf-customdays-wrap').style.display=v==='Custom'?'block':'none';
+}
+function toggleDay(btn){btn.classList.toggle('active');}
 function openPatientFollowup(){
   const {name,type,date}=currentPatient;
   document.getElementById('pf-avatar').textContent=name.split(' ').map(w=>w[0]).join('');
@@ -1402,7 +1558,7 @@ function openPatientFollowup(){
   document.getElementById('pf-success-msg').textContent='The follow-up for '+name+' has been queued.';
   openModal('patient-followup-modal');
 }
- 
+
 function filterDropdown(inputId,dropdownId){
   const q=document.getElementById(inputId).value.toLowerCase().trim();
   const filtered=q===''?patients:patients.filter(p=>p.name.toLowerCase().includes(q)||p.type.toLowerCase().includes(q));
@@ -1420,7 +1576,7 @@ function selectPatient(inputId,dropdownId,name,type,date,age,phone,email){
     document.getElementById('pf-success-msg').textContent='The follow-up for '+name+' has been queued.';
   }
 }
- 
+
 function bookApptFromModal(){
   const patient=document.getElementById('book-pt-search').value.trim();
   if(!patient){showToast('Select a patient first');return;}
@@ -1434,7 +1590,9 @@ function bookApptFromModal(){
   const key=dateVal;
   if(!calData[key])calData[key]=[];
   const conflict=calData[key].some(a=>startMin<a.startMin+a.durMins&&startMin+dur>a.startMin);
-  calData[key].push({id:nextId++,patient,type,startMin,durMins:dur});
+  const newAppt={id:nextId++,patient,type,startMin,durMins:dur};
+  calData[key].push(newAppt);
+  window._vhAppts[key]=window._vhAppts[key]||[];window._vhAppts[key].push(newAppt);vhSave();
   // Navigate to the booked date, stay in current view
   const parts=dateVal.split('-');
   calCurrentDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
@@ -1449,7 +1607,7 @@ function bookApptFromModal(){
     closeModal('book-appt-modal');
   },2000);
 }
- 
+
 const patientList=[
   {name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com'},
   {name:'Lena R.',type:'Physical therapy',date:'Mar 25, 2026',age:'28',phone:'(512) 555-0102',email:'lena.r@email.com'},
@@ -1560,10 +1718,10 @@ const intakeData = {
     ]
   }
 };
- 
+
 let intakeSentCount = 14;
 let intakePendingCount = 3;
- 
+
 function openIntake(id){
   const d=intakeData[id];
   if(!d)return;
@@ -1575,7 +1733,7 @@ function openIntake(id){
   document.getElementById('vi-body').innerHTML=pendingBanner+d.fields.map(f=>'<div class="fv-field"><div class="fv-label">'+f.l+'</div><div class="fv-val">'+f.v+'</div></div>').join('');
   openModal('view-intake-modal');
 }
- 
+
 function sendIntakeForm(){
   const patient=document.getElementById('si-search').value.trim();
   const formType=document.querySelector('#si-form-content select').value;
@@ -1587,8 +1745,16 @@ function sendIntakeForm(){
   const expiryDate=apptDate?new Date(new Date(apptDate+'T00:00').getTime()+7*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
   const card=document.createElement('div');
   card.className='intake-card';
-  card.innerHTML='<div><div class="intake-title">'+formType.replace(/\w/g,c=>c.toUpperCase())+'</div>'
-    +'<div class="intake-sub">'+patient+' · Sent '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})+(expiryDate?' · Expires '+expiryDate:'')+'</div></div>'
+  const formId='custom-'+Date.now();
+  const sentFull=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const sendVia=(document.querySelectorAll('#si-form-content select')[1]||{}).value||'SMS';
+  const niceType=formType.replace(/\b\w/g,c=>c.toUpperCase());
+  intakeData[formId]={title:niceType,patient:patient,submitted:'Pending',pending:true,fields:[{l:'Form sent',v:sentFull},{l:'Form type',v:niceType},{l:'Appointment',v:dateStr||'Not set'},{l:'Expires',v:expiryDate||'7 days after send'},{l:'Status',v:'Awaiting patient submission'},{l:'Sent via',v:sendVia}]};
+  card.style.cursor='pointer';
+  card.onclick=()=>openIntake(formId);
+  window._vhSentForms.push({id:formId,data:intakeData[formId]});vhSave();
+  card.innerHTML='<div><div class="intake-title">'+niceType+'</div>'
+    +'<div class="intake-sub">'+escHtml(patient)+' · Sent '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})+(expiryDate?' · Expires '+expiryDate:'')+'</div></div>'
     +'<span style="font-size:0.7rem;font-weight:500;color:var(--amber)">Pending</span>';
   list.appendChild(card);
   // Update stats
@@ -1606,7 +1772,7 @@ function sendIntakeForm(){
     closeModal('send-intake-modal');
   },2200);
 }
- 
+
 function saveClinicSettings(btn){
   const input=document.getElementById('settings-clinic-name');
   const name=(input?input.value.trim():'')||'Your Practice';
@@ -1625,35 +1791,120 @@ function saveClinicSettings(btn){
 }
 // ── FOLLOW-UP SYSTEM ────────────────────────────────────────────────────────
 const followUpData=[];
- 
+
+// ── AI FOLLOW-UP MESSAGE ASSISTANT (template-composed from form data only; no invented medical info) ──
+function genFollowUpMessage(patientFirst,type,notes,whenStr){
+  const greeting='Hi '+patientFirst+',';
+  const bodies={
+    'Post-visit check-in':'This is CareLoop checking in after your recent visit. How are you feeling?',
+    'Appointment reminder':'This is a reminder about your upcoming appointment'+(whenStr?' on '+whenStr:'')+'.',
+    'Exercise reminder':'A friendly reminder to complete your prescribed exercises today. Consistency makes a real difference in your recovery.',
+    'Medication reminder':'This is your reminder from the clinic regarding your medication schedule.',
+    'Custom message':''
+  };
+  let body=bodies[type]!==undefined?bodies[type]:bodies['Post-visit check-in'];
+  if(notes)body+=(body?' ':'')+'Note from your care team: '+notes;
+  const closings={
+    'Appointment reminder':'Reply YES to confirm or call us to reschedule.'
+  };
+  const closing=closings[type]||'Reply to this message and our team will follow up.';
+  const parts=[greeting];
+  if(body)parts.push(body);
+  parts.push(closing);
+  return parts.join('\n\n');
+}
+function threadKeyFor(name){return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function ensureThread(patientName){
+  const known={'Lena R.':'lena','Marcus T.':'marcus','Priya S.':'priya','Tom W.':'tom','James K.':'james'};
+  let key=known[patientName]||threadKeyFor(patientName);
+  if(!threadData[key]){
+    const p=patients.find(x=>x.name===patientName)||{};
+    const initials=patientName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    threadData[key]={name:patientName,avatar:initials,type:p.type||'Patient',date:p.date||'',messages:[]};
+    const list=document.getElementById('msg-thread-list');
+    if(list&&!document.getElementById('thread-'+key)){
+      const item=document.createElement('div');
+      item.className='msg-item';item.id='thread-'+key;
+      item.onclick=()=>openThread(key);
+      item.innerHTML='<div class="msg-avatar">'+escHtml(initials)+'</div><div class="msg-content"><div class="msg-name">'+escHtml(patientName)+'</div><div class="msg-preview">New conversation</div></div><div><div class="msg-time">Now</div></div>';
+      list.insertBefore(item,list.firstChild);
+    }
+  }
+  return key;
+}
+function deliverFollowUpMessage(fu){
+  // Validation per spec: patient exists, phone on file, valid time; simulated delivery clearly labeled
+  const p=patients.find(x=>x.name===fu.patient);
+  if(!p){fu.msgStatus='Draft · patient not found';return;}
+  if(!p.phone){fu.msgStatus='Draft · no phone on file';showToast('Message drafted. Add a phone number to '+fu.patient+"'s profile to enable delivery.");return;}
+  const key=ensureThread(fu.patient);
+  const first=fu.patient.split(' ')[0];
+  const whenStr=fu.sendStr&&fu.sendStr!=='Scheduled'?fu.sendStr:'';
+  const text=genFollowUpMessage(first,fu.type,fu.notes,whenStr);
+  const now=new Date();
+  const isFuture=fu.timestamp&&new Date(fu.timestamp)>now;
+  const statusLabel=isFuture?'Scheduled (simulated delivery)':'Sent (simulated delivery)';
+  fu.msgStatus=statusLabel;fu.msgText=text;
+  threadData[key].messages.push({dir:'out',text:text,time:(isFuture?'Scheduled '+fu.sendStr:'Today · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}))+' · '+statusLabel+' to '+p.phone});
+  const item=document.getElementById('thread-'+key);
+  if(item){const prev=item.querySelector('.msg-preview');if(prev)prev.textContent=text.slice(0,42)+'…';}
+  window._vhThreads[key]=threadData[key].messages.filter(m=>m.time&&String(m.time).includes('simulated'));
+}
+
 function scheduleFollowUp(){
   const patient=document.getElementById('nf-search').value.trim();
   if(!patient){showToast('Select a patient first');return;}
+  if(!patients.some(x=>x.name===patient)){showToast('Patient "'+patient+'" not found. Select a patient from the list.');return;}
   const type=document.getElementById('nf-type').value;
   const channel=document.getElementById('nf-channel').value;
-  const dt=document.getElementById('nf-datetime').value;
   const notes=document.getElementById('nf-notes').value.trim();
+  const scheduleType=document.getElementById('nf-schedule-type').value;
   const now=new Date();
-  let sendStr='Scheduled';
-  let statusKey='scheduled';
-  let statusLabel='Scheduled';
-  let statusClass='sp-b';
-  if(dt){
-    const d=new Date(dt);
-    const isToday=d.toDateString()===now.toDateString();
-    const isPast=d<now;
-    sendStr=isToday?'Today '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-    if(isPast){statusKey='sent';statusLabel='Sent';statusClass='sp-g';}
+  let fu;
+  if(scheduleType==='recurring'){
+    const frequency=document.getElementById('nf-frequency').value;
+    const time=document.getElementById('nf-time').value;
+    const startDate=document.getElementById('nf-start-date').value;
+    const endDate=document.getElementById('nf-end-date').value;
+    if(!time||!startDate||!endDate){showToast('Please set a time, start date, and end date');return;}
+    if(new Date(endDate)<new Date(startDate)){showToast('End date must be on or after the start date');return;}
+    const days=frequency==='Custom'?Array.from(document.querySelectorAll('#nf-day-picker .day-chip.active')).map(b=>b.dataset.day):[];
+    if(frequency==='Custom'&&days.length===0){showToast('Select at least one day to repeat on');return;}
+    if(followUpData.some(f=>f.recurring&&f.patient===patient&&f.type===type&&f.startDate===startDate&&f.time===time)){showToast('This recurring follow-up already exists for '+patient);return;}
+    const [hh,mm]=time.split(':').map(Number);
+    const timeLabel=fmtTime(hh*60+mm);
+    const startShort=new Date(startDate+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const endShort=new Date(endDate+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const freqLabel=frequency==='Custom'?days.join(', '):frequency;
+    const sendStr=freqLabel+' · '+timeLabel+' ('+startShort+'–'+endShort+')';
+    fu={id:Date.now(),patient,type,channel,notes,recurring:true,frequency,days,time,timeLabel,startDate,endDate,sendStr,statusKey:'scheduled',statusLabel:'Recurring',statusClass:'sp-b',timestamp:startDate+'T'+time};
+  } else {
+    const dt=document.getElementById('nf-datetime').value;
+    let sendStr='Scheduled';
+    let statusKey='scheduled';
+    let statusLabel='Scheduled';
+    let statusClass='sp-b';
+    if(dt){
+      const d=new Date(dt);
+      const isToday=d.toDateString()===now.toDateString();
+      const isPast=d<now;
+      sendStr=isToday?'Today '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      if(isPast){statusKey='sent';statusLabel='Sent';statusClass='sp-g';}
+    }
+    if(followUpData.some(f=>!f.recurring&&f.patient===patient&&f.type===type&&f.timestamp===(dt||''))){showToast('This follow-up already exists for '+patient);return;}
+    if(dt&&isNaN(new Date(dt).getTime())){showToast('Please enter a valid date and time');return;}
+    fu={id:Date.now(),patient,type,channel,sendStr,notes,statusKey,statusLabel,statusClass,timestamp:dt||now.toISOString()};
   }
-  const fu={id:Date.now(),patient,type,channel,sendStr,notes,statusKey,statusLabel,statusClass,timestamp:dt||now.toISOString()};
   followUpData.unshift(fu);
+  deliverFollowUpMessage(fu);
+  window._vhFollowups.push(fu);vhSave();
   // Add to follow-ups table
   const tbody=document.getElementById('fu-table-body');
   const row=document.createElement('tr');
-  row.dataset.fustatus=statusKey;
+  row.dataset.fustatus=fu.statusKey;
   row.style.cursor='pointer';
   row.onclick=()=>openFollowUpDetail(fu.id);
-  row.innerHTML='<td><div class="td-name">'+patient+'</div></td><td>'+type+'</td><td>'+sendStr+'</td><td>'+channel+'</td><td><span class="spill '+statusClass+'">'+statusLabel+'</span></td>';
+  row.innerHTML='<td><div class="td-name">'+patient+'</div></td><td>'+type+'</td><td>'+fu.sendStr+'</td><td>'+channel+'</td><td><span class="spill '+fu.statusClass+'">'+fu.statusLabel+'</span></td>';
   tbody.insertBefore(row,tbody.firstChild);
   // Update tab counts
   const allCount=tbody.querySelectorAll('tr').length;
@@ -1666,12 +1917,10 @@ function scheduleFollowUp(){
   showToast('Follow-up scheduled for '+patient);
   setTimeout(()=>setDashPage('followups'),800);
 }
- 
+
 function openFollowUpDetail(id){
   const fu=followUpData.find(f=>f.id===id);
   if(!fu)return;
-  const d=new Date(fu.timestamp);
-  const dateStr=isNaN(d.getTime())?fu.sendStr:d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   const body=document.getElementById('fu-detail-body');
   body.innerHTML='';
   // Fields card
@@ -1681,10 +1930,22 @@ function openFollowUpDetail(id){
     {l:'Patient',v:fu.patient},
     {l:'Type',v:fu.type},
     {l:'Channel',v:fu.channel},
-    {l:'Scheduled',v:dateStr},
-    {l:'Status',v:'<span class="spill '+fu.statusClass+'">'+fu.statusLabel+'</span>'},
   ];
-  if(fu.notes)rows.push({l:'Notes',v:fu.notes});
+  if(fu.recurring){
+    rows.push({l:'Schedule type',v:'Recurring'});
+    rows.push({l:'Frequency',v:fu.frequency==='Custom'?'Custom days · '+fu.days.join(', '):fu.frequency});
+    rows.push({l:'Time of day',v:fu.timeLabel||fu.time});
+    rows.push({l:'Start date',v:new Date(fu.startDate+'T00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})});
+    rows.push({l:'End date',v:new Date(fu.endDate+'T00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})});
+  } else {
+    const d=new Date(fu.timestamp);
+    const dateStr=isNaN(d.getTime())?fu.sendStr:d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    rows.push({l:'Scheduled',v:dateStr});
+  }
+  rows.push({l:'Status',v:'<span class="spill '+fu.statusClass+'">'+fu.statusLabel+'</span>'});
+  if(fu.notes)rows.push({l:'Notes',v:escHtml(fu.notes)});
+  if(fu.msgStatus)rows.push({l:'Patient message',v:escHtml(fu.msgStatus)});
+  if(fu.msgText)rows.push({l:'Message text',v:escHtml(fu.msgText)});
   card.innerHTML=rows.map(r=>'<div class="fv-field"><div class="fv-label">'+r.l+'</div><div class="fv-val">'+r.v+'</div></div>').join('');
   body.appendChild(card);
   // Buttons
@@ -1701,10 +1962,10 @@ function openFollowUpDetail(id){
   document.getElementById('fu-detail-name').textContent=fu.patient+' · '+fu.type;
   openModal('fu-detail-modal');
 }
- 
- 
- 
- 
+
+
+
+
 // ── FULL TIME-SLOT CALENDAR ──────────────────────────────────────────────────
 // ── WELLNESS PLANS ─────────────────────────────────────────────────────────
 const wellnessPlans = {
@@ -1713,18 +1974,18 @@ const wellnessPlans = {
   'wp-tom':{patient:'Tom W.',planName:'20-Visit Post-Surgical Rehab Plan',type:'pt',totalVisits:20,completedVisits:12,startDate:'Dec 1, 2025',endDate:'May 31, 2026',goal:'Full knee function restoration following ACL surgery.',frequency:'2\u20133x per week',nextReview:'Apr 20, 2026',notes:'Week 16 of rehab. Strength at ~80% of pre-injury baseline.'},
 };
 const patientPlanMap = {'Marcus T.':'wp-marcus','Sarah J.':'wp-sarah','Tom W.':'wp-tom'};
- 
+
 const SLOT_H = 20;
 const START_HOUR = 7, END_HOUR = 19;
 const typeColors = {chiro:'#1a4fd6',pt:'#1a6644',sports:'#0ea5e9',posture:'#92600a',newpt:'#7c3aed',followup:'#059669',neck:'#dc2626'};
 const typeLabels = {chiro:'Chiropractic',pt:'Physical Therapy',sports:'Sports Medicine',posture:'Posture Assessment',newpt:'New Patient',followup:'Follow-up',neck:'Neck / Back Pain'};
- 
+
 let calCurrentDate = new Date(2026,2,27);
 let calIntervalMins = 15;
 let calSelectedType = 'chiro';
 let calSelectedPatient = null;
 let calView = 'day';
- 
+
 const calData = {
   '2026-03-22':[{id:101,patient:'James K.',type:'neck',startMin:9*60,durMins:45},{id:102,patient:'Maria L.',type:'posture',startMin:11*60,durMins:60}],
   '2026-03-23':[{id:103,patient:'Marcus T.',type:'chiro',startMin:8*60,durMins:30},{id:104,patient:'Lena R.',type:'pt',startMin:9*60+30,durMins:45},{id:105,patient:'Tom W.',type:'pt',startMin:11*60,durMins:60},{id:106,patient:'Priya S.',type:'posture',startMin:14*60,durMins:30}],
@@ -1742,24 +2003,24 @@ const calData = {
 let nextId = 300;
 let draggingAppt = null, dragOffsetY = 0, draggingApptKey = null;
 let _calBuilt = false;
- 
+
 function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function minToY(min){return Math.round((min-START_HOUR*60)/15)*SLOT_H}
 function snapMin(min){return Math.round(min/calIntervalMins)*calIntervalMins}
 function fmtTime(min){const h=Math.floor(min/60),m=min%60,ampm=h>=12?'PM':'AM',hh=h>12?h-12:(h===0?12:h);return hh+':'+(m===0?'00':String(m).padStart(2,'0'))+' '+ampm}
- 
+
 function setCalView(v){
   calView=v;
   document.getElementById('cal-view-day').classList.toggle('active',v==='day');
   document.getElementById('cal-view-week').classList.toggle('active',v==='week');
   buildCal();
 }
- 
+
 function buildCal(){
   if(calView==='week'){buildWeekCal();return;}
   buildDayCal();
 }
- 
+
 function buildDayCal(){
   const key=dateKey(calCurrentDate);
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -1831,7 +2092,7 @@ function buildDayCal(){
   (calData[key]||[]).forEach(appt=>renderApptBlock(appt,slotsEl,key));
   updateAvailPanel(key);
 }
- 
+
 function buildWeekCal(){
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const dow=calCurrentDate.getDay();
@@ -1909,7 +2170,7 @@ function buildWeekCal(){
   slotsEl.appendChild(grid);
   updateAvailPanel(dateKey(calCurrentDate));
 }
- 
+
 function renderApptBlock(appt,slotsEl,key){
   const top=minToY(appt.startMin); // integer
   const height=Math.max(SLOT_H,Math.round(appt.durMins/15)*SLOT_H);
@@ -1934,7 +2195,7 @@ function renderApptBlock(appt,slotsEl,key){
   block.onclick=(e)=>{e.stopPropagation();showApptTooltip(appt,e);};
   slotsEl.appendChild(block);
 }
- 
+
 function addApptAtSlot(startMin){
   const patient=calSelectedPatient||document.getElementById('cal-pt-search').value||'';
   if(!patient){showToast('Select a patient first');return;}
@@ -1949,7 +2210,7 @@ function addApptAtSlot(startMin){
     showToast('Appointment added: '+fmtTime(startMin));
   }
 }
- 
+
 function openAddApptModal(){
   document.getElementById('book-appt-title').textContent='Book appointment';
   document.getElementById('book-appt-sub').textContent='Add an appointment directly to the calendar.';
@@ -1960,7 +2221,7 @@ function openAddApptModal(){
   document.getElementById('book-duration').value='30';
   document.getElementById('book-appt-modal').classList.add('open');
 }
- 
+
 function updateAvailPanel(key){
   const el=document.getElementById('avail-overview');
   if(!el)return;
@@ -1973,7 +2234,7 @@ function updateAvailPanel(key){
     +'<div class="avail-slot"><div class="avail-dot" style="background:var(--rule2)"></div><span>'+pct+'% utilized</span></div>'
     +'<div style="height:6px;background:var(--cream);border-radius:3px;overflow:hidden;margin-top:4px"><div style="height:100%;width:'+pct+'%;background:var(--blue);border-radius:3px;transition:width 0.3s"></div></div>';
 }
- 
+
 let _activeAppt=null;
 function showApptTooltip(appt,e){
   _activeAppt=appt;
@@ -2036,7 +2297,7 @@ function viewApptPatient(){
     setDashPage('patients');
   }
 }
- 
+
 function setInterval(btn){
   document.querySelectorAll('.cal-interval-btn').forEach(b=>{if(b.id==='cal-view-day'||b.id==='cal-view-week')return;b.classList.remove('active')});
   btn.classList.add('active');calIntervalMins=parseInt(btn.dataset.mins);
@@ -2047,9 +2308,9 @@ function setApptType(btn){
 }
 function changeCalDay(dir){calCurrentDate=new Date(calCurrentDate.getTime()+dir*(calView==='week'?7:1)*86400000);buildCal();}
 function goToday(){calCurrentDate=new Date(2026,2,27);buildCal();}
- 
- 
- 
+
+
+
 // MESSAGE THREADS
 const threadData={
   lena:{name:'Lena R.',type:'Physical therapy',date:'Mar 25, 2026',age:'28',phone:'(512) 555-0102',email:'lena.r@email.com',avatar:'LR',avatarStyle:'',messages:[
@@ -2061,6 +2322,7 @@ const threadData={
     {dir:'out',text:"Hi Marcus, checking in after your visit yesterday. How's the shoulder feeling?",time:'Today · 9:01 AM'},
     {dir:'in',text:'Way better than expected. Thanks for reaching out.',time:'Today · 9:38 AM'},
     {dir:'out',text:'Great to hear. Keep up with the stretches. Your next appointment is Apr 2 at 11am.',time:'Today · 9:40 AM'},
+    {dir:'out',text:'Hi Marcus,\n\nA friendly reminder to complete your prescribed rotator cuff stretches today. Consistency makes a real difference in your recovery.\n\nReply to this message and our team will follow up.',time:'Mar 29 · 8:00 AM · Sent (simulated delivery) to (512) 555-0101'},
   ]},
   priya:{name:'Priya S.',type:'Posture assessment',date:'Mar 24, 2026',age:'41',phone:'(512) 555-0104',email:'priya.s@email.com',avatar:'PS',avatarStyle:'',messages:[
     {dir:'out',text:'Hi Priya, reminder about your posture exercises today. Try 3 sets of wall angels.',time:'Yesterday · 9:00 AM'},
@@ -2070,13 +2332,15 @@ const threadData={
   tom:{name:'Tom W.',type:'Physical therapy',date:'Mar 18, 2026',age:'47',phone:'(512) 555-0107',email:'tom.w@email.com',avatar:'TW',avatarStyle:'',messages:[
     {dir:'out',text:'Hi Tom, your next PT session is Mar 28 at 11:30am. Would you like to confirm?',time:'Mar 25 · 9:00 AM'},
     {dir:'in',text:'Just booked my follow-up. Looking forward to it.',time:'Mar 25 · 2:14 PM'},
+    {dir:'out',text:'Hi Tom,\n\nA friendly reminder to complete your prescribed exercises today. Consistency makes a real difference in your recovery.\n\nReply to this message and our team will follow up.',time:'Mar 27 · 8:00 AM · Sent (simulated delivery) to (512) 555-0107'},
+    {dir:'out',text:'Hi Tom,\n\nThis is your reminder from the clinic regarding your medication schedule.\n\nReply to this message and our team will follow up.',time:'Scheduled Mar 30 · 8:00 AM · Scheduled (simulated delivery) to (512) 555-0107'},
   ]},
   james:{name:'James K.',type:'Neck pain',date:'Mar 25, 2026',age:'55',phone:'(512) 555-0105',email:'james.k@email.com',avatar:'JK',avatarStyle:'background:var(--red-tint);color:var(--red)',messages:[
     {dir:'out',text:'Hi James, checking in after your visit on Tuesday. How is the neck feeling?',time:'Mar 25 · 9:00 AM'},
   ]},
 };
 let currentThread=threadData.lena;
- 
+
 function openThread(key){
   const t=threadData[key];if(!t)return;
   currentThread=t;
@@ -2105,6 +2369,38 @@ function sendReply(){
   input.value='';
 }
 document.addEventListener('DOMContentLoaded',()=>{
+  // Restore persisted state
+  const st=vhLoad();
+  if(st){
+    (st.customPatients||[]).forEach(p=>{if(!patients.some(x=>x.name===p.name))patients.push(p);});
+    Object.assign(patientExtra,st.patientExtra||{});
+    Object.entries(st.patientOverrides||{}).forEach(([nm,o])=>{
+      const rec=patients.find(p=>p.name===o.prev||p.name===nm);
+      if(rec){rec.name=o.name;rec.phone=o.phone||rec.phone;rec.email=o.email||rec.email;rec.age=o.age||rec.age;}
+    });
+    window._vhOverrides=st.patientOverrides||{};
+    Object.entries(st.customAppts||{}).forEach(([k,arr])=>{calData[k]=(calData[k]||[]).concat(arr.filter(a=>!(calData[k]||[]).some(b=>b.id===a.id)));});
+    window._vhAppts=st.customAppts||{};
+    (st.customFollowups||[]).forEach(fu=>{followUpData.push(fu);
+      const tbody=document.getElementById('fu-table-body');
+      if(tbody){const row=document.createElement('tr');row.dataset.fustatus=fu.statusKey;row.style.cursor='pointer';row.onclick=()=>openFollowUpDetail(fu.id);
+      row.innerHTML='<td><div class="td-name">'+escHtml(fu.patient)+'</div></td><td>'+escHtml(fu.type)+'</td><td>'+escHtml(fu.sendStr)+'</td><td>'+escHtml(fu.channel)+'</td><td><span class="spill '+fu.statusClass+'">'+escHtml(fu.statusLabel)+'</span></td>';
+      tbody.insertBefore(row,tbody.firstChild);}});
+    window._vhFollowups=st.customFollowups||[];
+    (st.customPlans||[]).forEach(pl=>{if(typeof saveNewPlanRestore==='function')return;});
+    window._vhPlans=st.customPlans||[];
+    window._vhTemplates=st.templates||[];
+    (st.sentForms||[]).forEach(sf=>{intakeData[sf.id]=sf.data;});
+    window._vhSentForms=st.sentForms||[];
+    window._vhTxns=st.transactions||{};
+    window._vhBalances=st.balances||{};
+    Object.entries(st.customThreads||{}).forEach(([k,msgs])=>{
+      if(threadData[k])msgs.forEach(m=>{if(!threadData[k].messages.some(x=>x.text===m.text&&x.time===m.time))threadData[k].messages.push(m);});
+    });
+    window._vhThreads=st.customThreads||{};
+    renderPatientTable();
+    renderTemplates();
+  } else { renderPatientTable(); }
   if(document.getElementById('msg-convo-body'))openThread('lena');
   // Live date in topbar
   const dateEl=document.getElementById('topbar-date');
@@ -2127,7 +2423,108 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   });
 });
- 
+
+// ── FORM TEMPLATE BUILDER ──
+let tbFields=[];let tbEditingId=null;
+const TB_TYPES=['Short answer','Long answer','Date','Phone','Email','Yes / No','Scale 1-10'];
+function tbRender(){
+  const wrap=document.getElementById('tb-fields');
+  wrap.innerHTML=tbFields.map((f,i)=>'<div style="display:flex;gap:0.4rem;align-items:center"><input value="'+escHtml(f.label)+'" placeholder="Question label" style="flex:1" oninput="tbFields['+i+'].label=this.value"/><select onchange="tbFields['+i+'].type=this.value" style="width:120px">'+TB_TYPES.map(t=>'<option'+(f.type===t?' selected':'')+'>'+t+'</option>').join('')+'</select><button class="btn-sm-ghost" title="Move up" onclick="tbMove('+i+',-1)">↑</button><button class="btn-sm-ghost" title="Move down" onclick="tbMove('+i+',1)">↓</button><button class="btn-sm-ghost" title="Remove" onclick="tbRemove('+i+')">✕</button></div>').join('');
+}
+function tbAddField(){tbFields.push({label:'',type:'Short answer'});tbRender();}
+function tbMove(i,d){const j=i+d;if(j<0||j>=tbFields.length)return;[tbFields[i],tbFields[j]]=[tbFields[j],tbFields[i]];tbRender();}
+function tbRemove(i){tbFields.splice(i,1);tbRender();}
+function openTemplateBuilder(id){
+  tbEditingId=id||null;
+  if(id){const t=window._vhTemplates.find(x=>x.id===id);document.getElementById('tb-name').value=t.name;tbFields=JSON.parse(JSON.stringify(t.fields));document.getElementById('tb-title').textContent='Edit form template';}
+  else{document.getElementById('tb-name').value='';tbFields=[{label:'Full name',type:'Short answer'},{label:'Date of birth',type:'Date'},{label:'Phone number',type:'Phone'}];document.getElementById('tb-title').textContent='New form template';}
+  tbRender();openModal('template-modal');
+}
+function saveTemplate(){
+  const name=document.getElementById('tb-name').value.trim();
+  if(!name){showToast('Give the template a name');return;}
+  const fields=tbFields.filter(f=>f.label.trim());
+  if(!fields.length){showToast('Add at least one field');return;}
+  if(tbEditingId){const t=window._vhTemplates.find(x=>x.id===tbEditingId);t.name=name;t.fields=fields;}
+  else window._vhTemplates.push({id:'tpl_'+Date.now(),name,fields,status:'Draft'});
+  vhSave();renderTemplates();closeModal('template-modal');showToast('Template saved');
+}
+function previewTemplate(){
+  const name=document.getElementById('tb-name').value.trim()||'Untitled form';
+  document.getElementById('tp-title').textContent=name;
+  document.getElementById('tp-body').innerHTML=tbFields.filter(f=>f.label.trim()).map(f=>'<div class="form-group"><label>'+escHtml(f.label)+'</label>'+(f.type==='Long answer'?'<textarea disabled placeholder="'+escHtml(f.type)+'"></textarea>':'<input disabled placeholder="'+escHtml(f.type)+'"/>')+'</div>').join('')||'<p style="font-size:0.82rem;color:var(--ink3)">No fields yet.</p>';
+  openModal('template-preview-modal');
+}
+function sendTemplate(id){
+  const t=window._vhTemplates.find(x=>x.id===id);if(!t)return;
+  const sel=document.querySelector('#si-form-content select');
+  if(sel&&!Array.from(sel.options).some(o=>o.value===t.name)){const o=document.createElement('option');o.textContent=t.name;sel.insertBefore(o,sel.firstChild);}
+  if(sel)sel.value=t.name;
+  t.status='Ready to send';vhSave();
+  openModal('send-intake-modal');
+  showToast('"'+t.name+'" selected. Choose a patient to send it.');
+}
+function deleteTemplate(id){window._vhTemplates=window._vhTemplates.filter(x=>x.id!==id);vhSave();renderTemplates();}
+function renderTemplates(){
+  const list=document.getElementById('template-list');if(!list)return;
+  const empty=document.getElementById('template-empty');
+  const tpls=window._vhTemplates;
+  if(empty)empty.style.display=tpls.length?'none':'block';
+  Array.from(list.querySelectorAll('.tpl-card')).forEach(e=>e.remove());
+  tpls.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='intake-card tpl-card';
+    d.innerHTML='<div><div class="intake-title">'+escHtml(t.name)+'</div><div class="intake-sub">'+t.fields.length+' fields · '+escHtml(t.status||'Draft')+'</div></div><div style="display:flex;gap:0.4rem"><button class="btn-sm-ghost" onclick="openTemplateBuilder(\''+t.id+'\')">Edit</button><button class="btn-sm-ghost" onclick="sendTemplate(\''+t.id+'\')">Send</button><button class="btn-sm-ghost" onclick="deleteTemplate(\''+t.id+'\')">✕</button></div>';
+    list.appendChild(d);
+  });
+}
+
+function getBalance(name){const b=window._vhBalances;if(b[name]===undefined)b[name]=240;return b[name];}
+function renderBalance(){const el=document.getElementById('pp-balance');if(el&&currentPatient)el.textContent='$'+getBalance(currentPatient.name).toFixed(0);}
+function renderTransactions(){
+  if(!currentPatient)return;
+  const txns=(window._vhTxns[currentPatient.name]||[]);
+  const sec=document.getElementById('pp-txn-section'),list=document.getElementById('pp-txn-list');
+  if(!sec||!list)return;
+  if(!txns.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  list.innerHTML=txns.map(t=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.875rem;border-bottom:1px solid var(--rule);font-size:0.78rem"><div><div style="font-weight:500">$'+t.amount.toFixed(2)+' · '+escHtml(t.desc||'Payment')+'</div><div style="color:var(--ink3);font-size:0.7rem">'+t.date+' · Ref '+t.ref+'</div></div><span class="spill '+(t.status.startsWith('Succeeded')?'sp-g':'sp-a')+'">'+escHtml(t.status)+'</span></div>').join('');
+  list.lastElementChild&&(list.lastElementChild.style.borderBottom='none');
+}
+function openPaymentModal(){
+  if(!currentPatient){showToast('Open a patient profile first');return;}
+  document.getElementById('payment-sub').textContent='Record a payment toward '+currentPatient.name+"'s balance of $"+getBalance(currentPatient.name).toFixed(0)+'.';
+  document.getElementById('pay-amount').value='';
+  document.getElementById('pay-desc').value='';
+  openModal('payment-modal');
+}
+let _paying=false;
+function processPayment(){
+  if(_paying)return; // duplicate-charge guard
+  const amt=parseFloat(document.getElementById('pay-amount').value);
+  if(!amt||amt<=0){showToast('Enter a valid amount');return;}
+  const name=currentPatient.name;
+  if(amt>getBalance(name)+0.001&&getBalance(name)>0){showToast('Amount exceeds balance of $'+getBalance(name).toFixed(2));return;}
+  _paying=true;
+  const btn=document.getElementById('pay-btn');btn.disabled=true;btn.textContent='Processing…';
+  setTimeout(()=>{ // simulated processor latency; real Stripe call goes here when credentials exist
+    const txn={id:'txn_'+Date.now(),date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),amount:amt,status:'Succeeded (simulated)',desc:document.getElementById('pay-desc').value.trim()||document.getElementById('pay-method').value,ref:Math.random().toString(36).slice(2,10).toUpperCase()};
+    window._vhTxns[name]=window._vhTxns[name]||[];
+    window._vhTxns[name].unshift(txn);
+    window._vhBalances[name]=Math.max(0,getBalance(name)-amt);
+    vhSave();renderBalance();renderTransactions();
+    document.getElementById('payment-content').style.display='none';
+    document.getElementById('payment-success').style.display='block';
+    document.getElementById('payment-success-msg').textContent='$'+amt.toFixed(2)+' recorded for '+name+'. New balance: $'+window._vhBalances[name].toFixed(0)+'.';
+    setTimeout(()=>{
+      document.getElementById('payment-content').style.display='block';
+      document.getElementById('payment-success').style.display='none';
+      closeModal('payment-modal');
+      btn.disabled=false;btn.textContent='Collect payment';_paying=false;
+    },2000);
+  },900);
+}
+
 function saveNewPlan(){
   const patient=document.getElementById('np-search').value.trim();
   const name=document.getElementById('np-name').value.trim();
@@ -2144,11 +2541,13 @@ function saveNewPlan(){
   if(list){
     const card=document.createElement('div');
     card.className='wp-card';card.style.cssText='margin-bottom:0;cursor:pointer';
+    card.onclick=()=>{const m=patients.find(x=>x.name===patient);if(m){setDashPage('patients');showPatient(m.name,m.type,m.date,m.age,m.phone,m.email);}else{showToast('Patient record not found');}};
     card.innerHTML='<div class="wp-header"><div><div class="wp-title">'+patient+'</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">'+name+'</div></div><span class="wp-badge wp-warn">0 / '+visits+' visits</span></div>'
       +'<div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:0%"></div></div>'
       +'<div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);margin-top:3px"><span>0% complete</span><span>'+visits+' visits remaining</span><span>Ends '+fmt(endRaw)+'</span></div>';
     list.appendChild(card);
   }
+  window._vhPlans.push({patient,name,visits,freq,start:startRaw,end:endRaw,goal,notes});vhSave();
   document.getElementById('new-plan-content').style.display='none';
   document.getElementById('new-plan-success').style.display='block';
   setTimeout(()=>{
@@ -2165,7 +2564,6 @@ function saveNewPlan(){
   },2000);
 }
 function filterFollowups(btn,filter){btn.closest('.dtabs').querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#overview-followup-body tr').forEach(row=>{row.style.display=(filter==='all'||row.dataset.status===filter)?'':'none'})}
-function filterPatients(btn,filter){btn.closest('.dtabs').querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#patient-table-body tr').forEach(row=>{row.style.display=(filter==='all'||row.dataset.pstatus===filter)?'':'none'})}
 function filterFU(btn,filter){
   btn.closest('.dtabs').querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
@@ -2173,7 +2571,7 @@ function filterFU(btn,filter){
     row.style.display=(filter==='all'||row.dataset.fustatus===filter)?'':'none';
   });
 }
- 
+
 // Make existing fu rows clickable: navigate to patient profile
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('#fu-table-body tr').forEach(row=>{
@@ -2189,7 +2587,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   });
 });
- 
+
 // File viewer
 const fileObjectMap={};
 function viewFile(name,type,fileObj){
@@ -2224,7 +2622,7 @@ function handleFiles(input){
     list.appendChild(item);
   });
 }
- 
+
 async function submitContactForm(){
   const name=document.getElementById('contact-name').value.trim();
   const email=document.getElementById('contact-email').value.trim();
@@ -2260,7 +2658,7 @@ async function submitContactForm(){
   }
   btn.textContent='Send message';btn.disabled=false;
 }
- 
+
 async function submitDemoRequest(){
   const name=document.getElementById('demo-name').value.trim();
   const clinic=document.getElementById('demo-clinic').value.trim();
@@ -2298,7 +2696,7 @@ async function submitDemoRequest(){
   }
   btn.textContent='Submit request';btn.disabled=false;
 }
- 
+
 function showToast(msg){
   let t=document.getElementById('_toast');
   if(!t){
@@ -2312,7 +2710,7 @@ function showToast(msg){
   clearTimeout(t._hideTimer);
   t._hideTimer=setTimeout(()=>{t.style.opacity='0'},3000);
 }
- 
+
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 function submitForm(formId,successId){
@@ -2323,8 +2721,3 @@ function submitForm(formId,successId){
 </script>
 </body>
 </html>
- 
-
-
-
-
