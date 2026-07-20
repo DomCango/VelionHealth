@@ -156,6 +156,11 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 .form-success-icon{font-size:2rem;margin-bottom:0.75rem}
 .form-success h4{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:300;margin-bottom:0.5rem}
 .form-success p{font-size:0.85rem;color:var(--ink2)}
+/* EMPLOYEE LOGIN / APP HOME */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 60px);padding:2rem}
+.login-card{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:2.5rem;max-width:380px;width:100%;box-shadow:0 2px 24px rgba(0,0,0,0.06)}
+.login-card h3{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:300;margin-bottom:0.5rem;letter-spacing:-0.02em}
+.login-error{background:var(--red-tint);color:var(--red);font-size:0.8rem;padding:0.6rem 0.75rem;border-radius:6px;margin-bottom:1rem}
 .contact-row{display:flex;align-items:center;gap:1.25rem;padding:0.75rem 0;border-bottom:1px solid var(--rule)}
 .contact-row:last-of-type{border-bottom:none}
 .contact-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink3);width:70px;flex-shrink:0;line-height:1}
@@ -444,6 +449,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <li><a onclick="document.getElementById('l-product-section').scrollIntoView({behavior:'smooth'})">Products</a></li>
     <li><a onclick="document.getElementById('l-story-section').scrollIntoView({behavior:'smooth'})">About</a></li>
     <li><a onclick="openModal('contact-modal')">Contact</a></li>
+    <li><a onclick="goTo('login')">Employee Login</a></li>
   </ul>
   <button class="nav-cta" onclick="openModal('demo-modal')">Request demo</button>
 </nav>
@@ -1340,8 +1346,82 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 
+<!-- EMPLOYEE LOGIN -->
+<div class="page" id="page-login">
+<nav class="l-nav">
+  <div class="logo" onclick="goTo('landing')"><div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
+</nav>
+<div class="login-wrap">
+  <div class="login-card">
+    <h3>Employee sign in</h3>
+    <p class="modal-sub">Sign in with the email and password your clinic set up for you.</p>
+    <div id="login-error" class="login-error" style="display:none"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="login-email" autocomplete="username"/></div>
+    <div class="form-group"><label>Password</label><input type="password" id="login-password" autocomplete="current-password" onkeydown="if(event.key==='Enter')handleLogin()"/></div>
+    <button class="btn-primary" style="width:100%" id="login-submit" onclick="handleLogin()">Sign in</button>
+  </div>
+</div>
+</div>
 
+<!-- APP HOME (authenticated) -->
+<div class="page" id="page-app-home">
+<nav class="l-nav">
+  <div class="logo" onclick="goTo('landing')"><div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
+  <button class="nav-cta" onclick="handleLogout()">Log out</button>
+</nav>
+<div class="login-wrap">
+  <div class="login-card">
+    <h3>You're signed in</h3>
+    <p class="modal-sub" id="app-home-info">Loading your account…</p>
+  </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
+// ── SUPABASE AUTH (Phase 1) ─────────────────────────────────────────────────
+const SUPABASE_URL='https://lhavkiozawvlujstilhn.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoYXZraW96YXd2bHVqc3RpbGhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTQ1MjUsImV4cCI6MjEwMDEzMDUyNX0.8rJtscjlZ2MdUH6X8P9bI4waMzSjdO-IBWpkxEwcOYs';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+async function handleLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const password=document.getElementById('login-password').value;
+  const errEl=document.getElementById('login-error');
+  errEl.style.display='none';
+  if(!email||!password){errEl.textContent='Enter your email and password.';errEl.style.display='block';return;}
+  const btn=document.getElementById('login-submit');
+  btn.disabled=true;btn.textContent='Signing in…';
+  const {error}=await sb.auth.signInWithPassword({email,password});
+  btn.disabled=false;btn.textContent='Sign in';
+  if(error){errEl.textContent='Incorrect email or password.';errEl.style.display='block';return;}
+  await loadEmployeeProfile();
+}
+
+async function loadEmployeeProfile(){
+  const {data:{user}}=await sb.auth.getUser();
+  if(!user){goTo('login');return;}
+  const infoEl=document.getElementById('app-home-info');
+  const {data,error}=await sb.from('employees').select('full_name,role,clinics(name)').eq('id',user.id).single();
+  if(error||!data){
+    infoEl.textContent="Signed in, but no employee profile is linked to this account yet. Ask your admin to check your account setup in Supabase.";
+  }else{
+    infoEl.textContent=data.full_name+' · '+data.clinics.name+' · '+data.role;
+  }
+  goTo('app-home');
+}
+
+async function handleLogout(){
+  await sb.auth.signOut();
+  goTo('login');
+}
+
+async function checkExistingSession(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session)await loadEmployeeProfile();
+}
+checkExistingSession();
+
 const patients=[
   {name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com'},
   {name:'Lena R.',type:'Physical therapy',date:'Mar 25, 2026',age:'28',phone:'(512) 555-0102',email:'lena.r@email.com'},
