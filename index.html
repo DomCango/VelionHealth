@@ -1363,18 +1363,79 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </div>
 </div>
 
-<!-- APP HOME (authenticated) -->
-<div class="page" id="page-app-home">
-<nav class="l-nav">
-  <div class="logo" onclick="goTo('landing')"><div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
-  <button class="nav-cta" onclick="handleLogout()">Log out</button>
-</nav>
-<div class="login-wrap">
-  <div class="login-card">
-    <h3>You're signed in</h3>
-    <p class="modal-sub" id="app-home-info">Loading your account…</p>
+<!-- APP (authenticated real dashboard) -->
+<div class="page" id="page-app">
+<div class="dash-page"><div class="dash-shell">
+  <div class="dsidebar">
+    <div class="dsidebar-logo" onclick="goTo('landing')"><div class="ds-mark"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><div class="ds-logo-text">CareLoop</div><div class="ds-logo-sub">by Velion Health</div><div class="ds-back">← back to site</div></div></div>
+    <div class="ds-sec">Main</div>
+    <button class="ds-nav active" id="app-nav-overview" onclick="setAppPage('overview')"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg>Overview</button>
+    <button class="ds-nav" id="app-nav-patients" onclick="setAppPage('patients')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Patients<span class="ds-badge" id="app-patients-count">0</span></button>
+    <button class="ds-nav" id="app-nav-followups" onclick="setAppPage('followups')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Follow-ups</button>
+    <button class="ds-nav" id="app-nav-messages" onclick="setAppPage('messages')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M5 5h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Messages</button>
+    <div class="ds-sec">Manage</div>
+    <button class="ds-nav" id="app-nav-appointments" onclick="setAppPage('appointments')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v-1M11 2v-1M2 6h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Appointments</button>
+    <button class="ds-nav" id="app-nav-plans" onclick="setAppPage('plans')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 3h10M3 6h7M3 9h8M3 12h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="13" cy="11" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M12 11l.8.8 1.4-1.4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>Care Plans</button>
+    <button class="ds-nav" id="app-nav-intake" onclick="setAppPage('intake')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5h6M5 8h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Intake Forms</button>
+    <button class="ds-nav" id="app-nav-analytics" onclick="setAppPage('analytics')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 12l3-4 3 2 3-6 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Analytics</button>
+    <button class="ds-nav" id="app-nav-settings" onclick="setAppPage('settings')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Settings</button>
+    <div class="dsidebar-bottom">
+      <div class="ds-clinic"><div class="ds-avatar" id="app-clinic-avatar">--</div><div><div class="ds-cname" id="app-clinic-name">Loading…</div><div class="ds-cplan" id="app-employee-role">—</div></div></div>
+      <button class="btn-sm-ghost" style="width:100%;margin-top:0.75rem" onclick="handleLogout()">Log out</button>
+    </div>
   </div>
+  <div class="dmain">
+    <div class="dtopbar">
+      <div class="dtopbar-title" id="app-page-title">Overview</div>
+      <div class="dtopbar-r"><div class="dtopbar-date" id="app-topbar-date"></div></div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="dpage active" id="apage-overview">
+      <div class="dcard"><div style="padding:1.75rem">
+        <div style="font-size:0.95rem;color:var(--ink2)">Welcome back, <strong id="app-welcome-name">—</strong>.</div>
+        <p style="font-size:0.85rem;color:var(--ink3);margin-top:0.5rem;line-height:1.6">You have <strong id="app-patient-count-text">0</strong> patients on file. Follow-ups, messaging, and analytics are coming in later phases — for now, head to Patients to add and view your real patient list.</p>
+      </div></div>
+    </div>
+
+    <!-- PATIENTS -->
+    <div class="dpage" id="apage-patients">
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">All patients</div><button class="btn-sm" onclick="openModal('app-add-patient-modal')">+ Add patient</button></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Name</th><th>Visit type</th><th>Date of birth</th><th>Phone</th><th>Email</th><th>Added</th></tr></thead>
+        <tbody id="app-patient-table-body"></tbody>
+        </table></div>
+        <div id="app-patients-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <!-- COMING SOON (shared placeholder for not-yet-built sections) -->
+    <div class="dpage" id="apage-soon">
+      <div class="dcard"><div style="padding:2.5rem;text-align:center">
+        <div style="font-size:0.95rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem">Coming soon</div>
+        <p style="font-size:0.85rem;color:var(--ink2)">This part of CareLoop isn't wired up yet — it'll arrive in a later phase.</p>
+      </div></div>
+    </div>
+  </div>
+</div></div>
 </div>
+
+<!-- ADD PATIENT (real, authenticated) -->
+<div class="modal-overlay" id="app-add-patient-modal" onclick="if(event.target===this)closeModal('app-add-patient-modal')">
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('app-add-patient-modal')">×</button>
+    <div id="app-add-patient-form">
+      <h3>Add patient</h3>
+      <p class="modal-sub">Add a new patient to your clinic's records.</p>
+      <div id="app-np-error" class="login-error" style="display:none"></div>
+      <div class="form-group"><label>Full name</label><input id="app-np-name"/></div>
+      <div class="form-group"><label>Visit type</label><input id="app-np-visit-type" placeholder="e.g. Chiropractic"/></div>
+      <div class="form-group"><label>Date of birth</label><input type="date" id="app-np-dob"/></div>
+      <div class="form-group"><label>Phone</label><input id="app-np-phone"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="app-np-email"/></div>
+      <div class="form-group"><label>Notes (optional)</label><textarea id="app-np-notes"></textarea></div>
+      <button class="btn-primary" style="width:100%" id="app-np-submit" onclick="submitNewPatient()">Add patient</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1398,17 +1459,29 @@ async function handleLogin(){
   await loadEmployeeProfile();
 }
 
+let currentClinicId=null;
+
 async function loadEmployeeProfile(){
   const {data:{user}}=await sb.auth.getUser();
   if(!user){goTo('login');return;}
-  const infoEl=document.getElementById('app-home-info');
-  const {data,error}=await sb.from('employees').select('full_name,role,clinics(name)').eq('id',user.id).single();
+  const {data,error}=await sb.from('employees').select('full_name,role,clinic_id,clinics(name)').eq('id',user.id).single();
   if(error||!data){
-    infoEl.textContent="Signed in, but no employee profile is linked to this account yet. Ask your admin to check your account setup in Supabase.";
-  }else{
-    infoEl.textContent=data.full_name+' · '+data.clinics.name+' · '+data.role;
+    await sb.auth.signOut();
+    goTo('login');
+    const errEl=document.getElementById('login-error');
+    errEl.textContent='Signed in, but no employee profile is linked to this account yet. Ask your admin to check your account setup in Supabase.';
+    errEl.style.display='block';
+    return;
   }
-  goTo('app-home');
+  currentClinicId=data.clinic_id;
+  document.getElementById('app-welcome-name').textContent=data.full_name;
+  document.getElementById('app-clinic-name').textContent=data.clinics.name;
+  document.getElementById('app-employee-role').textContent=data.role.charAt(0).toUpperCase()+data.role.slice(1);
+  document.getElementById('app-clinic-avatar').textContent=data.clinics.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('app-topbar-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  goTo('app');
+  setAppPage('overview');
+  loadPatients();
 }
 
 async function handleLogout(){
@@ -1421,6 +1494,65 @@ async function checkExistingSession(){
   if(session)await loadEmployeeProfile();
 }
 checkExistingSession();
+
+const appNavLabels={overview:'Overview',patients:'Patients',followups:'Follow-ups',messages:'Messages',appointments:'Appointments',plans:'Care Plans',intake:'Intake Forms',analytics:'Analytics',settings:'Settings'};
+function setAppPage(p){
+  document.querySelectorAll('#page-app .ds-nav').forEach(b=>b.classList.remove('active'));
+  const navBtn=document.getElementById('app-nav-'+p);
+  if(navBtn)navBtn.classList.add('active');
+  document.querySelectorAll('#page-app .dpage').forEach(el=>el.classList.remove('active'));
+  const pageId=(p==='overview'||p==='patients')?'apage-'+p:'apage-soon';
+  document.getElementById(pageId).classList.add('active');
+  document.getElementById('app-page-title').textContent=appNavLabels[p]||'Coming soon';
+  if(p==='patients')loadPatients();
+}
+
+async function loadPatients(){
+  const tbody=document.getElementById('app-patient-table-body');
+  const emptyEl=document.getElementById('app-patients-empty');
+  emptyEl.style.display='none';
+  tbody.innerHTML='<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  const {data,error}=await sb.from('patients').select('*').order('created_at',{ascending:false});
+  if(error){
+    tbody.innerHTML='';
+    emptyEl.textContent='Could not load patients: '+error.message;
+    emptyEl.style.display='block';
+    return;
+  }
+  document.getElementById('app-patients-count').textContent=data.length;
+  document.getElementById('app-patient-count-text').textContent=data.length;
+  if(!data.length){
+    tbody.innerHTML='';
+    emptyEl.textContent='No patients yet — click "+ Add patient" to add your first one.';
+    emptyEl.style.display='block';
+    return;
+  }
+  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td>'+new Date(p.created_at).toLocaleDateString()+'</td></tr>').join('');
+}
+
+async function submitNewPatient(){
+  const name=document.getElementById('app-np-name').value.trim();
+  const errEl=document.getElementById('app-np-error');
+  errEl.style.display='none';
+  if(!name){errEl.textContent='Full name is required.';errEl.style.display='block';return;}
+  const payload={
+    clinic_id:currentClinicId,
+    full_name:name,
+    visit_type:document.getElementById('app-np-visit-type').value.trim()||null,
+    date_of_birth:document.getElementById('app-np-dob').value||null,
+    phone:document.getElementById('app-np-phone').value.trim()||null,
+    email:document.getElementById('app-np-email').value.trim()||null,
+    notes:document.getElementById('app-np-notes').value.trim()||null,
+  };
+  const btn=document.getElementById('app-np-submit');
+  btn.disabled=true;btn.textContent='Adding…';
+  const {error}=await sb.from('patients').insert(payload);
+  btn.disabled=false;btn.textContent='Add patient';
+  if(error){errEl.textContent='Could not add patient: '+error.message;errEl.style.display='block';return;}
+  ['app-np-name','app-np-visit-type','app-np-dob','app-np-phone','app-np-email','app-np-notes'].forEach(id=>document.getElementById(id).value='');
+  closeModal('app-add-patient-modal');
+  loadPatients();
+}
 
 const patients=[
   {name:'Marcus T.',type:'Chiropractic',date:'Mar 26, 2026',age:'32',phone:'(512) 555-0101',email:'marcus.t@email.com'},
