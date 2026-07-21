@@ -1402,11 +1402,22 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="dpage" id="apage-patients">
       <div class="dcard">
         <div class="dcard-header"><div class="dcard-title">All patients</div><button class="btn-sm" onclick="openModal('app-add-patient-modal')">+ Add patient</button></div>
-        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Name</th><th>Visit type</th><th>Date of birth</th><th>Phone</th><th>Email</th><th>Added</th></tr></thead>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Name</th><th>Visit type</th><th>Date of birth</th><th>Phone</th><th>Email</th><th>Added</th><th></th></tr></thead>
         <tbody id="app-patient-table-body"></tbody>
         </table></div>
         <div id="app-patients-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
       </div>
+    </div>
+
+    <!-- SETTINGS (clinic-approved instructions) -->
+    <div class="dpage" id="apage-settings">
+      <div class="dcard"><div style="padding:1.75rem">
+        <div class="dcard-title" style="margin-bottom:0.5rem">Clinic-approved instructions</div>
+        <p style="font-size:0.83rem;color:var(--ink3);line-height:1.6;margin-bottom:1rem">This is your clinic's standard boilerplate — tone, general aftercare policy language, anything you always want said or never want implied. When staff generate a follow-up message, the AI is only allowed to draw from what you write here — it will not invent medical specifics beyond it.</p>
+        <div class="form-group"><textarea id="clinic-instructions-text" style="min-height:180px" placeholder="e.g. Always sign off as 'the care team at [Clinic Name]'. Never mention specific medications or dosages by name — refer patients to their printed aftercare sheet instead. If a patient reports worsening symptoms, tell them to call the clinic directly rather than offering guidance."></textarea></div>
+        <div id="clinic-instructions-saved" style="display:none;color:var(--green);font-size:0.8rem;margin-bottom:0.75rem">Saved.</div>
+        <button class="btn-primary" id="clinic-instructions-save-btn" onclick="saveClinicInstructions()">Save instructions</button>
+      </div></div>
     </div>
 
     <!-- COMING SOON (shared placeholder for not-yet-built sections) -->
@@ -1438,6 +1449,32 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 
+<!-- NEW FOLLOW-UP / AI DRAFT (real, authenticated) -->
+<div class="modal-overlay" id="draft-followup-modal" onclick="if(event.target===this)closeModal('draft-followup-modal')">
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('draft-followup-modal')">×</button>
+    <h3>New follow-up</h3>
+    <p class="modal-sub">For <strong id="draft-patient-name">—</strong>. The AI drafts the message — nothing sends or schedules yet.</p>
+    <div class="form-group"><label>Follow-up type</label>
+      <select id="draft-followup-type">
+        <option value="Post-visit check-in">Post-visit check-in</option>
+        <option value="Post-procedure check-in">Post-procedure check-in</option>
+        <option value="Appointment reminder">Appointment reminder</option>
+        <option value="General check-in">General check-in</option>
+        <option value="Recurring wellness check">Recurring wellness check</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Doctor's note</label><textarea id="draft-doctor-note" placeholder="Short note on what happened and what the patient should know..."></textarea></div>
+    <div id="draft-error" class="login-error" style="display:none"></div>
+    <button class="btn-primary" style="width:100%" id="draft-generate-btn" onclick="generateDraftMessage()">Generate message</button>
+
+    <div id="draft-result" style="display:none;margin-top:1.25rem">
+      <div id="draft-flag-banner" style="display:none;background:var(--amber-tint);color:var(--amber);font-size:0.8rem;padding:0.6rem 0.75rem;border-radius:6px;margin-bottom:0.75rem">⚠ This draft may contain medical specifics that need a second look before sending — check it carefully.</div>
+      <div class="form-group"><label>Draft message (editable)</label><textarea id="draft-text-area" style="min-height:140px"></textarea></div>
+      <button class="btn-outline" style="width:100%" onclick="generateDraftMessage()">Regenerate</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // ── SUPABASE AUTH (Phase 1) ─────────────────────────────────────────────────
@@ -1460,6 +1497,7 @@ async function handleLogin(){
 }
 
 let currentClinicId=null;
+let currentDraftPatient=null;
 
 async function loadEmployeeProfile(){
   const {data:{user}}=await sb.auth.getUser();
@@ -1501,17 +1539,19 @@ function setAppPage(p){
   const navBtn=document.getElementById('app-nav-'+p);
   if(navBtn)navBtn.classList.add('active');
   document.querySelectorAll('#page-app .dpage').forEach(el=>el.classList.remove('active'));
-  const pageId=(p==='overview'||p==='patients')?'apage-'+p:'apage-soon';
+  const realPages=['overview','patients','settings'];
+  const pageId=realPages.includes(p)?'apage-'+p:'apage-soon';
   document.getElementById(pageId).classList.add('active');
   document.getElementById('app-page-title').textContent=appNavLabels[p]||'Coming soon';
   if(p==='patients')loadPatients();
+  if(p==='settings')loadClinicInstructions();
 }
 
 async function loadPatients(){
   const tbody=document.getElementById('app-patient-table-body');
   const emptyEl=document.getElementById('app-patients-empty');
   emptyEl.style.display='none';
-  tbody.innerHTML='<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="7" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
   const {data,error}=await sb.from('patients').select('*').order('created_at',{ascending:false});
   if(error){
     tbody.innerHTML='';
@@ -1527,7 +1567,68 @@ async function loadPatients(){
     emptyEl.style.display='block';
     return;
   }
-  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td>'+new Date(p.created_at).toLocaleDateString()+'</td></tr>').join('');
+  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" onclick=\'openDraftModal('+JSON.stringify(p.id)+','+JSON.stringify(p.full_name)+')\'>New follow-up</button></td></tr>').join('');
+}
+
+function openDraftModal(patientId,patientName){
+  currentDraftPatient={id:patientId,name:patientName};
+  document.getElementById('draft-patient-name').textContent=patientName;
+  document.getElementById('draft-followup-type').selectedIndex=0;
+  document.getElementById('draft-doctor-note').value='';
+  document.getElementById('draft-error').style.display='none';
+  document.getElementById('draft-result').style.display='none';
+  document.getElementById('draft-flag-banner').style.display='none';
+  document.getElementById('draft-text-area').value='';
+  openModal('draft-followup-modal');
+}
+
+async function generateDraftMessage(){
+  const errEl=document.getElementById('draft-error');
+  errEl.style.display='none';
+  const followUpType=document.getElementById('draft-followup-type').value;
+  const doctorNote=document.getElementById('draft-doctor-note').value.trim();
+  if(!doctorNote){errEl.textContent="Enter a short doctor's note first.";errEl.style.display='block';return;}
+  const btn=document.getElementById('draft-generate-btn');
+  btn.disabled=true;btn.textContent='Generating…';
+  try{
+    const {data:instrData}=await sb.from('clinic_instructions').select('standard_instructions').eq('clinic_id',currentClinicId).maybeSingle();
+    const clinicInstructions=instrData?.standard_instructions||'';
+    const resp=await fetch('/api/draft-message',{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({
+        patientFirstName:(currentDraftPatient.name||'').split(' ')[0],
+        followUpType,
+        doctorNote,
+        clinicInstructions,
+      }),
+    });
+    const result=await resp.json();
+    if(!resp.ok){throw new Error(result.error||'Something went wrong generating the message.');}
+    document.getElementById('draft-text-area').value=result.draftText;
+    document.getElementById('draft-flag-banner').style.display=result.flagged?'block':'none';
+    document.getElementById('draft-result').style.display='block';
+  }catch(err){
+    errEl.textContent=err.message;
+    errEl.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Generate message';
+}
+
+async function loadClinicInstructions(){
+  const {data,error}=await sb.from('clinic_instructions').select('standard_instructions').eq('clinic_id',currentClinicId).maybeSingle();
+  document.getElementById('clinic-instructions-text').value=(!error&&data)?data.standard_instructions:'';
+  document.getElementById('clinic-instructions-saved').style.display='none';
+}
+
+async function saveClinicInstructions(){
+  const text=document.getElementById('clinic-instructions-text').value;
+  const btn=document.getElementById('clinic-instructions-save-btn');
+  const savedEl=document.getElementById('clinic-instructions-saved');
+  btn.disabled=true;btn.textContent='Saving…';
+  const {error}=await sb.from('clinic_instructions').upsert({clinic_id:currentClinicId,standard_instructions:text,updated_at:new Date().toISOString()});
+  btn.disabled=false;btn.textContent='Save instructions';
+  if(!error){savedEl.style.display='block';}
 }
 
 async function submitNewPatient(){
