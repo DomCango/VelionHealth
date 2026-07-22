@@ -1703,7 +1703,7 @@ async function loadFollowups(){
     emptyEl.style.display='block';
     return;
   }
-  const statusPill={scheduled:'sp-b',sent:'sp-g',canceled:'sp-r'};
+  const statusPill={scheduled:'sp-b',sent:'sp-g',canceled:'sp-r',failed:'sp-a'};
   tbody.innerHTML=data.map(m=>'<tr><td>'+escHtml(m.patients?.full_name||'—')+'</td><td>'+escHtml(m.follow_up_type)+'</td><td>'+new Date(m.scheduled_at).toLocaleString()+'</td><td><span class="spill '+(statusPill[m.status]||'sp-b')+'">'+m.status+'</span></td><td>'+(m.status==='scheduled'?'<button class="btn-sm-ghost" onclick=\'cancelScheduledMessage('+JSON.stringify(m.id)+')\'>Cancel</button>':'')+'</td></tr>').join('');
 }
 
