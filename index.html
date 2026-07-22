@@ -1371,7 +1371,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="ds-sec">Main</div>
     <button class="ds-nav active" id="app-nav-overview" onclick="setAppPage('overview')"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg>Overview</button>
     <button class="ds-nav" id="app-nav-patients" onclick="setAppPage('patients')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Patients<span class="ds-badge" id="app-patients-count">0</span></button>
-    <button class="ds-nav" id="app-nav-followups" onclick="setAppPage('followups')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Follow-ups</button>
+    <button class="ds-nav" id="app-nav-followups" onclick="setAppPage('followups')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Follow-ups<span class="ds-badge" id="app-followups-count">0</span></button>
     <button class="ds-nav" id="app-nav-messages" onclick="setAppPage('messages')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M5 5h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Messages</button>
     <div class="ds-sec">Manage</div>
     <button class="ds-nav" id="app-nav-appointments" onclick="setAppPage('appointments')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v-1M11 2v-1M2 6h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Appointments</button>
@@ -1406,6 +1406,17 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <tbody id="app-patient-table-body"></tbody>
         </table></div>
         <div id="app-patients-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <!-- FOLLOW-UPS -->
+    <div class="dpage" id="apage-followups">
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Scheduled follow-ups</div></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Type</th><th>Scheduled for</th><th>Status</th><th></th></tr></thead>
+        <tbody id="app-followups-table-body"></tbody>
+        </table></div>
+        <div id="app-followups-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
       </div>
     </div>
 
@@ -1471,6 +1482,27 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
       <div id="draft-flag-banner" style="display:none;background:var(--amber-tint);color:var(--amber);font-size:0.8rem;padding:0.6rem 0.75rem;border-radius:6px;margin-bottom:0.75rem">⚠ This draft may contain medical specifics that need a second look before sending — check it carefully.</div>
       <div class="form-group"><label>Draft message (editable)</label><textarea id="draft-text-area" style="min-height:140px"></textarea></div>
       <button class="btn-outline" style="width:100%" onclick="generateDraftMessage()">Regenerate</button>
+
+      <div class="form-group" style="margin-top:1.25rem"><label>Schedule type</label>
+        <select id="draft-schedule-type" onchange="toggleDraftScheduleType()">
+          <option value="once">Send once</option>
+          <option value="recurring">Recurring</option>
+        </select>
+      </div>
+      <div id="draft-once-wrap" class="form-group"><label>Send at</label><input type="datetime-local" id="draft-once-datetime"/></div>
+      <div id="draft-recurring-wrap" style="display:none">
+        <div class="form-group"><label>Frequency</label>
+          <select id="draft-recurring-frequency">
+            <option value="daily">Daily</option>
+            <option value="weekly" selected>Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Starting</label><input type="datetime-local" id="draft-recurring-start"/></div>
+        <div class="form-group"><label>Ends on (optional — capped at 12 sends)</label><input type="date" id="draft-recurring-end"/></div>
+      </div>
+      <div id="draft-schedule-error" class="login-error" style="display:none"></div>
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem" id="draft-schedule-btn" onclick="scheduleDraftMessage()">Schedule message</button>
     </div>
   </div>
 </div>
@@ -1520,6 +1552,7 @@ async function loadEmployeeProfile(){
   goTo('app');
   setAppPage('overview');
   loadPatients();
+  loadFollowups();
 }
 
 async function handleLogout(){
@@ -1539,11 +1572,12 @@ function setAppPage(p){
   const navBtn=document.getElementById('app-nav-'+p);
   if(navBtn)navBtn.classList.add('active');
   document.querySelectorAll('#page-app .dpage').forEach(el=>el.classList.remove('active'));
-  const realPages=['overview','patients','settings'];
+  const realPages=['overview','patients','followups','settings'];
   const pageId=realPages.includes(p)?'apage-'+p:'apage-soon';
   document.getElementById(pageId).classList.add('active');
   document.getElementById('app-page-title').textContent=appNavLabels[p]||'Coming soon';
   if(p==='patients')loadPatients();
+  if(p==='followups')loadFollowups();
   if(p==='settings')loadClinicInstructions();
 }
 
@@ -1579,7 +1613,103 @@ function openDraftModal(patientId,patientName){
   document.getElementById('draft-result').style.display='none';
   document.getElementById('draft-flag-banner').style.display='none';
   document.getElementById('draft-text-area').value='';
+  document.getElementById('draft-schedule-type').selectedIndex=0;
+  document.getElementById('draft-once-datetime').value='';
+  document.getElementById('draft-recurring-start').value='';
+  document.getElementById('draft-recurring-end').value='';
+  document.getElementById('draft-recurring-frequency').selectedIndex=1;
+  document.getElementById('draft-schedule-error').style.display='none';
+  toggleDraftScheduleType();
   openModal('draft-followup-modal');
+}
+
+function toggleDraftScheduleType(){
+  const v=document.getElementById('draft-schedule-type').value;
+  document.getElementById('draft-once-wrap').style.display=v==='recurring'?'none':'block';
+  document.getElementById('draft-recurring-wrap').style.display=v==='recurring'?'block':'none';
+}
+
+function computeRecurringOccurrences(startVal,frequency,endDateStr,maxCount){
+  const occurrences=[];
+  let current=new Date(startVal);
+  const end=endDateStr?new Date(endDateStr+'T23:59:59'):null;
+  for(let i=0;i<maxCount;i++){
+    if(end&&current>end)break;
+    occurrences.push(new Date(current));
+    if(frequency==='monthly'){current=new Date(current);current.setMonth(current.getMonth()+1);}
+    else{const stepDays=frequency==='daily'?1:7;current=new Date(current.getTime()+stepDays*86400000);}
+  }
+  return occurrences;
+}
+
+async function scheduleDraftMessage(){
+  const errEl=document.getElementById('draft-schedule-error');
+  errEl.style.display='none';
+  const messageText=document.getElementById('draft-text-area').value.trim();
+  if(!messageText){errEl.textContent='Generate a message first.';errEl.style.display='block';return;}
+  const flagged=document.getElementById('draft-flag-banner').style.display==='block';
+  const followUpType=document.getElementById('draft-followup-type').value;
+  const scheduleType=document.getElementById('draft-schedule-type').value;
+
+  let occurrences=[];
+  if(scheduleType==='once'){
+    const dt=document.getElementById('draft-once-datetime').value;
+    if(!dt){errEl.textContent='Pick a date and time to send.';errEl.style.display='block';return;}
+    occurrences=[new Date(dt)];
+  }else{
+    const start=document.getElementById('draft-recurring-start').value;
+    if(!start){errEl.textContent='Pick a start date and time.';errEl.style.display='block';return;}
+    const freq=document.getElementById('draft-recurring-frequency').value;
+    const endDate=document.getElementById('draft-recurring-end').value;
+    occurrences=computeRecurringOccurrences(start,freq,endDate,12);
+  }
+
+  const rows=occurrences.map(d=>({
+    clinic_id:currentClinicId,
+    patient_id:currentDraftPatient.id,
+    follow_up_type:followUpType,
+    message_text:messageText,
+    flagged,
+    scheduled_at:d.toISOString(),
+    status:'scheduled',
+  }));
+
+  const btn=document.getElementById('draft-schedule-btn');
+  btn.disabled=true;btn.textContent='Scheduling…';
+  const {error}=await sb.from('scheduled_messages').insert(rows);
+  btn.disabled=false;btn.textContent='Schedule message';
+  if(error){errEl.textContent='Could not schedule: '+error.message;errEl.style.display='block';return;}
+  closeModal('draft-followup-modal');
+  showToast(rows.length>1?rows.length+' messages scheduled.':'Message scheduled.');
+  loadFollowups();
+}
+
+async function loadFollowups(){
+  const tbody=document.getElementById('app-followups-table-body');
+  const emptyEl=document.getElementById('app-followups-empty');
+  emptyEl.style.display='none';
+  tbody.innerHTML='<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  const {data,error}=await sb.from('scheduled_messages').select('id,follow_up_type,scheduled_at,status,patients(full_name)').order('scheduled_at',{ascending:true});
+  if(error){
+    tbody.innerHTML='';
+    emptyEl.textContent='Could not load follow-ups: '+error.message;
+    emptyEl.style.display='block';
+    return;
+  }
+  document.getElementById('app-followups-count').textContent=data.filter(m=>m.status==='scheduled').length;
+  if(!data.length){
+    tbody.innerHTML='';
+    emptyEl.textContent='Nothing scheduled yet — generate a follow-up from a patient row and schedule it.';
+    emptyEl.style.display='block';
+    return;
+  }
+  const statusPill={scheduled:'sp-b',sent:'sp-g',canceled:'sp-r'};
+  tbody.innerHTML=data.map(m=>'<tr><td>'+escHtml(m.patients?.full_name||'—')+'</td><td>'+escHtml(m.follow_up_type)+'</td><td>'+new Date(m.scheduled_at).toLocaleString()+'</td><td><span class="spill '+(statusPill[m.status]||'sp-b')+'">'+m.status+'</span></td><td>'+(m.status==='scheduled'?'<button class="btn-sm-ghost" onclick=\'cancelScheduledMessage('+JSON.stringify(m.id)+')\'>Cancel</button>':'')+'</td></tr>').join('');
+}
+
+async function cancelScheduledMessage(id){
+  await sb.from('scheduled_messages').update({status:'canceled'}).eq('id',id);
+  loadFollowups();
 }
 
 async function generateDraftMessage(){
