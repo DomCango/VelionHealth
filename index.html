@@ -1422,7 +1422,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="dpage" id="apage-patients">
       <div class="dcard">
         <div class="dcard-header"><div class="dcard-title">All patients</div><button class="btn-sm" onclick="openModal('app-add-patient-modal')">+ Add patient</button></div>
-        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Name</th><th>Visit type</th><th>Date of birth</th><th>Phone</th><th>Email</th><th>Added</th><th></th></tr></thead>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Name</th><th>Visit type</th><th>Date of birth</th><th>Phone</th><th>Email</th><th>SMS consent</th><th>Added</th><th></th></tr></thead>
         <tbody id="app-patient-table-body"></tbody>
         </table></div>
         <div id="app-patients-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
@@ -1500,7 +1500,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
       <div class="form-group"><label>Phone</label><input id="app-np-phone"/></div>
       <div class="form-group"><label>Email</label><input type="email" id="app-np-email"/></div>
       <div class="form-group"><label>Notes (optional)</label><textarea id="app-np-notes"></textarea></div>
-      <button class="btn-primary" style="width:100%" id="app-np-submit" onclick="submitNewPatient()">Add patient</button>
+      <div class="settings-row" style="padding:0.6rem 0"><div><div class="settings-label">SMS consent</div><div class="settings-sub">Patient has agreed to receive text messages</div></div><button class="toggle" id="app-np-consent" onclick="this.classList.toggle('on')"></button></div>
+      <button class="btn-primary" style="width:100%;margin-top:0.75rem" id="app-np-submit" onclick="submitNewPatient()">Add patient</button>
     </div>
   </div>
 </div>
@@ -1560,6 +1561,28 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="form-group"><label>Reply</label><textarea id="conversation-reply-text" style="min-height:70px" placeholder="Type a reply to send now..."></textarea></div>
     <div id="conversation-reply-error" class="login-error" style="display:none"></div>
     <button class="btn-primary" style="width:100%" id="conversation-reply-btn" onclick="sendConversationReply()">Send reply</button>
+  </div>
+</div>
+
+<!-- UPDATE SMS CONSENT (real, authenticated) -->
+<div class="modal-overlay" id="consent-modal" onclick="if(event.target===this)closeModal('consent-modal')">
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('consent-modal')">×</button>
+    <h3>Update SMS consent</h3>
+    <p class="modal-sub">Scheduled follow-ups can only be sent to patients who have consented to receive text messages.</p>
+    <div class="settings-row" style="padding:0.6rem 0"><div><div class="settings-label">Patient has agreed to receive text messages</div></div><button class="toggle" id="consent-modal-toggle" onclick="this.classList.toggle('on')"></button></div>
+    <div class="form-group"><label>How was consent obtained? (optional)</label>
+      <select id="consent-modal-method">
+        <option value="">—</option>
+        <option value="At intake">At intake</option>
+        <option value="Verbal, in person">Verbal, in person</option>
+        <option value="Verbal, by phone">Verbal, by phone</option>
+        <option value="Written form">Written form</option>
+        <option value="Text reply">Text reply</option>
+        <option value="Patient revoked consent">Patient revoked consent</option>
+      </select>
+    </div>
+    <div id="consent-modal-error" class="login-error" style="display:none"></div>
+    <button class="btn-primary" style="width:100%" id="consent-modal-save" onclick="saveConsentUpdate()">Save</button>
   </div>
 </div>
 
@@ -1722,7 +1745,7 @@ async function loadPatients(){
   const tbody=document.getElementById('app-patient-table-body');
   const emptyEl=document.getElementById('app-patients-empty');
   emptyEl.style.display='none';
-  tbody.innerHTML='<tr><td colspan="7" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="8" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
   const {data,error}=await sb.from('patients').select('*').order('created_at',{ascending:false});
   if(error){
     tbody.innerHTML='';
@@ -1738,12 +1761,14 @@ async function loadPatients(){
     emptyEl.style.display='block';
     return;
   }
-  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" data-action="new-followup" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.full_name)+'">New follow-up</button></td></tr>').join('');
+  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td><button class="spill '+(p.sms_consent?'sp-g':'sp-r')+'" style="border:none;cursor:pointer" data-action="update-consent" data-id="'+escHtml(p.id)+'" data-consent="'+(p.sms_consent?'1':'0')+'">'+(p.sms_consent?'Consented':'Not consented')+'</button></td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" data-action="new-followup" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.full_name)+'">New follow-up</button></td></tr>').join('');
 }
 
 document.getElementById('app-patient-table-body').addEventListener('click',(e)=>{
-  const btn=e.target.closest('button[data-action="new-followup"]');
-  if(btn)openDraftModal(btn.dataset.id,btn.dataset.name);
+  const followupBtn=e.target.closest('button[data-action="new-followup"]');
+  if(followupBtn){openDraftModal(followupBtn.dataset.id,followupBtn.dataset.name);return;}
+  const consentBtn=e.target.closest('button[data-action="update-consent"]');
+  if(consentBtn)openConsentModal(consentBtn.dataset.id,consentBtn.dataset.consent==='1');
 });
 
 function openDraftModal(patientId,patientName){
@@ -1789,6 +1814,8 @@ async function scheduleDraftMessage(){
   errEl.style.display='none';
   const messageText=document.getElementById('draft-text-area').value.trim();
   if(!messageText){errEl.textContent='Generate a message first.';errEl.style.display='block';return;}
+  const {data:consentCheck}=await sb.from('patients').select('sms_consent').eq('id',currentDraftPatient.id).single();
+  if(!consentCheck?.sms_consent){errEl.textContent="This patient hasn't consented to SMS. Update their consent status on the Patients page before scheduling messages to them.";errEl.style.display='block';return;}
   const flagged=document.getElementById('draft-flag-banner').style.display==='block';
   const followUpType=document.getElementById('draft-followup-type').value;
   const scheduleType=document.getElementById('draft-schedule-type').value;
@@ -2075,6 +2102,7 @@ async function submitNewPatient(){
   const errEl=document.getElementById('app-np-error');
   errEl.style.display='none';
   if(!name){errEl.textContent='Full name is required.';errEl.style.display='block';return;}
+  const consented=document.getElementById('app-np-consent').classList.contains('on');
   const payload={
     clinic_id:currentClinicId,
     full_name:name,
@@ -2083,14 +2111,52 @@ async function submitNewPatient(){
     phone:document.getElementById('app-np-phone').value.trim()||null,
     email:document.getElementById('app-np-email').value.trim()||null,
     notes:document.getElementById('app-np-notes').value.trim()||null,
+    sms_consent:consented,
   };
   const btn=document.getElementById('app-np-submit');
   btn.disabled=true;btn.textContent='Adding…';
-  const {error}=await sb.from('patients').insert(payload);
+  const {data,error}=await sb.from('patients').insert(payload).select('id').single();
   btn.disabled=false;btn.textContent='Add patient';
   if(error){errEl.textContent='Could not add patient: '+error.message;errEl.style.display='block';return;}
+  await logConsentEvent(data.id,consented,'At intake');
   ['app-np-name','app-np-visit-type','app-np-dob','app-np-phone','app-np-email','app-np-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('app-np-consent').classList.remove('on');
   closeModal('app-add-patient-modal');
+  loadPatients();
+}
+
+async function logConsentEvent(patientId,consented,method){
+  await sb.from('consent_events').insert({
+    clinic_id:currentClinicId,
+    patient_id:patientId,
+    consented,
+    method,
+    recorded_by:(await sb.auth.getUser()).data.user.id,
+  });
+}
+
+let currentConsentPatientId=null;
+
+function openConsentModal(patientId,currentlyConsented){
+  currentConsentPatientId=patientId;
+  document.getElementById('consent-modal-toggle').classList.toggle('on',currentlyConsented);
+  document.getElementById('consent-modal-method').selectedIndex=0;
+  document.getElementById('consent-modal-error').style.display='none';
+  openModal('consent-modal');
+}
+
+async function saveConsentUpdate(){
+  const errEl=document.getElementById('consent-modal-error');
+  errEl.style.display='none';
+  const consented=document.getElementById('consent-modal-toggle').classList.contains('on');
+  const method=document.getElementById('consent-modal-method').value||null;
+  const btn=document.getElementById('consent-modal-save');
+  btn.disabled=true;btn.textContent='Saving…';
+  const {error}=await sb.from('patients').update({sms_consent:consented}).eq('id',currentConsentPatientId);
+  btn.disabled=false;btn.textContent='Save';
+  if(error){errEl.textContent='Could not update consent: '+error.message;errEl.style.display='block';return;}
+  await logConsentEvent(currentConsentPatientId,consented,method);
+  closeModal('consent-modal');
   loadPatients();
 }
 

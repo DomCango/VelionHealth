@@ -74,7 +74,7 @@ module.exports = async (req, res) => {
 
   try {
     const findRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/scheduled_messages?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowISO)}&select=id,clinic_id,patient_id,message_text,retry_count,patients(phone)`,
+      `${SUPABASE_URL}/rest/v1/scheduled_messages?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowISO)}&select=id,clinic_id,patient_id,message_text,retry_count,patients(phone,sms_consent)`,
       {
         headers: {
           apikey: serviceRoleKey,
@@ -98,7 +98,11 @@ module.exports = async (req, res) => {
       const phone = toE164(row.patients?.phone);
       let update;
 
-      if (!phone) {
+      if (!row.patients?.sms_consent) {
+        // Consent may have been revoked after this was scheduled - never send without it.
+        update = { status: 'failed', send_error: 'Patient has not consented to SMS.' };
+        failed++;
+      } else if (!phone) {
         // Missing/invalid phone number is deterministic - retrying won't fix it.
         update = { status: 'failed', send_error: 'Missing or invalid patient phone number.' };
         failed++;
