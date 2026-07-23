@@ -1363,6 +1363,26 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </div>
 </div>
 
+<!-- ACCEPT INVITE -->
+<div class="page" id="page-accept-invite">
+<nav class="l-nav">
+  <div class="logo" onclick="goTo('landing')"><div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
+</nav>
+<div class="login-wrap">
+  <div class="login-card">
+    <h3>Join your clinic</h3>
+    <p class="modal-sub" id="accept-invite-sub">Loading invite…</p>
+    <div id="accept-invite-error" class="login-error" style="display:none"></div>
+    <div id="accept-invite-form" style="display:none">
+      <div class="form-group"><label>Email</label><input id="accept-invite-email" disabled/></div>
+      <div class="form-group"><label>Your full name</label><input id="accept-invite-name"/></div>
+      <div class="form-group"><label>Choose a password</label><input type="password" id="accept-invite-password" autocomplete="new-password"/></div>
+      <button class="btn-primary" style="width:100%" id="accept-invite-submit" onclick="submitAcceptInvite()">Join clinic</button>
+    </div>
+  </div>
+</div>
+</div>
+
 <!-- APP (authenticated real dashboard) -->
 <div class="page" id="page-app">
 <div class="dash-page"><div class="dash-shell">
@@ -1440,6 +1460,20 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <div id="clinic-instructions-saved" style="display:none;color:var(--green);font-size:0.8rem;margin-bottom:0.75rem">Saved.</div>
         <button class="btn-primary" id="clinic-instructions-save-btn" onclick="saveClinicInstructions()">Save instructions</button>
       </div></div>
+
+      <div class="dcard" style="margin-top:1.5rem" id="team-card">
+        <div class="dcard-header"><div class="dcard-title">Team</div><button class="btn-sm" id="invite-teammate-btn" style="display:none" onclick="openInviteModal()">+ Invite teammate</button></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Name</th><th>Role</th></tr></thead>
+        <tbody id="team-employees-body"></tbody>
+        </table></div>
+      </div>
+
+      <div class="dcard" style="margin-top:1.5rem;display:none" id="team-invites-card">
+        <div class="dcard-header"><div class="dcard-title">Pending invites</div></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Email</th><th>Role</th><th>Expires</th><th></th></tr></thead>
+        <tbody id="team-invites-body"></tbody>
+        </table></div>
+      </div>
     </div>
 
     <!-- COMING SOON (shared placeholder for not-yet-built sections) -->
@@ -1529,6 +1563,33 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 
+<!-- INVITE TEAMMATE (real, authenticated) -->
+<div class="modal-overlay" id="invite-modal" onclick="if(event.target===this)closeModal('invite-modal')">
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('invite-modal')">×</button>
+    <div id="invite-form-content">
+      <h3>Invite a teammate</h3>
+      <p class="modal-sub">They'll join your clinic once they accept the invite link.</p>
+      <div class="form-group"><label>Email</label><input type="email" id="invite-email"/></div>
+      <div class="form-group"><label>Role</label>
+        <select id="invite-role">
+          <option value="staff">Staff</option>
+          <option value="doctor">Doctor</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div id="invite-error" class="login-error" style="display:none"></div>
+      <button class="btn-primary" style="width:100%" id="invite-create-btn" onclick="createInvite()">Create invite</button>
+    </div>
+    <div id="invite-link-content" style="display:none">
+      <h3>Invite created</h3>
+      <p class="modal-sub">Send this link to your teammate however you'd like (text, email, etc). It expires in 7 days.</p>
+      <div class="form-group"><input id="invite-link-text" readonly style="font-size:0.78rem"/></div>
+      <button class="btn-outline" style="width:100%;margin-bottom:0.5rem" onclick="copyInviteLink()">Copy link</button>
+      <button class="btn-primary" style="width:100%" onclick="closeModal('invite-modal')">Done</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // ── SUPABASE AUTH (Phase 1) ─────────────────────────────────────────────────
@@ -1551,6 +1612,7 @@ async function handleLogin(){
 }
 
 let currentClinicId=null;
+let currentEmployeeRole=null;
 let currentDraftPatient=null;
 
 async function loadEmployeeProfile(){
@@ -1566,6 +1628,7 @@ async function loadEmployeeProfile(){
     return;
   }
   currentClinicId=data.clinic_id;
+  currentEmployeeRole=data.role;
   document.getElementById('app-welcome-name').textContent=data.full_name;
   document.getElementById('app-clinic-name').textContent=data.clinics.name;
   document.getElementById('app-employee-role').textContent=data.role.charAt(0).toUpperCase()+data.role.slice(1);
@@ -1584,10 +1647,61 @@ async function handleLogout(){
 }
 
 async function checkExistingSession(){
+  const inviteToken=new URLSearchParams(window.location.search).get('invite');
+  if(inviteToken){await loadInvite(inviteToken);return;}
   const {data:{session}}=await sb.auth.getSession();
   if(session)await loadEmployeeProfile();
 }
 checkExistingSession();
+
+let currentInviteToken=null;
+
+async function loadInvite(token){
+  currentInviteToken=token;
+  goTo('accept-invite');
+  const subEl=document.getElementById('accept-invite-sub');
+  const errEl=document.getElementById('accept-invite-error');
+  try{
+    const resp=await fetch('/api/get-invite?token='+encodeURIComponent(token));
+    const result=await resp.json();
+    if(!resp.ok)throw new Error(result.error||'This invite link is not valid.');
+    subEl.textContent="You've been invited to join "+result.clinicName+' as '+result.role+'.';
+    document.getElementById('accept-invite-email').value=result.email;
+    document.getElementById('accept-invite-form').style.display='block';
+  }catch(err){
+    subEl.textContent='';
+    errEl.textContent=err.message;
+    errEl.style.display='block';
+  }
+}
+
+async function submitAcceptInvite(){
+  const errEl=document.getElementById('accept-invite-error');
+  errEl.style.display='none';
+  const fullName=document.getElementById('accept-invite-name').value.trim();
+  const password=document.getElementById('accept-invite-password').value;
+  const email=document.getElementById('accept-invite-email').value;
+  if(!fullName||!password){errEl.textContent='Enter your name and a password.';errEl.style.display='block';return;}
+  const btn=document.getElementById('accept-invite-submit');
+  btn.disabled=true;btn.textContent='Joining…';
+  try{
+    const resp=await fetch('/api/accept-invite',{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({token:currentInviteToken,fullName,password}),
+    });
+    const result=await resp.json();
+    if(!resp.ok)throw new Error(result.error||'Could not accept this invite.');
+    const {error:signInErr}=await sb.auth.signInWithPassword({email,password});
+    if(signInErr)throw new Error('Account created, but sign-in failed. Try logging in from the Employee Login page.');
+    window.history.replaceState({},'',window.location.pathname);
+    await loadEmployeeProfile();
+  }catch(err){
+    errEl.textContent=err.message;
+    errEl.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Join clinic';
+}
 
 const appNavLabels={overview:'Overview',patients:'Patients',followups:'Follow-ups',messages:'Messages',appointments:'Appointments',plans:'Care Plans',intake:'Intake Forms',analytics:'Analytics',settings:'Settings'};
 function setAppPage(p){
@@ -1602,7 +1716,7 @@ function setAppPage(p){
   if(p==='patients')loadPatients();
   if(p==='followups')loadFollowups();
   if(p==='messages')loadMessagesOverview();
-  if(p==='settings')loadClinicInstructions();
+  if(p==='settings'){loadClinicInstructions();loadTeam();}
 }
 
 async function loadPatients(){
@@ -1884,6 +1998,77 @@ async function saveClinicInstructions(){
   const {error}=await sb.from('clinic_instructions').upsert({clinic_id:currentClinicId,standard_instructions:text,updated_at:new Date().toISOString()});
   btn.disabled=false;btn.textContent='Save instructions';
   if(!error){savedEl.style.display='block';}
+}
+
+function isOwnerOrAdmin(){return currentEmployeeRole==='owner'||currentEmployeeRole==='admin';}
+
+async function loadTeam(){
+  const isAdmin=isOwnerOrAdmin();
+  document.getElementById('invite-teammate-btn').style.display=isAdmin?'inline-block':'none';
+
+  const {data:employeesData,error:employeesErr}=await sb.from('employees').select('full_name,role').order('full_name');
+  const empBody=document.getElementById('team-employees-body');
+  if(employeesErr){
+    empBody.innerHTML='<tr><td colspan="2" style="padding:1rem;text-align:center;color:var(--ink3)">Could not load team.</td></tr>';
+  }else{
+    empBody.innerHTML=employeesData.map(e=>'<tr><td>'+escHtml(e.full_name)+'</td><td>'+escHtml(e.role.charAt(0).toUpperCase()+e.role.slice(1))+'</td></tr>').join('');
+  }
+
+  const invitesCard=document.getElementById('team-invites-card');
+  if(!isAdmin){invitesCard.style.display='none';return;}
+  invitesCard.style.display='block';
+
+  const {data:invitesData,error:invitesErr}=await sb.from('employee_invites').select('id,email,role,status,expires_at').eq('status','pending').order('created_at',{ascending:false});
+  const invBody=document.getElementById('team-invites-body');
+  if(invitesErr||!invitesData||!invitesData.length){
+    invBody.innerHTML='<tr><td colspan="4" style="padding:1rem;text-align:center;color:var(--ink3)">No pending invites.</td></tr>';
+    return;
+  }
+  invBody.innerHTML=invitesData.map(inv=>'<tr><td>'+escHtml(inv.email)+'</td><td>'+escHtml(inv.role.charAt(0).toUpperCase()+inv.role.slice(1))+'</td><td>'+new Date(inv.expires_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" data-action="revoke-invite" data-id="'+escHtml(inv.id)+'">Revoke</button></td></tr>').join('');
+}
+
+document.getElementById('team-invites-body').addEventListener('click',(e)=>{
+  const btn=e.target.closest('button[data-action="revoke-invite"]');
+  if(btn)revokeInvite(btn.dataset.id);
+});
+
+async function revokeInvite(id){
+  await sb.from('employee_invites').update({status:'revoked'}).eq('id',id);
+  loadTeam();
+}
+
+function openInviteModal(){
+  document.getElementById('invite-email').value='';
+  document.getElementById('invite-role').selectedIndex=0;
+  document.getElementById('invite-error').style.display='none';
+  document.getElementById('invite-form-content').style.display='block';
+  document.getElementById('invite-link-content').style.display='none';
+  openModal('invite-modal');
+}
+
+async function createInvite(){
+  const errEl=document.getElementById('invite-error');
+  errEl.style.display='none';
+  const email=document.getElementById('invite-email').value.trim();
+  const role=document.getElementById('invite-role').value;
+  if(!email){errEl.textContent='Enter an email address.';errEl.style.display='block';return;}
+  const btn=document.getElementById('invite-create-btn');
+  btn.disabled=true;btn.textContent='Creating…';
+  const {data,error}=await sb.from('employee_invites').insert({clinic_id:currentClinicId,email,role,invited_by:(await sb.auth.getUser()).data.user.id}).select('token').single();
+  btn.disabled=false;btn.textContent='Create invite';
+  if(error){errEl.textContent='Could not create invite: '+error.message;errEl.style.display='block';return;}
+  const link=window.location.origin+window.location.pathname+'?invite='+data.token;
+  document.getElementById('invite-link-text').value=link;
+  document.getElementById('invite-form-content').style.display='none';
+  document.getElementById('invite-link-content').style.display='block';
+  loadTeam();
+}
+
+function copyInviteLink(){
+  const el=document.getElementById('invite-link-text');
+  el.select();
+  navigator.clipboard.writeText(el.value);
+  showToast('Link copied.');
 }
 
 async function submitNewPatient(){
