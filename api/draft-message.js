@@ -1,3 +1,6 @@
+const SUPABASE_URL = 'https://lhavkiozawvlujstilhn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoYXZraW96YXd2bHVqc3RpbGhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTQ1MjUsImV4cCI6MjEwMDEzMDUyNX0.8rJtscjlZ2MdUH6X8P9bI4waMzSjdO-IBWpkxEwcOYs';
+
 const FLAG_PATTERNS = [
   /\b\d+\s?(mg|mcg|ml|milligrams?|micrograms?)\b/i,
   /\b(twice|once|three times)\s+(a|per)\s+day\b/i,
@@ -5,6 +8,14 @@ const FLAG_PATTERNS = [
   /\bprescri(be|bed|ption)\b/i,
   /\b(guarantee|promise|will (cure|heal|fix))\b/i,
 ];
+
+async function isValidSession(accessToken) {
+  if (!accessToken) return false;
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: { apikey: SUPABASE_ANON_KEY, authorization: `Bearer ${accessToken}` },
+  });
+  return res.ok;
+}
 
 const SYSTEM_PROMPT = `You are a clinical communication assistant for a small medical practice. You write short, warm, patient-friendly follow-up messages on behalf of clinic staff.
 
@@ -24,7 +35,12 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const { patientFirstName, followUpType, doctorNote, clinicInstructions } = req.body || {};
+  const { patientFirstName, followUpType, doctorNote, clinicInstructions, accessToken } = req.body || {};
+
+  if (!(await isValidSession(accessToken))) {
+    res.status(401).json({ error: 'Please log in again.' });
+    return;
+  }
 
   if (!doctorNote || !followUpType) {
     res.status(400).json({ error: "Missing follow-up type or doctor's note." });

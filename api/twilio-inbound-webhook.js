@@ -1,4 +1,20 @@
+const crypto = require('crypto');
+
 const SUPABASE_URL = 'https://lhavkiozawvlujstilhn.supabase.co';
+const WEBHOOK_URL = 'https://www.velionhealth.co/api/twilio-inbound-webhook';
+
+function isValidTwilioRequest(authToken, signature, params) {
+  if (!authToken || !signature) return false;
+  const sortedKeys = Object.keys(params).sort();
+  let data = WEBHOOK_URL;
+  for (const key of sortedKeys) {
+    data += key + params[key];
+  }
+  const expected = crypto.createHmac('sha1', authToken).update(Buffer.from(data, 'utf-8')).digest('base64');
+  const a = Buffer.from(expected);
+  const b = Buffer.from(signature);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
 
 function digitsOnly(phone) {
   const d = (phone || '').replace(/\D/g, '');
@@ -24,6 +40,12 @@ module.exports = async (req, res) => {
   const body = req.body?.Body;
 
   if (!serviceRoleKey || !from || !body) {
+    res.status(200).send('<Response></Response>');
+    return;
+  }
+
+  const signature = req.headers['x-twilio-signature'];
+  if (!isValidTwilioRequest(process.env.TWILIO_AUTH_TOKEN, signature, req.body || {})) {
     res.status(200).send('<Response></Response>');
     return;
   }

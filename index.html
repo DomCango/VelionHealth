@@ -1625,8 +1625,13 @@ async function loadPatients(){
     emptyEl.style.display='block';
     return;
   }
-  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" onclick=\'openDraftModal('+JSON.stringify(p.id)+','+JSON.stringify(p.full_name)+')\'>New follow-up</button></td></tr>').join('');
+  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" data-action="new-followup" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.full_name)+'">New follow-up</button></td></tr>').join('');
 }
+
+document.getElementById('app-patient-table-body').addEventListener('click',(e)=>{
+  const btn=e.target.closest('button[data-action="new-followup"]');
+  if(btn)openDraftModal(btn.dataset.id,btn.dataset.name);
+});
 
 function openDraftModal(patientId,patientName){
   currentDraftPatient={id:patientId,name:patientName};
@@ -1767,8 +1772,13 @@ async function loadMessagesOverview(){
     emptyEl.style.display='block';
     return;
   }
-  tbody.innerHTML=patientsData.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+(counts[p.id]||0)+'</td><td>'+(attention[p.id]?'<span class="spill sp-a">Needs attention</span>':'—')+'</td><td><button class="btn-sm-ghost" onclick=\'openConversation('+JSON.stringify(p.id)+','+JSON.stringify(p.full_name)+')\'>View conversation</button></td></tr>').join('');
+  tbody.innerHTML=patientsData.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+(counts[p.id]||0)+'</td><td>'+(attention[p.id]?'<span class="spill sp-a">Needs attention</span>':'—')+'</td><td><button class="btn-sm-ghost" data-action="view-conversation" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.full_name)+'">View conversation</button></td></tr>').join('');
 }
+
+document.getElementById('app-messages-table-body').addEventListener('click',(e)=>{
+  const btn=e.target.closest('button[data-action="view-conversation"]');
+  if(btn)openConversation(btn.dataset.id,btn.dataset.name);
+});
 
 async function openConversation(patientId,patientName){
   currentConversationPatient={id:patientId,name:patientName};
@@ -1836,6 +1846,7 @@ async function generateDraftMessage(){
   try{
     const {data:instrData}=await sb.from('clinic_instructions').select('standard_instructions').eq('clinic_id',currentClinicId).maybeSingle();
     const clinicInstructions=instrData?.standard_instructions||'';
+    const {data:{session}}=await sb.auth.getSession();
     const resp=await fetch('/api/draft-message',{
       method:'POST',
       headers:{'content-type':'application/json'},
@@ -1844,6 +1855,7 @@ async function generateDraftMessage(){
         followUpType,
         doctorNote,
         clinicInstructions,
+        accessToken:session.access_token,
       }),
     });
     const result=await resp.json();
