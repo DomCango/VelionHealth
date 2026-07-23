@@ -1,4 +1,5 @@
 const SUPABASE_URL = 'https://lhavkiozawvlujstilhn.supabase.co';
+const MAX_RETRIES = 3;
 
 function toE164(phone) {
   if (!phone) return null;
@@ -73,7 +74,7 @@ module.exports = async (req, res) => {
 
   try {
     const findRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/scheduled_messages?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowISO)}&select=id,clinic_id,patient_id,message_text,patients(phone)`,
+      `${SUPABASE_URL}/rest/v1/scheduled_messages?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowISO)}&select=id,clinic_id,patient_id,message_text,retry_count,patients(phone)`,
       {
         headers: {
           apikey: serviceRoleKey,
@@ -91,12 +92,14 @@ module.exports = async (req, res) => {
 
     let sent = 0;
     let failed = 0;
+    let retried = 0;
 
     for (const row of due) {
       const phone = toE164(row.patients?.phone);
       let update;
 
       if (!phone) {
+        // Missing/invalid phone number is deterministic - retrying won't fix it.
         update = { status: 'failed', send_error: 'Missing or invalid patient phone number.' };
         failed++;
       } else {
@@ -106,8 +109,15 @@ module.exports = async (req, res) => {
           sent++;
           await logMessage(serviceRoleKey, row.clinic_id, row.patient_id, row.message_text);
         } catch (err) {
-          update = { status: 'failed', send_error: err.message };
-          failed++;
+          const nextRetryCount = (row.retry_count || 0) + 1;
+          if (nextRetryCount >= MAX_RETRIES) {
+            update = { status: 'failed', send_error: err.message, retry_count: nextRetryCount };
+            failed++;
+          } else {
+            // Leave it scheduled so the next cron run retries it automatically.
+            update = { retry_count: nextRetryCount, send_error: err.message };
+            retried++;
+          }
         }
       }
 
@@ -123,7 +133,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    res.status(200).json({ processed: due.length, sent, failed });
+    res.status(200).json({ processed: due.length, sent, failed, retried });
   } catch (err) {
     res.status(500).json({ error: 'Something went wrong processing scheduled messages.' });
   }
