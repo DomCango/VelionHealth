@@ -1394,7 +1394,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="dpage active" id="apage-overview">
       <div class="dcard"><div style="padding:1.75rem">
         <div style="font-size:0.95rem;color:var(--ink2)">Welcome back, <strong id="app-welcome-name">—</strong>.</div>
-        <p style="font-size:0.85rem;color:var(--ink3);margin-top:0.5rem;line-height:1.6">You have <strong id="app-patient-count-text">0</strong> patients on file. Follow-ups, messaging, and analytics are coming in later phases — for now, head to Patients to add and view your real patient list.</p>
+        <p style="font-size:0.85rem;color:var(--ink3);margin-top:0.5rem;line-height:1.6">You have <strong id="app-patient-count-text">0</strong> patients on file. Follow-ups, messaging, and analytics are coming in later phases. For now, head to Patients to add and view your real patient list.</p>
       </div></div>
     </div>
 
@@ -1435,8 +1435,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="dpage" id="apage-settings">
       <div class="dcard"><div style="padding:1.75rem">
         <div class="dcard-title" style="margin-bottom:0.5rem">Clinic-approved instructions</div>
-        <p style="font-size:0.83rem;color:var(--ink3);line-height:1.6;margin-bottom:1rem">This is your clinic's standard boilerplate — tone, general aftercare policy language, anything you always want said or never want implied. When staff generate a follow-up message, the AI is only allowed to draw from what you write here — it will not invent medical specifics beyond it.</p>
-        <div class="form-group"><textarea id="clinic-instructions-text" style="min-height:180px" placeholder="e.g. Always sign off as 'the care team at [Clinic Name]'. Never mention specific medications or dosages by name — refer patients to their printed aftercare sheet instead. If a patient reports worsening symptoms, tell them to call the clinic directly rather than offering guidance."></textarea></div>
+        <p style="font-size:0.83rem;color:var(--ink3);line-height:1.6;margin-bottom:1rem">This is your clinic's standard boilerplate: tone, general aftercare policy language, anything you always want said or never want implied. When staff generate a follow-up message, the AI is only allowed to draw from what you write here. It will not invent medical specifics beyond it.</p>
+        <div class="form-group"><textarea id="clinic-instructions-text" style="min-height:180px" placeholder="e.g. Always sign off as 'the care team at [Clinic Name]'. Never mention specific medications or dosages by name. Refer patients to their printed aftercare sheet instead. If a patient reports worsening symptoms, tell them to call the clinic directly rather than offering guidance."></textarea></div>
         <div id="clinic-instructions-saved" style="display:none;color:var(--green);font-size:0.8rem;margin-bottom:0.75rem">Saved.</div>
         <button class="btn-primary" id="clinic-instructions-save-btn" onclick="saveClinicInstructions()">Save instructions</button>
       </div></div>
@@ -1446,7 +1446,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="dpage" id="apage-soon">
       <div class="dcard"><div style="padding:2.5rem;text-align:center">
         <div style="font-size:0.95rem;font-weight:500;color:var(--ink);margin-bottom:0.5rem">Coming soon</div>
-        <p style="font-size:0.85rem;color:var(--ink2)">This part of Velion isn't wired up yet — it'll arrive in a later phase.</p>
+        <p style="font-size:0.85rem;color:var(--ink2)">This part of Velion isn't wired up yet. It'll arrive in a later phase.</p>
       </div></div>
     </div>
   </div>
@@ -1475,7 +1475,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 <div class="modal-overlay" id="draft-followup-modal" onclick="if(event.target===this)closeModal('draft-followup-modal')">
   <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('draft-followup-modal')">×</button>
     <h3>New follow-up</h3>
-    <p class="modal-sub">For <strong id="draft-patient-name">—</strong>. The AI drafts the message — nothing sends or schedules yet.</p>
+    <p class="modal-sub">For <strong id="draft-patient-name">—</strong>. The AI drafts the message. Nothing sends or schedules yet.</p>
     <div class="form-group"><label>Follow-up type</label>
       <select id="draft-followup-type">
         <option value="Post-visit check-in">Post-visit check-in</option>
@@ -1490,7 +1490,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <button class="btn-primary" style="width:100%" id="draft-generate-btn" onclick="generateDraftMessage()">Generate message</button>
 
     <div id="draft-result" style="display:none;margin-top:1.25rem">
-      <div id="draft-flag-banner" style="display:none;background:var(--amber-tint);color:var(--amber);font-size:0.8rem;padding:0.6rem 0.75rem;border-radius:6px;margin-bottom:0.75rem">⚠ This draft may contain medical specifics that need a second look before sending — check it carefully.</div>
+      <div id="draft-flag-banner" style="display:none;background:var(--amber-tint);color:var(--amber);font-size:0.8rem;padding:0.6rem 0.75rem;border-radius:6px;margin-bottom:0.75rem">⚠ This draft may contain medical specifics that need a second look before sending. Check it carefully.</div>
       <div class="form-group"><label>Draft message (editable)</label><textarea id="draft-text-area" style="min-height:140px"></textarea></div>
       <button class="btn-outline" style="width:100%" onclick="generateDraftMessage()">Regenerate</button>
 
@@ -1510,7 +1510,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
           </select>
         </div>
         <div class="form-group"><label>Starting</label><input type="datetime-local" id="draft-recurring-start"/></div>
-        <div class="form-group"><label>Ends on (optional — capped at 12 sends)</label><input type="date" id="draft-recurring-end"/></div>
+        <div class="form-group"><label>Ends on (optional, capped at 12 sends)</label><input type="date" id="draft-recurring-end"/></div>
       </div>
       <div id="draft-schedule-error" class="login-error" style="display:none"></div>
       <button class="btn-primary" style="width:100%;margin-top:0.5rem" id="draft-schedule-btn" onclick="scheduleDraftMessage()">Schedule message</button>
@@ -1621,7 +1621,7 @@ async function loadPatients(){
   document.getElementById('app-patient-count-text').textContent=data.length;
   if(!data.length){
     tbody.innerHTML='';
-    emptyEl.textContent='No patients yet — click "+ Add patient" to add your first one.';
+    emptyEl.textContent='No patients yet. Click "+ Add patient" to add your first one.';
     emptyEl.style.display='block';
     return;
   }
@@ -1728,7 +1728,7 @@ async function loadFollowups(){
   document.getElementById('app-followups-count').textContent=data.filter(m=>m.status==='scheduled').length;
   if(!data.length){
     tbody.innerHTML='';
-    emptyEl.textContent='Nothing scheduled yet — generate a follow-up from a patient row and schedule it.';
+    emptyEl.textContent='Nothing scheduled yet. Generate a follow-up from a patient row and schedule it.';
     emptyEl.style.display='block';
     return;
   }
