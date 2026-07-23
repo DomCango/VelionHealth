@@ -1613,6 +1613,7 @@ async function handleLogin(){
 
 let currentClinicId=null;
 let currentEmployeeRole=null;
+let currentInviteToken=null;
 let currentDraftPatient=null;
 
 async function loadEmployeeProfile(){
@@ -1653,8 +1654,6 @@ async function checkExistingSession(){
   if(session)await loadEmployeeProfile();
 }
 checkExistingSession();
-
-let currentInviteToken=null;
 
 async function loadInvite(token){
   currentInviteToken=token;
