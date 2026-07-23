@@ -33,6 +33,25 @@ async function sendSms(to, body) {
   return data;
 }
 
+async function logMessage(serviceRoleKey, clinicId, patientId, body) {
+  await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceRoleKey,
+      authorization: `Bearer ${serviceRoleKey}`,
+      'content-type': 'application/json',
+      prefer: 'return=minimal',
+    },
+    body: JSON.stringify({
+      clinic_id: clinicId,
+      patient_id: patientId,
+      direction: 'outbound',
+      body,
+      needs_attention: false,
+    }),
+  });
+}
+
 module.exports = async (req, res) => {
   const authHeader = req.headers['authorization'];
   if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -54,7 +73,7 @@ module.exports = async (req, res) => {
 
   try {
     const findRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/scheduled_messages?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowISO)}&select=id,message_text,patients(phone)`,
+      `${SUPABASE_URL}/rest/v1/scheduled_messages?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowISO)}&select=id,clinic_id,patient_id,message_text,patients(phone)`,
       {
         headers: {
           apikey: serviceRoleKey,
@@ -85,6 +104,7 @@ module.exports = async (req, res) => {
           await sendSms(phone, row.message_text);
           update = { status: 'sent', sent_at: nowISO };
           sent++;
+          await logMessage(serviceRoleKey, row.clinic_id, row.patient_id, row.message_text);
         } catch (err) {
           update = { status: 'failed', send_error: err.message };
           failed++;

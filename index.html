@@ -1372,7 +1372,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <button class="ds-nav active" id="app-nav-overview" onclick="setAppPage('overview')"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg>Overview</button>
     <button class="ds-nav" id="app-nav-patients" onclick="setAppPage('patients')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Patients<span class="ds-badge" id="app-patients-count">0</span></button>
     <button class="ds-nav" id="app-nav-followups" onclick="setAppPage('followups')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Follow-ups<span class="ds-badge" id="app-followups-count">0</span></button>
-    <button class="ds-nav" id="app-nav-messages" onclick="setAppPage('messages')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M5 5h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Messages</button>
+    <button class="ds-nav" id="app-nav-messages" onclick="setAppPage('messages')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M5 5h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Messages<span class="ds-badge" id="app-messages-count" style="display:none">0</span></button>
     <div class="ds-sec">Manage</div>
     <button class="ds-nav" id="app-nav-appointments" onclick="setAppPage('appointments')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v-1M11 2v-1M2 6h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Appointments</button>
     <button class="ds-nav" id="app-nav-plans" onclick="setAppPage('plans')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 3h10M3 6h7M3 9h8M3 12h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="13" cy="11" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M12 11l.8.8 1.4-1.4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>Care Plans</button>
@@ -1417,6 +1417,17 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <tbody id="app-followups-table-body"></tbody>
         </table></div>
         <div id="app-followups-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="dpage" id="apage-messages">
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Conversations</div></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Messages</th><th>Needs attention</th><th></th></tr></thead>
+        <tbody id="app-messages-table-body"></tbody>
+        </table></div>
+        <div id="app-messages-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
       </div>
     </div>
 
@@ -1507,6 +1518,17 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 
+<!-- CONVERSATION THREAD (real, authenticated) -->
+<div class="modal-overlay" id="conversation-modal" onclick="if(event.target===this)closeModal('conversation-modal')">
+  <div class="modal" style="max-width:520px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('conversation-modal')">×</button>
+    <h3 id="conversation-patient-name">—</h3>
+    <div id="conversation-thread" style="max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:0.7rem;padding:0.5rem 0;margin-bottom:1rem"></div>
+    <div class="form-group"><label>Reply</label><textarea id="conversation-reply-text" style="min-height:70px" placeholder="Type a reply to send now..."></textarea></div>
+    <div id="conversation-reply-error" class="login-error" style="display:none"></div>
+    <button class="btn-primary" style="width:100%" id="conversation-reply-btn" onclick="sendConversationReply()">Send reply</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // ── SUPABASE AUTH (Phase 1) ─────────────────────────────────────────────────
@@ -1553,6 +1575,7 @@ async function loadEmployeeProfile(){
   setAppPage('overview');
   loadPatients();
   loadFollowups();
+  loadMessagesOverview();
 }
 
 async function handleLogout(){
@@ -1572,12 +1595,13 @@ function setAppPage(p){
   const navBtn=document.getElementById('app-nav-'+p);
   if(navBtn)navBtn.classList.add('active');
   document.querySelectorAll('#page-app .dpage').forEach(el=>el.classList.remove('active'));
-  const realPages=['overview','patients','followups','settings'];
+  const realPages=['overview','patients','followups','messages','settings'];
   const pageId=realPages.includes(p)?'apage-'+p:'apage-soon';
   document.getElementById(pageId).classList.add('active');
   document.getElementById('app-page-title').textContent=appNavLabels[p]||'Coming soon';
   if(p==='patients')loadPatients();
   if(p==='followups')loadFollowups();
+  if(p==='messages')loadMessagesOverview();
   if(p==='settings')loadClinicInstructions();
 }
 
@@ -1710,6 +1734,95 @@ async function loadFollowups(){
 async function cancelScheduledMessage(id){
   await sb.from('scheduled_messages').update({status:'canceled'}).eq('id',id);
   loadFollowups();
+}
+
+let currentConversationPatient=null;
+
+async function loadMessagesOverview(){
+  const tbody=document.getElementById('app-messages-table-body');
+  const emptyEl=document.getElementById('app-messages-empty');
+  emptyEl.style.display='none';
+  tbody.innerHTML='<tr><td colspan="4" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  const {data:patientsData,error:patientsErr}=await sb.from('patients').select('id,full_name').order('full_name');
+  if(patientsErr){
+    tbody.innerHTML='';
+    emptyEl.textContent='Could not load conversations: '+patientsErr.message;
+    emptyEl.style.display='block';
+    return;
+  }
+  const {data:msgsData}=await sb.from('messages').select('patient_id,needs_attention');
+  const counts={};
+  const attention={};
+  (msgsData||[]).forEach(m=>{
+    counts[m.patient_id]=(counts[m.patient_id]||0)+1;
+    if(m.needs_attention)attention[m.patient_id]=true;
+  });
+  const flaggedCount=Object.keys(attention).length;
+  const badgeEl=document.getElementById('app-messages-count');
+  badgeEl.textContent=flaggedCount;
+  badgeEl.style.display=flaggedCount>0?'inline-block':'none';
+  if(!patientsData.length){
+    tbody.innerHTML='';
+    emptyEl.textContent='No patients yet.';
+    emptyEl.style.display='block';
+    return;
+  }
+  tbody.innerHTML=patientsData.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+(counts[p.id]||0)+'</td><td>'+(attention[p.id]?'<span class="spill sp-a">Needs attention</span>':'—')+'</td><td><button class="btn-sm-ghost" onclick=\'openConversation('+JSON.stringify(p.id)+','+JSON.stringify(p.full_name)+')\'>View conversation</button></td></tr>').join('');
+}
+
+async function openConversation(patientId,patientName){
+  currentConversationPatient={id:patientId,name:patientName};
+  document.getElementById('conversation-patient-name').textContent=patientName;
+  document.getElementById('conversation-reply-text').value='';
+  document.getElementById('conversation-reply-error').style.display='none';
+  await loadConversationThread();
+  openModal('conversation-modal');
+}
+
+async function loadConversationThread(){
+  const threadEl=document.getElementById('conversation-thread');
+  threadEl.innerHTML='<div style="text-align:center;color:var(--ink3);font-size:0.8rem">Loading…</div>';
+  const {data,error}=await sb.from('messages').select('*').eq('patient_id',currentConversationPatient.id).order('created_at',{ascending:true});
+  if(error){
+    threadEl.innerHTML='<div style="color:var(--red);font-size:0.8rem">Could not load messages.</div>';
+    return;
+  }
+  if(!data.length){
+    threadEl.innerHTML='<div style="text-align:center;color:var(--ink3);font-size:0.8rem">No messages yet.</div>';
+    return;
+  }
+  threadEl.innerHTML=data.map(m=>{
+    const cls=m.direction==='outbound'?'bubble b-out':'bubble b-in';
+    const style=m.needs_attention?' style="border:2px solid var(--amber)"':'';
+    return '<div class="'+cls+'"'+style+'>'+escHtml(m.body)+'<div class="b-time">'+new Date(m.created_at).toLocaleString()+'</div></div>';
+  }).join('');
+  threadEl.scrollTop=threadEl.scrollHeight;
+}
+
+async function sendConversationReply(){
+  const errEl=document.getElementById('conversation-reply-error');
+  errEl.style.display='none';
+  const text=document.getElementById('conversation-reply-text').value.trim();
+  if(!text){errEl.textContent='Type a message first.';errEl.style.display='block';return;}
+  const {data:{session}}=await sb.auth.getSession();
+  const btn=document.getElementById('conversation-reply-btn');
+  btn.disabled=true;btn.textContent='Sending…';
+  try{
+    const resp=await fetch('/api/send-reply',{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({patientId:currentConversationPatient.id,body:text,accessToken:session.access_token}),
+    });
+    const result=await resp.json();
+    if(!resp.ok)throw new Error(result.error||'Could not send reply.');
+    document.getElementById('conversation-reply-text').value='';
+    await loadConversationThread();
+    loadMessagesOverview();
+  }catch(err){
+    errEl.textContent=err.message;
+    errEl.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Send reply';
 }
 
 async function generateDraftMessage(){
