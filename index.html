@@ -2337,13 +2337,27 @@ async function loadAppointments(){
     emptyEl.style.display='block';
     return;
   }
-  tbody.innerHTML=data.map(a=>'<tr><td><div class="td-name">'+escHtml(a.patients?.full_name||'—')+'</div></td><td>'+escHtml(a.appointment_type)+'</td><td>'+new Date(a.scheduled_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})+'</td><td>'+a.duration_minutes+' min</td><td><span class="spill '+(appointmentStatusPill[a.status]||'sp-b')+'">'+appointmentStatusLabels[a.status]+'</span></td><td><button class="btn-sm-ghost" data-action="update-appointment" data-id="'+escHtml(a.id)+'">Update</button></td></tr>').join('');
+  tbody.innerHTML=data.map(a=>'<tr><td><div class="td-name">'+escHtml(a.patients?.full_name||'—')+'</div></td><td>'+escHtml(a.appointment_type)+'</td><td>'+new Date(a.scheduled_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})+'</td><td>'+a.duration_minutes+' min</td><td><span class="spill '+(appointmentStatusPill[a.status]||'sp-b')+'">'+appointmentStatusLabels[a.status]+'</span></td><td style="display:flex;gap:0.5rem"><button class="btn-sm-ghost" data-action="update-appointment" data-id="'+escHtml(a.id)+'">Update</button><button class="btn-sm-ghost" data-action="send-reminder" data-id="'+escHtml(a.id)+'">Send reminder</button></td></tr>').join('');
 }
 
 document.getElementById('app-appointments-table-body').addEventListener('click',(e)=>{
-  const btn=e.target.closest('button[data-action="update-appointment"]');
-  if(btn)openUpdateAppointmentModal(btn.dataset.id);
+  const updateBtn=e.target.closest('button[data-action="update-appointment"]');
+  if(updateBtn){openUpdateAppointmentModal(updateBtn.dataset.id);return;}
+  const reminderBtn=e.target.closest('button[data-action="send-reminder"]');
+  if(reminderBtn)openAppointmentReminderModal(reminderBtn.dataset.id);
 });
+
+async function openAppointmentReminderModal(appointmentId){
+  const {data,error}=await sb.from('appointments').select('*,patients(id,full_name)').eq('id',appointmentId).single();
+  if(error||!data)return;
+  openDraftModal(data.patients.id,data.patients.full_name);
+  document.getElementById('draft-followup-type').value='Appointment reminder';
+  const apptWhen=new Date(data.scheduled_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+  document.getElementById('draft-doctor-note').value='Patient has an upcoming '+data.appointment_type+' appointment on '+apptWhen+'. Remind them of the date and time, and ask them to reach out if they need to reschedule.';
+  const reminderAt=new Date(new Date(data.scheduled_at).getTime()-24*60*60*1000);
+  const pad=n=>String(n).padStart(2,'0');
+  document.getElementById('draft-once-datetime').value=reminderAt.getFullYear()+'-'+pad(reminderAt.getMonth()+1)+'-'+pad(reminderAt.getDate())+'T'+pad(reminderAt.getHours())+':'+pad(reminderAt.getMinutes());
+}
 
 async function openNewAppointmentModal(){
   document.getElementById('new-appointment-error').style.display='none';
