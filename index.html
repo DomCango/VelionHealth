@@ -1383,6 +1383,55 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </div>
 </div>
 
+<!-- PATIENT INTAKE FORM (public, no login) -->
+<div class="page" id="page-intake-form">
+<nav class="l-nav">
+  <div class="logo"><div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>Velion Health</div>
+</nav>
+<div class="login-wrap" style="align-items:flex-start;padding-top:3rem">
+  <div class="login-card" style="max-width:560px">
+    <div id="intake-loading"><p class="modal-sub">Loading your form…</p></div>
+    <div id="intake-error" class="login-error" style="display:none"></div>
+
+    <div id="intake-form-wrap" style="display:none">
+      <h3>Patient intake form</h3>
+      <p class="modal-sub">For <strong id="intake-clinic-name">your clinic</strong>. Please complete this before your visit. It takes about 3 minutes.</p>
+
+      <div class="about-section-title" style="margin-top:1.5rem">Contact information</div>
+      <div class="form-group"><label>Full name</label><input id="intake-name"/></div>
+      <div class="form-group"><label>Date of birth</label><input type="date" id="intake-dob"/></div>
+      <div class="form-group"><label>Phone</label><input id="intake-phone"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="intake-email"/></div>
+      <div class="form-group"><label>Emergency contact name</label><input id="intake-emergency-name"/></div>
+      <div class="form-group"><label>Emergency contact phone</label><input id="intake-emergency-phone"/></div>
+
+      <div class="about-section-title" style="margin-top:1.5rem">Medical history</div>
+      <div class="form-group"><label>Reason for today's visit</label><textarea id="intake-reason" placeholder="What brings you in?"></textarea></div>
+      <div class="form-group"><label>Current medications</label><textarea id="intake-medications" placeholder="List any medications you're currently taking, or write 'none'"></textarea></div>
+      <div class="form-group"><label>Allergies</label><textarea id="intake-allergies" placeholder="List any known allergies, or write 'none'"></textarea></div>
+      <div class="form-group"><label>Past surgeries or major medical conditions</label><textarea id="intake-history" placeholder="Optional"></textarea></div>
+
+      <div class="about-section-title" style="margin-top:1.5rem">Insurance (optional)</div>
+      <div class="form-group"><label>Insurance provider</label><input id="intake-insurance-provider"/></div>
+      <div class="form-group"><label>Policy / member ID</label><input id="intake-insurance-id"/></div>
+
+      <div class="about-section-title" style="margin-top:1.5rem">Consent</div>
+      <div class="settings-row" style="padding:0.6rem 0"><div><div class="settings-label">I consent to receive treatment from this clinic and confirm the information above is accurate to the best of my knowledge.</div></div><button class="toggle" id="intake-consent-toggle" onclick="this.classList.toggle('on')"></button></div>
+      <div class="form-group"><label>Type your full name as your signature</label><input id="intake-signature"/></div>
+
+      <div id="intake-submit-error" class="login-error" style="display:none"></div>
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem" id="intake-submit-btn" onclick="submitIntakeForm()">Submit form</button>
+    </div>
+
+    <div id="intake-done" style="display:none;text-align:center;padding:1rem 0">
+      <div style="font-size:2rem;margin-bottom:0.75rem">✓</div>
+      <h3>Thank you</h3>
+      <p class="modal-sub">Your information has been received. See you at your visit.</p>
+    </div>
+  </div>
+</div>
+</div>
+
 <!-- APP (authenticated real dashboard) -->
 <div class="page" id="page-app">
 <div class="dash-page"><div class="dash-shell">
@@ -1396,7 +1445,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="ds-sec">Manage</div>
     <button class="ds-nav" id="app-nav-appointments" onclick="setAppPage('appointments')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v-1M11 2v-1M2 6h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Appointments</button>
     <button class="ds-nav" id="app-nav-plans" onclick="setAppPage('plans')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 3h10M3 6h7M3 9h8M3 12h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="13" cy="11" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M12 11l.8.8 1.4-1.4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>Care Plans<span class="ds-badge" id="app-plans-count">0</span></button>
-    <button class="ds-nav" id="app-nav-intake" onclick="setAppPage('intake')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5h6M5 8h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Intake Forms</button>
+    <button class="ds-nav" id="app-nav-intake" onclick="setAppPage('intake')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5h6M5 8h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Intake Forms<span class="ds-badge" id="app-intake-count">0</span></button>
     <button class="ds-nav" id="app-nav-analytics" onclick="setAppPage('analytics')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 12l3-4 3 2 3-6 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Analytics</button>
     <button class="ds-nav" id="app-nav-settings" onclick="setAppPage('settings')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Settings</button>
     <div class="dsidebar-bottom">
@@ -1459,6 +1508,17 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <tbody id="app-plans-table-body"></tbody>
         </table></div>
         <div id="app-plans-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <!-- INTAKE FORMS -->
+    <div class="dpage" id="apage-intake">
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Intake forms</div><button class="btn-sm" onclick="openSendIntakeModal()">+ Send intake form</button></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Status</th><th>Sent</th><th>Expires</th><th></th></tr></thead>
+        <tbody id="app-intake-table-body"></tbody>
+        </table></div>
+        <div id="app-intake-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
       </div>
     </div>
 
@@ -1590,6 +1650,35 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
   </div>
 </div>
 
+<!-- SEND INTAKE FORM (real, authenticated) -->
+<div class="modal-overlay" id="send-intake-real-modal" onclick="if(event.target===this)closeModal('send-intake-real-modal')">
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('send-intake-real-modal')">×</button>
+    <div id="send-intake-form-content">
+      <h3>Send intake form</h3>
+      <p class="modal-sub">Generates a secure link for the patient to fill out before their visit. Link expires in 14 days.</p>
+      <div id="send-intake-error" class="login-error" style="display:none"></div>
+      <div class="form-group"><label>Patient</label><select id="send-intake-patient"></select></div>
+      <button class="btn-primary" style="width:100%" id="send-intake-submit" onclick="createIntakeForm()">Create link</button>
+    </div>
+    <div id="send-intake-link-content" style="display:none">
+      <h3>Intake form link created</h3>
+      <p class="modal-sub">Send this link to your patient however you'd like (text, email, etc).</p>
+      <div class="form-group"><input id="send-intake-link-text" readonly style="font-size:0.78rem"/></div>
+      <button class="btn-outline" style="width:100%;margin-bottom:0.5rem" onclick="copyIntakeLink()">Copy link</button>
+      <button class="btn-primary" style="width:100%" onclick="closeModal('send-intake-real-modal')">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW INTAKE RESPONSES (real, authenticated) -->
+<div class="modal-overlay" id="view-intake-real-modal" onclick="if(event.target===this)closeModal('view-intake-real-modal')">
+  <div class="modal" style="max-width:560px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('view-intake-real-modal')">×</button>
+    <h3 id="view-intake-patient-name">—</h3>
+    <p class="modal-sub">Submitted intake responses</p>
+    <div id="view-intake-body" style="max-height:60vh;overflow-y:auto"></div>
+  </div>
+</div>
+
 <!-- NEW CARE PLAN (real, authenticated) -->
 <div class="modal-overlay" id="app-new-plan-modal" onclick="if(event.target===this)closeModal('app-new-plan-modal')">
   <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('app-new-plan-modal')">×</button>
@@ -1701,6 +1790,7 @@ async function handleLogin(){
 let currentClinicId=null;
 let currentEmployeeRole=null;
 let currentInviteToken=null;
+let currentIntakeToken=null;
 let currentDraftPatient=null;
 
 async function loadEmployeeProfile(){
@@ -1735,12 +1825,87 @@ async function handleLogout(){
 }
 
 async function checkExistingSession(){
-  const inviteToken=new URLSearchParams(window.location.search).get('invite');
+  const params=new URLSearchParams(window.location.search);
+  const inviteToken=params.get('invite');
   if(inviteToken){await loadInvite(inviteToken);return;}
+  const intakeToken=params.get('intake');
+  if(intakeToken){await loadIntakeFormPage(intakeToken);return;}
   const {data:{session}}=await sb.auth.getSession();
   if(session)await loadEmployeeProfile();
 }
 checkExistingSession();
+
+async function loadIntakeFormPage(token){
+  currentIntakeToken=token;
+  goTo('intake-form');
+  const loadingEl=document.getElementById('intake-loading');
+  const errEl=document.getElementById('intake-error');
+  try{
+    const resp=await fetch('/api/get-intake-form?token='+encodeURIComponent(token));
+    const result=await resp.json();
+    if(!resp.ok)throw new Error(result.error||'This form link is not valid.');
+    loadingEl.style.display='none';
+    if(result.status==='completed'){
+      document.getElementById('intake-done').style.display='block';
+      return;
+    }
+    document.getElementById('intake-clinic-name').textContent=result.clinicName;
+    document.getElementById('intake-name').value=result.patient.full_name||'';
+    document.getElementById('intake-dob').value=result.patient.date_of_birth||'';
+    document.getElementById('intake-phone').value=result.patient.phone||'';
+    document.getElementById('intake-email').value=result.patient.email||'';
+    document.getElementById('intake-form-wrap').style.display='block';
+  }catch(err){
+    loadingEl.style.display='none';
+    errEl.textContent=err.message;
+    errEl.style.display='block';
+  }
+}
+
+async function submitIntakeForm(){
+  const errEl=document.getElementById('intake-submit-error');
+  errEl.style.display='none';
+  const name=document.getElementById('intake-name').value.trim();
+  const signature=document.getElementById('intake-signature').value.trim();
+  const consented=document.getElementById('intake-consent-toggle').classList.contains('on');
+  if(!name){errEl.textContent='Full name is required.';errEl.style.display='block';return;}
+  if(!consented){errEl.textContent='Please check the consent box to continue.';errEl.style.display='block';return;}
+  if(!signature){errEl.textContent='Please type your name as your signature.';errEl.style.display='block';return;}
+  const responses={
+    full_name:name,
+    date_of_birth:document.getElementById('intake-dob').value,
+    phone:document.getElementById('intake-phone').value.trim(),
+    email:document.getElementById('intake-email').value.trim(),
+    emergency_contact_name:document.getElementById('intake-emergency-name').value.trim(),
+    emergency_contact_phone:document.getElementById('intake-emergency-phone').value.trim(),
+    reason_for_visit:document.getElementById('intake-reason').value.trim(),
+    current_medications:document.getElementById('intake-medications').value.trim(),
+    allergies:document.getElementById('intake-allergies').value.trim(),
+    medical_history:document.getElementById('intake-history').value.trim(),
+    insurance_provider:document.getElementById('intake-insurance-provider').value.trim(),
+    insurance_id:document.getElementById('intake-insurance-id').value.trim(),
+    consented:true,
+    signature,
+    signed_at:new Date().toISOString(),
+  };
+  const btn=document.getElementById('intake-submit-btn');
+  btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    const resp=await fetch('/api/submit-intake-form',{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({token:currentIntakeToken,responses}),
+    });
+    const result=await resp.json();
+    if(!resp.ok)throw new Error(result.error||'Could not submit form.');
+    document.getElementById('intake-form-wrap').style.display='none';
+    document.getElementById('intake-done').style.display='block';
+  }catch(err){
+    errEl.textContent=err.message;
+    errEl.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Submit form';
+}
 
 async function loadInvite(token){
   currentInviteToken=token;
@@ -1795,7 +1960,7 @@ function setAppPage(p){
   const navBtn=document.getElementById('app-nav-'+p);
   if(navBtn)navBtn.classList.add('active');
   document.querySelectorAll('#page-app .dpage').forEach(el=>el.classList.remove('active'));
-  const realPages=['overview','patients','followups','messages','plans','analytics','settings'];
+  const realPages=['overview','patients','followups','messages','plans','intake','analytics','settings'];
   const pageId=realPages.includes(p)?'apage-'+p:'apage-soon';
   document.getElementById(pageId).classList.add('active');
   document.getElementById('app-page-title').textContent=appNavLabels[p]||'Coming soon';
@@ -1803,6 +1968,7 @@ function setAppPage(p){
   if(p==='followups')loadFollowups();
   if(p==='messages')loadMessagesOverview();
   if(p==='plans')loadCarePlans();
+  if(p==='intake')loadIntakeForms();
   if(p==='analytics')loadAnalytics();
   if(p==='settings'){loadClinicInstructions();loadTeam();}
 }
@@ -2195,6 +2361,96 @@ async function saveCarePlanUpdate(){
   if(error){errEl.textContent='Could not save: '+error.message;errEl.style.display='block';return;}
   closeModal('update-plan-modal');
   loadCarePlans();
+}
+
+const intakeStatusPill={pending:'sp-b',completed:'sp-g',expired:'sp-r'};
+let currentIntakeFormId=null;
+
+async function loadIntakeForms(){
+  const tbody=document.getElementById('app-intake-table-body');
+  const emptyEl=document.getElementById('app-intake-empty');
+  emptyEl.style.display='none';
+  tbody.innerHTML='<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  const {data,error}=await sb.from('intake_forms').select('*,patients(full_name)').order('sent_at',{ascending:false});
+  if(error){
+    tbody.innerHTML='';
+    emptyEl.textContent='Could not load intake forms: '+error.message;
+    emptyEl.style.display='block';
+    return;
+  }
+  document.getElementById('app-intake-count').textContent=data.filter(f=>f.status==='pending').length;
+  if(!data.length){
+    tbody.innerHTML='';
+    emptyEl.textContent='No intake forms sent yet. Click "+ Send intake form" to send one.';
+    emptyEl.style.display='block';
+    return;
+  }
+  tbody.innerHTML=data.map(f=>'<tr><td><div class="td-name">'+escHtml(f.patients?.full_name||'—')+'</div></td><td><span class="spill '+(intakeStatusPill[f.status]||'sp-b')+'">'+f.status+'</span></td><td>'+new Date(f.sent_at).toLocaleDateString()+'</td><td>'+new Date(f.expires_at).toLocaleDateString()+'</td><td>'+(f.status==='completed'?'<button class="btn-sm-ghost" data-action="view-intake" data-id="'+escHtml(f.id)+'">View responses</button>':'<button class="btn-sm-ghost" data-action="copy-intake-link" data-token="'+escHtml(f.token)+'">Copy link</button>')+'</td></tr>').join('');
+}
+
+document.getElementById('app-intake-table-body').addEventListener('click',(e)=>{
+  const viewBtn=e.target.closest('button[data-action="view-intake"]');
+  if(viewBtn){openViewIntakeResponses(viewBtn.dataset.id);return;}
+  const copyBtn=e.target.closest('button[data-action="copy-intake-link"]');
+  if(copyBtn){
+    const link=window.location.origin+window.location.pathname+'?intake='+copyBtn.dataset.token;
+    navigator.clipboard.writeText(link);
+    showToast('Link copied.');
+  }
+});
+
+async function openSendIntakeModal(){
+  document.getElementById('send-intake-error').style.display='none';
+  document.getElementById('send-intake-form-content').style.display='block';
+  document.getElementById('send-intake-link-content').style.display='none';
+  const {data:patientsData}=await sb.from('patients').select('id,full_name').order('full_name');
+  const select=document.getElementById('send-intake-patient');
+  select.innerHTML=(patientsData||[]).map(p=>'<option value="'+escHtml(p.id)+'">'+escHtml(p.full_name)+'</option>').join('');
+  openModal('send-intake-real-modal');
+}
+
+async function createIntakeForm(){
+  const errEl=document.getElementById('send-intake-error');
+  errEl.style.display='none';
+  const patientId=document.getElementById('send-intake-patient').value;
+  if(!patientId){errEl.textContent='Select a patient.';errEl.style.display='block';return;}
+  const btn=document.getElementById('send-intake-submit');
+  btn.disabled=true;btn.textContent='Creating…';
+  const {data,error}=await sb.from('intake_forms').insert({clinic_id:currentClinicId,patient_id:patientId}).select('token').single();
+  btn.disabled=false;btn.textContent='Create link';
+  if(error){errEl.textContent='Could not create intake form: '+error.message;errEl.style.display='block';return;}
+  const link=window.location.origin+window.location.pathname+'?intake='+data.token;
+  document.getElementById('send-intake-link-text').value=link;
+  document.getElementById('send-intake-form-content').style.display='none';
+  document.getElementById('send-intake-link-content').style.display='block';
+  loadIntakeForms();
+}
+
+function copyIntakeLink(){
+  const el=document.getElementById('send-intake-link-text');
+  el.select();
+  navigator.clipboard.writeText(el.value);
+  showToast('Link copied.');
+}
+
+async function openViewIntakeResponses(formId){
+  const {data,error}=await sb.from('intake_forms').select('*,patients(full_name)').eq('id',formId).single();
+  if(error||!data)return;
+  document.getElementById('view-intake-patient-name').textContent=data.patients?.full_name||'—';
+  const r=data.responses||{};
+  const fieldLabels=[
+    ['full_name','Full name'],['date_of_birth','Date of birth'],['phone','Phone'],['email','Email'],
+    ['emergency_contact_name','Emergency contact'],['emergency_contact_phone','Emergency contact phone'],
+    ['reason_for_visit',"Reason for visit"],['current_medications','Current medications'],['allergies','Allergies'],
+    ['medical_history','Medical history'],['insurance_provider','Insurance provider'],['insurance_id','Policy / member ID'],
+    ['signature','Signature'],['signed_at','Signed at'],
+  ];
+  document.getElementById('view-intake-body').innerHTML=fieldLabels.map(([key,label])=>{
+    let val=r[key]||'—';
+    if(key==='signed_at'&&r[key])val=new Date(r[key]).toLocaleString();
+    return '<div class="contact-row"><div class="contact-label">'+label+'</div><div class="contact-value">'+escHtml(String(val))+'</div></div>';
+  }).join('');
+  openModal('view-intake-real-modal');
 }
 
 async function loadAnalytics(){
