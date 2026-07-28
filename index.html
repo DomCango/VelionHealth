@@ -1443,7 +1443,7 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <button class="ds-nav" id="app-nav-followups" onclick="setAppPage('followups')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Follow-ups<span class="ds-badge" id="app-followups-count">0</span></button>
     <button class="ds-nav" id="app-nav-messages" onclick="setAppPage('messages')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M5 5h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Messages<span class="ds-badge" id="app-messages-count" style="display:none">0</span></button>
     <div class="ds-sec">Manage</div>
-    <button class="ds-nav" id="app-nav-appointments" onclick="setAppPage('appointments')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v-1M11 2v-1M2 6h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Appointments</button>
+    <button class="ds-nav" id="app-nav-appointments" onclick="setAppPage('appointments')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 2v-1M11 2v-1M2 6h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Appointments<span class="ds-badge" id="app-appointments-count">0</span></button>
     <button class="ds-nav" id="app-nav-plans" onclick="setAppPage('plans')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 3h10M3 6h7M3 9h8M3 12h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="13" cy="11" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M12 11l.8.8 1.4-1.4" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>Care Plans<span class="ds-badge" id="app-plans-count">0</span></button>
     <button class="ds-nav" id="app-nav-intake" onclick="setAppPage('intake')"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5h6M5 8h6M5 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Intake Forms<span class="ds-badge" id="app-intake-count">0</span></button>
     <button class="ds-nav" id="app-nav-analytics" onclick="setAppPage('analytics')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 12l3-4 3 2 3-6 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Analytics</button>
@@ -1497,6 +1497,17 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <tbody id="app-messages-table-body"></tbody>
         </table></div>
         <div id="app-messages-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="dpage" id="apage-appointments">
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Appointments</div><button class="btn-sm" onclick="openNewAppointmentModal()">+ New appointment</button></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Type</th><th>Date &amp; time</th><th>Duration</th><th>Status</th><th></th></tr></thead>
+        <tbody id="app-appointments-table-body"></tbody>
+        </table></div>
+        <div id="app-appointments-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
       </div>
     </div>
 
@@ -1647,6 +1658,49 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="form-group"><label>Reply</label><textarea id="conversation-reply-text" style="min-height:70px" placeholder="Type a reply to send now..."></textarea></div>
     <div id="conversation-reply-error" class="login-error" style="display:none"></div>
     <button class="btn-primary" style="width:100%" id="conversation-reply-btn" onclick="sendConversationReply()">Send reply</button>
+  </div>
+</div>
+
+<!-- NEW APPOINTMENT (real, authenticated) -->
+<div class="modal-overlay" id="new-appointment-real-modal" onclick="if(event.target===this)closeModal('new-appointment-real-modal')">
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('new-appointment-real-modal')">×</button>
+    <h3>New appointment</h3>
+    <p class="modal-sub">Book an appointment for a patient.</p>
+    <div id="new-appointment-error" class="login-error" style="display:none"></div>
+    <div class="form-group"><label>Patient</label><select id="new-appointment-patient"></select></div>
+    <div class="form-group"><label>Appointment type</label><input id="new-appointment-type" placeholder="e.g. Chiropractic adjustment"/></div>
+    <div class="form-group"><label>Date &amp; time</label><input type="datetime-local" id="new-appointment-datetime"/></div>
+    <div class="form-group"><label>Duration (minutes)</label>
+      <select id="new-appointment-duration">
+        <option value="15">15 min</option>
+        <option value="30" selected>30 min</option>
+        <option value="45">45 min</option>
+        <option value="60">60 min</option>
+        <option value="90">90 min</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Notes (optional)</label><textarea id="new-appointment-notes"></textarea></div>
+    <button class="btn-primary" style="width:100%" id="new-appointment-submit" onclick="submitNewAppointment()">Book appointment</button>
+  </div>
+</div>
+
+<!-- UPDATE APPOINTMENT (real, authenticated) -->
+<div class="modal-overlay" id="update-appointment-real-modal" onclick="if(event.target===this)closeModal('update-appointment-real-modal')">
+  <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('update-appointment-real-modal')">×</button>
+    <h3 id="update-appointment-title">—</h3>
+    <p class="modal-sub" id="update-appointment-sub"></p>
+    <div id="update-appointment-error" class="login-error" style="display:none"></div>
+    <div class="form-group"><label>Status</label>
+      <select id="update-appointment-status">
+        <option value="scheduled">Scheduled</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="completed">Completed</option>
+        <option value="no_show">No-show</option>
+        <option value="canceled">Canceled</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Notes</label><textarea id="update-appointment-notes"></textarea></div>
+    <button class="btn-primary" style="width:100%" id="update-appointment-submit" onclick="saveAppointmentUpdate()">Save</button>
   </div>
 </div>
 
@@ -1960,13 +2014,14 @@ function setAppPage(p){
   const navBtn=document.getElementById('app-nav-'+p);
   if(navBtn)navBtn.classList.add('active');
   document.querySelectorAll('#page-app .dpage').forEach(el=>el.classList.remove('active'));
-  const realPages=['overview','patients','followups','messages','plans','intake','analytics','settings'];
+  const realPages=['overview','patients','followups','messages','appointments','plans','intake','analytics','settings'];
   const pageId=realPages.includes(p)?'apage-'+p:'apage-soon';
   document.getElementById(pageId).classList.add('active');
   document.getElementById('app-page-title').textContent=appNavLabels[p]||'Coming soon';
   if(p==='patients')loadPatients();
   if(p==='followups')loadFollowups();
   if(p==='messages')loadMessagesOverview();
+  if(p==='appointments')loadAppointments();
   if(p==='plans')loadCarePlans();
   if(p==='intake')loadIntakeForms();
   if(p==='analytics')loadAnalytics();
@@ -2256,6 +2311,102 @@ async function saveClinicInstructions(){
   const {error}=await sb.from('clinic_instructions').upsert({clinic_id:currentClinicId,standard_instructions:text,updated_at:new Date().toISOString()});
   btn.disabled=false;btn.textContent='Save instructions';
   if(!error){savedEl.style.display='block';}
+}
+
+const appointmentStatusLabels={scheduled:'Scheduled',confirmed:'Confirmed',completed:'Completed',no_show:'No-show',canceled:'Canceled'};
+const appointmentStatusPill={scheduled:'sp-b',confirmed:'sp-g',completed:'sp-g',no_show:'sp-r',canceled:'sp-r'};
+let currentAppointment=null;
+
+async function loadAppointments(){
+  const tbody=document.getElementById('app-appointments-table-body');
+  const emptyEl=document.getElementById('app-appointments-empty');
+  emptyEl.style.display='none';
+  tbody.innerHTML='<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  const {data,error}=await sb.from('appointments').select('*,patients(full_name)').order('scheduled_at',{ascending:true});
+  if(error){
+    tbody.innerHTML='';
+    emptyEl.textContent='Could not load appointments: '+error.message;
+    emptyEl.style.display='block';
+    return;
+  }
+  const upcomingCount=data.filter(a=>a.status==='scheduled'||a.status==='confirmed').length;
+  document.getElementById('app-appointments-count').textContent=upcomingCount;
+  if(!data.length){
+    tbody.innerHTML='';
+    emptyEl.textContent='No appointments yet. Click "+ New appointment" to book one.';
+    emptyEl.style.display='block';
+    return;
+  }
+  tbody.innerHTML=data.map(a=>'<tr><td><div class="td-name">'+escHtml(a.patients?.full_name||'—')+'</div></td><td>'+escHtml(a.appointment_type)+'</td><td>'+new Date(a.scheduled_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})+'</td><td>'+a.duration_minutes+' min</td><td><span class="spill '+(appointmentStatusPill[a.status]||'sp-b')+'">'+appointmentStatusLabels[a.status]+'</span></td><td><button class="btn-sm-ghost" data-action="update-appointment" data-id="'+escHtml(a.id)+'">Update</button></td></tr>').join('');
+}
+
+document.getElementById('app-appointments-table-body').addEventListener('click',(e)=>{
+  const btn=e.target.closest('button[data-action="update-appointment"]');
+  if(btn)openUpdateAppointmentModal(btn.dataset.id);
+});
+
+async function openNewAppointmentModal(){
+  document.getElementById('new-appointment-error').style.display='none';
+  document.getElementById('new-appointment-type').value='';
+  document.getElementById('new-appointment-datetime').value='';
+  document.getElementById('new-appointment-duration').value='30';
+  document.getElementById('new-appointment-notes').value='';
+  const {data:patientsData}=await sb.from('patients').select('id,full_name').order('full_name');
+  const select=document.getElementById('new-appointment-patient');
+  select.innerHTML=(patientsData||[]).map(p=>'<option value="'+escHtml(p.id)+'">'+escHtml(p.full_name)+'</option>').join('');
+  openModal('new-appointment-real-modal');
+}
+
+async function submitNewAppointment(){
+  const errEl=document.getElementById('new-appointment-error');
+  errEl.style.display='none';
+  const patientId=document.getElementById('new-appointment-patient').value;
+  const type=document.getElementById('new-appointment-type').value.trim();
+  const datetime=document.getElementById('new-appointment-datetime').value;
+  if(!patientId||!type||!datetime){errEl.textContent='Patient, type, and date/time are required.';errEl.style.display='block';return;}
+  const payload={
+    clinic_id:currentClinicId,
+    patient_id:patientId,
+    appointment_type:type,
+    scheduled_at:new Date(datetime).toISOString(),
+    duration_minutes:parseInt(document.getElementById('new-appointment-duration').value,10),
+    notes:document.getElementById('new-appointment-notes').value.trim()||null,
+  };
+  const btn=document.getElementById('new-appointment-submit');
+  btn.disabled=true;btn.textContent='Booking…';
+  const {error}=await sb.from('appointments').insert(payload);
+  btn.disabled=false;btn.textContent='Book appointment';
+  if(error){errEl.textContent='Could not book appointment: '+error.message;errEl.style.display='block';return;}
+  closeModal('new-appointment-real-modal');
+  loadAppointments();
+}
+
+async function openUpdateAppointmentModal(appointmentId){
+  const {data,error}=await sb.from('appointments').select('*,patients(full_name)').eq('id',appointmentId).single();
+  if(error||!data)return;
+  currentAppointment=data;
+  document.getElementById('update-appointment-error').style.display='none';
+  document.getElementById('update-appointment-title').textContent=data.appointment_type;
+  document.getElementById('update-appointment-sub').textContent=(data.patients?.full_name||'—')+' · '+new Date(data.scheduled_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+  document.getElementById('update-appointment-status').value=data.status;
+  document.getElementById('update-appointment-notes').value=data.notes||'';
+  openModal('update-appointment-real-modal');
+}
+
+async function saveAppointmentUpdate(){
+  const errEl=document.getElementById('update-appointment-error');
+  errEl.style.display='none';
+  const payload={
+    status:document.getElementById('update-appointment-status').value,
+    notes:document.getElementById('update-appointment-notes').value.trim()||null,
+  };
+  const btn=document.getElementById('update-appointment-submit');
+  btn.disabled=true;btn.textContent='Saving…';
+  const {error}=await sb.from('appointments').update(payload).eq('id',currentAppointment.id);
+  btn.disabled=false;btn.textContent='Save';
+  if(error){errEl.textContent='Could not save: '+error.message;errEl.style.display='block';return;}
+  closeModal('update-appointment-real-modal');
+  loadAppointments();
 }
 
 const carePlanStatusLabels={active:'Active',completed:'Completed',on_hold:'On hold',discontinued:'Discontinued'};
@@ -3582,7 +3733,7 @@ function viewApptPatient(){
   }
 }
 
-function setInterval(btn){
+function setCalIntervalBtn(btn){
   document.querySelectorAll('.cal-interval-btn').forEach(b=>{if(b.id==='cal-view-day'||b.id==='cal-view-week')return;b.classList.remove('active')});
   btn.classList.add('active');calIntervalMins=parseInt(btn.dataset.mins);
 }
