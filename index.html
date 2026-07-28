@@ -2633,7 +2633,7 @@ function buildRealDayCal(){
   const totalSlots=(REAL_END_HOUR-REAL_START_HOUR)*4;
   const totalH=totalSlots*REAL_SLOT_H;
   const labelsEl=document.getElementById('real-cal-time-labels');
-  labelsEl.innerHTML='';labelsEl.style.height=totalH+'px';
+  labelsEl.innerHTML='';labelsEl.style.height=totalH+'px';labelsEl.style.paddingTop='0';
   for(let h=REAL_START_HOUR;h<REAL_END_HOUR;h++){
     const lbl=document.createElement('div');
     lbl.className='cal-time-label';lbl.style.height=(REAL_SLOT_H*4)+'px';
