@@ -369,6 +369,9 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 
 /* ── MOBILE RESPONSIVE ──────────────────────────────────────────────────── */
 @media(max-width:768px){
+  /* Prevent iOS Safari's auto-zoom-on-focus (triggers below 16px) */
+  input,textarea,select{font-size:16px!important}
+
   /* Nav */
   .l-nav{padding:0 1.1rem;height:52px}
   .logo{font-size:1.05rem;gap:6px;white-space:nowrap}
@@ -1522,8 +1525,8 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
             <button class="dtab" data-fustatus="failed" onclick="filterOverviewFollowups(this,'failed')">Failed</button>
             <button class="dtab" data-fustatus="canceled" onclick="filterOverviewFollowups(this,'canceled')">Canceled</button>
           </div>
-          <table class="dtable"><thead><tr><th>Patient</th><th>Type</th><th>Scheduled for</th><th>Status</th></tr></thead>
-          <tbody id="ov-followups-body"></tbody></table>
+          <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Type</th><th>Scheduled for</th><th>Status</th></tr></thead>
+          <tbody id="ov-followups-body"></tbody></table></div>
         </div>
         <div class="dcard">
           <div class="dcard-header"><div class="dcard-title">Needs attention</div><button class="dcard-btn" onclick="setAppPage('messages')">View all →</button></div>
@@ -2717,7 +2720,7 @@ const appointmentStatusLabels={scheduled:'Scheduled',confirmed:'Confirmed',compl
 const appointmentStatusPill={scheduled:'sp-b',confirmed:'sp-g',completed:'sp-g',no_show:'sp-r',canceled:'sp-r'};
 let currentAppointment=null;
 
-const REAL_SLOT_H=20;
+const REAL_SLOT_H=window.innerWidth<=768?15:20;
 const REAL_START_HOUR=7, REAL_END_HOUR=19;
 const REAL_TYPE_PALETTE=['#1a4fd6','#1a6644','#0ea5e9','#92600a','#7c3aed','#059669','#dc2626','#ea580c','#0891b2'];
 let realCalDate=new Date();
