@@ -2457,8 +2457,8 @@ async function openConversation(patientId,patientName){
   document.getElementById('conversation-patient-name').textContent=patientName;
   document.getElementById('conversation-reply-text').value='';
   document.getElementById('conversation-reply-error').style.display='none';
-  await loadConversationThread();
   openModal('conversation-modal');
+  await loadConversationThread();
 }
 
 async function loadConversationThread(){
