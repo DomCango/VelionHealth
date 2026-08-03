@@ -1675,6 +1675,18 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <div class="dcard-header"><div class="dcard-title">Follow-up status breakdown</div></div>
         <div style="padding:1.25rem" id="analytics-status-breakdown"></div>
       </div>
+
+      <div class="d-metrics-5" style="margin-top:1.5rem;margin-bottom:1.5rem">
+        <div class="d-metric"><div class="dm-label">Total appointments</div><div class="dm-value" id="analytics-appt-total">—</div></div>
+        <div class="d-metric"><div class="dm-label">Upcoming</div><div class="dm-value" id="analytics-appt-upcoming">—</div></div>
+        <div class="d-metric"><div class="dm-label">Completed</div><div class="dm-value" id="analytics-appt-completed">—</div></div>
+        <div class="d-metric"><div class="dm-label">No-show rate</div><div class="dm-value" id="analytics-appt-noshow-rate">—</div></div>
+        <div class="d-metric"><div class="dm-label">Canceled</div><div class="dm-value" id="analytics-appt-canceled">—</div></div>
+      </div>
+      <div class="dcard">
+        <div class="dcard-header"><div class="dcard-title">Appointment status breakdown</div></div>
+        <div style="padding:1.25rem" id="analytics-appt-breakdown"></div>
+      </div>
     </div>
 
     <!-- SETTINGS (clinic-approved instructions) -->
@@ -3166,6 +3178,41 @@ async function loadAnalytics(){
 
   const {data:messagesData}=await sb.from('messages').select('needs_attention');
   const needsAttention=(messagesData||[]).filter(m=>m.needs_attention).length;
+
+  const {data:apptData}=await sb.from('appointments').select('status,scheduled_at');
+  const apptTotal=apptData?.length||0;
+  const now=new Date();
+  const apptStatusCounts={scheduled:0,confirmed:0,completed:0,no_show:0,canceled:0};
+  (apptData||[]).forEach(a=>{apptStatusCounts[a.status]=(apptStatusCounts[a.status]||0)+1;});
+  const upcoming=(apptData||[]).filter(a=>(a.status==='scheduled'||a.status==='confirmed')&&new Date(a.scheduled_at)>=now).length;
+  const completedCount=apptStatusCounts.completed;
+  const noShowCount=apptStatusCounts.no_show;
+  const noShowRate=(completedCount+noShowCount)?Math.round((noShowCount/(completedCount+noShowCount))*100):0;
+
+  document.getElementById('analytics-appt-total').textContent=apptTotal;
+  document.getElementById('analytics-appt-upcoming').textContent=upcoming;
+  document.getElementById('analytics-appt-completed').textContent=completedCount;
+  document.getElementById('analytics-appt-noshow-rate').textContent=noShowRate+'%';
+  document.getElementById('analytics-appt-canceled').textContent=apptStatusCounts.canceled;
+
+  const apptBreakdownEl=document.getElementById('analytics-appt-breakdown');
+  const apptStatusMeta=[
+    {key:'scheduled',label:'Scheduled',color:'var(--blue)'},
+    {key:'confirmed',label:'Confirmed',color:'var(--green)'},
+    {key:'completed',label:'Completed',color:'var(--green)'},
+    {key:'no_show',label:'No-show',color:'var(--red)'},
+    {key:'canceled',label:'Canceled',color:'var(--ink3)'},
+  ];
+  if(!apptTotal){
+    apptBreakdownEl.innerHTML='<p style="color:var(--ink3);font-size:0.85rem">No appointments yet.</p>';
+  } else {
+    const apptMax=Math.max(1,...apptStatusMeta.map(s=>apptStatusCounts[s.key]||0));
+    apptBreakdownEl.innerHTML=apptStatusMeta.map(s=>{
+      const count=apptStatusCounts[s.key]||0;
+      const pct=Math.round((count/apptMax)*100);
+      return '<div style="margin-bottom:0.9rem"><div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--ink2);margin-bottom:0.3rem"><span>'+s.label+'</span><span>'+count+'</span></div><div style="background:var(--cream);border-radius:4px;height:8px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+s.color+'"></div></div></div>';
+    }).join('');
+  }
 
   document.getElementById('analytics-total-patients').textContent=totalPatients;
   document.getElementById('analytics-consent-rate').textContent=consentRate+'%';
