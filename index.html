@@ -1461,10 +1461,42 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 
     <!-- OVERVIEW -->
     <div class="dpage active" id="apage-overview">
-      <div class="dcard"><div style="padding:1.75rem">
-        <div style="font-size:0.95rem;color:var(--ink2)">Welcome back, <strong id="app-welcome-name">—</strong>.</div>
-        <p style="font-size:0.85rem;color:var(--ink3);margin-top:0.5rem;line-height:1.6">You have <strong id="app-patient-count-text">0</strong> patients on file. Use the sidebar to manage patients, follow-ups, messages, appointments, care plans, and intake forms.</p>
-      </div></div>
+      <div style="font-size:0.85rem;color:var(--ink3);margin-bottom:1rem">Welcome back, <strong id="app-welcome-name" style="color:var(--ink)">—</strong>. You have <strong id="app-patient-count-text" style="color:var(--ink)">0</strong> patients on file.</div>
+      <div class="d-metrics-5">
+        <div class="d-metric"><div class="dm-label">Total patients</div><div class="dm-value" id="ov-stat-patients">—</div></div>
+        <div class="d-metric"><div class="dm-label">SMS consent rate</div><div class="dm-value" id="ov-stat-consent">—</div></div>
+        <div class="d-metric"><div class="dm-label">Messages sent</div><div class="dm-value" id="ov-stat-sent">—</div></div>
+        <div class="d-metric"><div class="dm-label">Needs attention</div><div class="dm-value" id="ov-stat-attention">—</div></div>
+        <div class="d-metric"><div class="dm-label">Upcoming appointments</div><div class="dm-value" id="ov-stat-upcoming">—</div></div>
+      </div>
+      <div class="g2">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Recent follow-ups</div><button class="dcard-btn" onclick="setAppPage('followups')">View all →</button></div>
+          <div class="dtabs">
+            <button class="dtab active" data-fustatus="all" onclick="filterOverviewFollowups(this,'all')">All</button>
+            <button class="dtab" data-fustatus="scheduled" onclick="filterOverviewFollowups(this,'scheduled')">Scheduled</button>
+            <button class="dtab" data-fustatus="sent" onclick="filterOverviewFollowups(this,'sent')">Sent</button>
+            <button class="dtab" data-fustatus="failed" onclick="filterOverviewFollowups(this,'failed')">Failed</button>
+            <button class="dtab" data-fustatus="canceled" onclick="filterOverviewFollowups(this,'canceled')">Canceled</button>
+          </div>
+          <table class="dtable"><thead><tr><th>Patient</th><th>Type</th><th>Scheduled for</th><th>Status</th></tr></thead>
+          <tbody id="ov-followups-body"></tbody></table>
+        </div>
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Needs attention</div><button class="dcard-btn" onclick="setAppPage('messages')">View all →</button></div>
+          <div id="ov-attention-list"></div>
+        </div>
+      </div>
+      <div class="g2b">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Upcoming appointments</div><button class="dcard-btn" onclick="setAppPage('appointments')">View calendar →</button></div>
+          <div class="ulist" id="ov-upcoming-appts"></div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Activity feed</div></div>
+          <div class="feed" id="ov-activity-feed"></div>
+        </div>
+      </div>
     </div>
 
     <!-- PATIENTS -->
@@ -1511,7 +1543,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
       <div class="dcard" style="margin-top:1rem">
         <div class="dcard-header"><div class="dcard-title">Care plans</div><button class="btn-sm" id="pp2-new-plan-btn">+ New care plan</button></div>
         <div id="pp2-plans-list" style="padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0.75rem"></div>
-        <div id="pp2-plans-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem">No care plans yet.</div>
       </div>
 
       <div class="dcard" style="margin-top:1rem">
@@ -1519,7 +1550,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Type</th><th>Date &amp; time</th><th>Duration</th><th>Status</th></tr></thead>
         <tbody id="pp2-appts-body"></tbody>
         </table></div>
-        <div id="pp2-appts-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem">No appointments yet.</div>
       </div>
 
       <div class="dcard" style="margin-top:1rem">
@@ -1527,7 +1557,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Type</th><th>Scheduled for</th><th>Status</th><th></th></tr></thead>
         <tbody id="pp2-followups-body"></tbody>
         </table></div>
-        <div id="pp2-followups-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem">Nothing scheduled yet.</div>
       </div>
     </div>
 
@@ -1551,6 +1580,13 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
     <div class="dpage" id="apage-followups">
       <div class="dcard">
         <div class="dcard-header"><div class="dcard-title">Scheduled follow-ups</div></div>
+        <div class="dtabs">
+          <button class="dtab active" data-fustatus="all" onclick="filterAppFollowups(this,'all')">All</button>
+          <button class="dtab" data-fustatus="scheduled" onclick="filterAppFollowups(this,'scheduled')">Scheduled</button>
+          <button class="dtab" data-fustatus="sent" onclick="filterAppFollowups(this,'sent')">Sent</button>
+          <button class="dtab" data-fustatus="failed" onclick="filterAppFollowups(this,'failed')">Failed</button>
+          <button class="dtab" data-fustatus="canceled" onclick="filterAppFollowups(this,'canceled')">Canceled</button>
+        </div>
         <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Type</th><th>Scheduled for</th><th>Status</th><th></th></tr></thead>
         <tbody id="app-followups-table-body"></tbody>
         </table></div>
@@ -1560,12 +1596,32 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 
     <!-- MESSAGES -->
     <div class="dpage" id="apage-messages">
-      <div class="dcard">
-        <div class="dcard-header"><div class="dcard-title">Conversations</div></div>
-        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Messages</th><th>Needs attention</th><th></th></tr></thead>
-        <tbody id="app-messages-table-body"></tbody>
-        </table></div>
-        <div id="app-messages-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:1.25rem;height:100%">
+        <div class="dcard" style="overflow:hidden">
+          <div class="dcard-header"><div class="dcard-title">Conversations</div></div>
+          <div class="msg-list" id="app-msg-thread-list"></div>
+          <div id="app-messages-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
+        </div>
+        <div class="dcard" style="display:flex;flex-direction:column;overflow:hidden">
+          <div id="app-msg-empty-state" style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:0.85rem">Select a conversation to view messages.</div>
+          <div id="app-msg-convo-content" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+            <div class="dcard-header">
+              <div style="display:flex;align-items:center;gap:0.75rem">
+                <div class="msg-avatar" id="app-msg-convo-avatar">—</div>
+                <div style="font-size:0.88rem;font-weight:500;color:var(--ink)" id="app-msg-convo-name">—</div>
+              </div>
+              <button class="btn-sm-ghost" id="app-msg-view-profile-btn">View profile →</button>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;background:var(--cream)" id="conversation-thread"></div>
+            <div style="padding:1rem;border-top:1px solid var(--rule);background:#fff">
+              <div id="conversation-reply-error" class="login-error" style="display:none;margin-bottom:0.5rem"></div>
+              <div style="display:flex;gap:0.75rem;align-items:flex-end">
+                <textarea id="conversation-reply-text" placeholder="Type a reply to send now..." style="flex:1;border:1px solid var(--rule2);border-radius:6px;padding:0.6rem 0.875rem;font-size:0.83rem;font-family:'Figtree',sans-serif;outline:none;resize:none;min-height:40px;max-height:40px"></textarea>
+                <button class="btn-sm" id="conversation-reply-btn" onclick="sendConversationReply()">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1642,20 +1698,32 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 
     <!-- CARE PLANS -->
     <div class="dpage" id="apage-plans">
+      <div class="d-metrics" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.5rem">
+        <div class="d-metric"><div class="dm-label">Active care plans</div><div class="dm-value" id="plans-stat-active">—</div></div>
+        <div class="d-metric"><div class="dm-label">Avg. plan completion</div><div class="dm-value" id="plans-stat-completion">—</div></div>
+        <div class="d-metric"><div class="dm-label">Due for review</div><div class="dm-value" id="plans-stat-review">—</div></div>
+      </div>
       <div class="dcard">
-        <div class="dcard-header"><div class="dcard-title">Care plans</div><button class="btn-sm" onclick="openNewCarePlanModal()">+ New care plan</button></div>
-        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Plan</th><th>Progress</th><th>Status</th><th>Next review</th><th></th></tr></thead>
-        <tbody id="app-plans-table-body"></tbody>
-        </table></div>
+        <div class="dcard-header"><div class="dcard-title">Active care plans</div><button class="btn-sm" onclick="openNewCarePlanModal()">+ New care plan</button></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1rem" id="app-plans-cards"></div>
         <div id="app-plans-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
       </div>
     </div>
 
     <!-- INTAKE FORMS -->
     <div class="dpage" id="apage-intake">
+      <div class="d-metrics" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.5rem">
+        <div class="d-metric"><div class="dm-label">Forms sent this month</div><div class="dm-value" id="intake-stat-sent-month">—</div></div>
+        <div class="d-metric"><div class="dm-label">Completed</div><div class="dm-value" id="intake-stat-completed">—</div></div>
+        <div class="d-metric"><div class="dm-label">Pending</div><div class="dm-value" id="intake-stat-pending2">—</div></div>
+      </div>
       <div class="dcard">
-        <div class="dcard-header"><div class="dcard-title">Intake forms</div><button class="btn-sm" onclick="openSendIntakeModal()">+ Send intake form</button></div>
-        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Status</th><th>Sent</th><th>Expires</th><th></th></tr></thead>
+        <div class="dcard-header"><div class="dcard-title">Pending intake forms</div><button class="btn-sm" onclick="openSendIntakeModal()">+ Send intake form</button></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem" id="app-intake-pending-cards"></div>
+      </div>
+      <div class="dcard" style="margin-top:1.5rem">
+        <div class="dcard-header"><div class="dcard-title">Completed</div></div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Patient</th><th>Sent</th><th>Expires</th><th></th></tr></thead>
         <tbody id="app-intake-table-body"></tbody>
         </table></div>
         <div id="app-intake-empty" style="display:none;padding:2rem;text-align:center;color:var(--ink3);font-size:0.85rem"></div>
@@ -1810,16 +1878,6 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
 </div>
 
 <!-- CONVERSATION THREAD (real, authenticated) -->
-<div class="modal-overlay" id="conversation-modal" onclick="if(event.target===this)closeModal('conversation-modal')">
-  <div class="modal" style="max-width:520px"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('conversation-modal')">×</button>
-    <h3 id="conversation-patient-name">—</h3>
-    <div id="conversation-thread" style="max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:0.7rem;padding:0.5rem 0;margin-bottom:1rem"></div>
-    <div class="form-group"><label>Reply</label><textarea id="conversation-reply-text" style="min-height:70px" placeholder="Type a reply to send now..."></textarea></div>
-    <div id="conversation-reply-error" class="login-error" style="display:none"></div>
-    <button class="btn-primary" style="width:100%" id="conversation-reply-btn" onclick="sendConversationReply()">Send reply</button>
-  </div>
-</div>
-
 <!-- NEW APPOINTMENT (real, authenticated) -->
 <div class="modal-overlay" id="new-appointment-real-modal" onclick="if(event.target===this)closeModal('new-appointment-real-modal')">
   <div class="modal"><button class="modal-close" aria-label="Close dialog" onclick="closeModal('new-appointment-real-modal')">×</button>
@@ -2177,6 +2235,7 @@ function setAppPage(p){
   const pageId=realPages.includes(p)?'apage-'+p:'apage-soon';
   document.getElementById(pageId).classList.add('active');
   document.getElementById('app-page-title').textContent=appNavLabels[p]||'Coming soon';
+  if(p==='overview')loadOverview();
   if(p==='patients')loadPatients();
   if(p==='followups')loadFollowups();
   if(p==='messages')loadMessagesOverview();
@@ -2201,12 +2260,6 @@ async function loadPatients(){
   }
   document.getElementById('app-patients-count').textContent=data.length;
   document.getElementById('app-patient-count-text').textContent=data.length;
-  if(!data.length){
-    tbody.innerHTML='';
-    emptyEl.textContent='No patients yet. Click "+ Add patient" to add your first one.';
-    emptyEl.style.display='block';
-    return;
-  }
   tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name" style="cursor:pointer;color:var(--blue)" data-action="view-profile" data-id="'+escHtml(p.id)+'">'+escHtml(p.full_name)+'</div></td><td>'+escHtml(p.visit_type||'—')+'</td><td>'+(p.date_of_birth||'—')+'</td><td>'+escHtml(p.phone||'—')+'</td><td>'+escHtml(p.email||'—')+'</td><td><button class="spill '+(p.sms_consent?'sp-g':'sp-r')+'" style="border:none;cursor:pointer" data-action="update-consent" data-id="'+escHtml(p.id)+'" data-consent="'+(p.sms_consent?'1':'0')+'">'+(p.sms_consent?'Consented':'Not consented')+'</button></td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" data-action="new-followup" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.full_name)+'">New follow-up</button></td></tr>').join('');
 }
 
@@ -2253,11 +2306,9 @@ async function loadPatientProfileData(patientId){
 
   const {data:plans}=await sb.from('care_plans').select('*').eq('patient_id',patientId).order('created_at',{ascending:false});
   const plansList=document.getElementById('pp2-plans-list');
-  const plansEmpty=document.getElementById('pp2-plans-empty');
   if(!plans||!plans.length){
-    plansList.innerHTML='';plansEmpty.style.display='block';
+    plansList.innerHTML='';
   } else {
-    plansEmpty.style.display='none';
     plansList.innerHTML=plans.map(p=>{
       const pct=p.total_visits?Math.round((p.completed_visits||0)/p.total_visits*100):0;
       return '<div style="border:1px solid var(--rule);border-radius:8px;padding:0.85rem 1rem">'
@@ -2276,22 +2327,18 @@ async function loadPatientProfileData(patientId){
 
   const {data:appts}=await sb.from('appointments').select('*').eq('patient_id',patientId).order('scheduled_at',{ascending:false});
   const apptsBody=document.getElementById('pp2-appts-body');
-  const apptsEmpty=document.getElementById('pp2-appts-empty');
   if(!appts||!appts.length){
-    apptsBody.innerHTML='';apptsEmpty.style.display='block';
+    apptsBody.innerHTML='';
   } else {
-    apptsEmpty.style.display='none';
     apptsBody.innerHTML=appts.map(a=>'<tr><td>'+escHtml(a.appointment_type)+'</td><td>'+new Date(a.scheduled_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})+'</td><td>'+a.duration_minutes+' min</td><td><span class="spill '+(appointmentStatusPill[a.status]||'sp-b')+'">'+appointmentStatusLabels[a.status]+'</span></td></tr>').join('');
   }
 
   const {data:followups}=await sb.from('scheduled_messages').select('*').eq('patient_id',patientId).order('scheduled_at',{ascending:false});
   const fuBody=document.getElementById('pp2-followups-body');
-  const fuEmpty=document.getElementById('pp2-followups-empty');
   const fuStatusPill={scheduled:'sp-b',sent:'sp-g',canceled:'sp-r',failed:'sp-a'};
   if(!followups||!followups.length){
-    fuBody.innerHTML='';fuEmpty.style.display='block';
+    fuBody.innerHTML='';
   } else {
-    fuEmpty.style.display='none';
     fuBody.innerHTML=followups.map(m=>'<tr><td>'+escHtml(m.follow_up_type)+'</td><td>'+new Date(m.scheduled_at).toLocaleString()+'</td><td><span class="spill '+(fuStatusPill[m.status]||'sp-b')+'">'+m.status+'</span></td><td>'+(m.status==='scheduled'?'<button class="btn-sm-ghost" data-action="cancel-followup" data-id="'+escHtml(m.id)+'">Cancel</button>':'')+'</td></tr>').join('');
     fuBody.querySelectorAll('button[data-action="cancel-followup"]').forEach(btn=>{
       btn.onclick=()=>cancelScheduledMessage(btn.dataset.id);
@@ -2427,14 +2474,18 @@ async function loadFollowups(){
     return;
   }
   document.getElementById('app-followups-count').textContent=data.filter(m=>m.status==='scheduled').length;
-  if(!data.length){
-    tbody.innerHTML='';
-    emptyEl.textContent='Nothing scheduled yet. Generate a follow-up from a patient row and schedule it.';
-    emptyEl.style.display='block';
-    return;
-  }
   const statusPill={scheduled:'sp-b',sent:'sp-g',canceled:'sp-r',failed:'sp-a'};
-  tbody.innerHTML=data.map(m=>'<tr><td>'+escHtml(m.patients?.full_name||'—')+'</td><td>'+escHtml(m.follow_up_type)+'</td><td>'+new Date(m.scheduled_at).toLocaleString()+'</td><td><span class="spill '+(statusPill[m.status]||'sp-b')+'">'+m.status+'</span></td><td>'+(m.status==='scheduled'?'<button class="btn-sm-ghost" onclick=\'cancelScheduledMessage('+JSON.stringify(m.id)+')\'>Cancel</button>':'')+'</td></tr>').join('');
+  tbody.innerHTML=data.map(m=>'<tr data-fustatus="'+m.status+'"><td>'+escHtml(m.patients?.full_name||'—')+'</td><td>'+escHtml(m.follow_up_type)+'</td><td>'+new Date(m.scheduled_at).toLocaleString()+'</td><td><span class="spill '+(statusPill[m.status]||'sp-b')+'">'+m.status+'</span></td><td>'+(m.status==='scheduled'?'<button class="btn-sm-ghost" onclick=\'cancelScheduledMessage('+JSON.stringify(m.id)+')\'>Cancel</button>':'')+'</td></tr>').join('');
+  const activeTab=document.querySelector('#apage-followups .dtab.active');
+  filterAppFollowups(activeTab,activeTab?activeTab.dataset.fustatus:'all');
+}
+
+function filterAppFollowups(btn,status){
+  document.querySelectorAll('#apage-followups .dtab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('#app-followups-table-body tr[data-fustatus]').forEach(row=>{
+    row.style.display=(status==='all'||row.dataset.fustatus===status)?'':'none';
+  });
 }
 
 async function cancelScheduledMessage(id){
@@ -2446,48 +2497,65 @@ async function cancelScheduledMessage(id){
 let currentConversationPatient=null;
 
 async function loadMessagesOverview(){
-  const tbody=document.getElementById('app-messages-table-body');
+  const listEl=document.getElementById('app-msg-thread-list');
   const emptyEl=document.getElementById('app-messages-empty');
   emptyEl.style.display='none';
-  tbody.innerHTML='<tr><td colspan="4" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  listEl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--ink3);font-size:0.85rem">Loading…</div>';
   const {data:patientsData,error:patientsErr}=await sb.from('patients').select('id,full_name').order('full_name');
   if(patientsErr){
-    tbody.innerHTML='';
+    listEl.innerHTML='';
     emptyEl.textContent='Could not load conversations: '+patientsErr.message;
     emptyEl.style.display='block';
     return;
   }
-  const {data:msgsData}=await sb.from('messages').select('patient_id,needs_attention');
+  const {data:msgsData}=await sb.from('messages').select('patient_id,needs_attention,created_at,body').order('created_at',{ascending:true});
   const counts={};
   const attention={};
+  const lastMsg={};
   (msgsData||[]).forEach(m=>{
     counts[m.patient_id]=(counts[m.patient_id]||0)+1;
     if(m.needs_attention)attention[m.patient_id]=true;
+    lastMsg[m.patient_id]=m;
   });
   const flaggedCount=Object.keys(attention).length;
   const badgeEl=document.getElementById('app-messages-count');
   badgeEl.textContent=flaggedCount;
   badgeEl.style.display=flaggedCount>0?'inline-block':'none';
-  if(!patientsData.length){
-    tbody.innerHTML='';
-    emptyEl.textContent='No patients yet.';
-    emptyEl.style.display='block';
-    return;
-  }
-  tbody.innerHTML=patientsData.map(p=>'<tr><td><div class="td-name">'+escHtml(p.full_name)+'</div></td><td>'+(counts[p.id]||0)+'</td><td>'+(attention[p.id]?'<span class="spill sp-a">Needs attention</span>':'—')+'</td><td><button class="btn-sm-ghost" data-action="view-conversation" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.full_name)+'">View conversation</button></td></tr>').join('');
+  const sorted=patientsData.slice().sort((a,b)=>{
+    const ta=lastMsg[a.id]?new Date(lastMsg[a.id].created_at).getTime():0;
+    const tb=lastMsg[b.id]?new Date(lastMsg[b.id].created_at).getTime():0;
+    return tb-ta;
+  });
+  listEl.innerHTML=sorted.map(p=>{
+    const initials=p.full_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const preview=lastMsg[p.id]?escHtml(lastMsg[p.id].body):'No messages yet';
+    const time=lastMsg[p.id]?new Date(lastMsg[p.id].created_at).toLocaleDateString():'';
+    const isFlagged=attention[p.id];
+    return '<div class="msg-item" data-action="view-conversation" data-id="'+escHtml(p.id)+'" data-name="'+escHtml(p.full_name)+'"><div class="msg-avatar"'+(isFlagged?' style="background:var(--red-tint);color:var(--red)"':'')+'>'+initials+'</div><div class="msg-content"><div class="msg-name">'+escHtml(p.full_name)+(isFlagged?' <span style="font-size:0.7rem;color:var(--red)">· Needs attention</span>':'')+'</div><div class="msg-preview">'+preview+'</div></div><div><div class="msg-time">'+time+'</div></div></div>';
+  }).join('');
 }
 
-document.getElementById('app-messages-table-body').addEventListener('click',(e)=>{
-  const btn=e.target.closest('button[data-action="view-conversation"]');
-  if(btn)openConversation(btn.dataset.id,btn.dataset.name);
+document.getElementById('app-msg-thread-list').addEventListener('click',(e)=>{
+  const item=e.target.closest('[data-action="view-conversation"]');
+  if(item)openConversation(item.dataset.id,item.dataset.name);
 });
 
 async function openConversation(patientId,patientName){
   currentConversationPatient={id:patientId,name:patientName};
-  document.getElementById('conversation-patient-name').textContent=patientName;
+  if(!document.getElementById('apage-messages').classList.contains('active')){
+    setAppPage('messages');
+    await loadMessagesOverview();
+  }
+  document.querySelectorAll('#app-msg-thread-list .msg-item').forEach(el=>el.classList.remove('active-thread'));
+  const clicked=document.querySelector('#app-msg-thread-list [data-id="'+CSS.escape(patientId)+'"]');
+  if(clicked)clicked.classList.add('active-thread');
+  document.getElementById('app-msg-empty-state').style.display='none';
+  document.getElementById('app-msg-convo-content').style.display='flex';
+  document.getElementById('app-msg-convo-name').textContent=patientName;
+  document.getElementById('app-msg-convo-avatar').textContent=patientName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('app-msg-view-profile-btn').onclick=()=>openPatientProfilePage(patientId);
   document.getElementById('conversation-reply-text').value='';
   document.getElementById('conversation-reply-error').style.display='none';
-  openModal('conversation-modal');
   await loadConversationThread();
 }
 
@@ -2497,10 +2565,6 @@ async function loadConversationThread(){
   const {data,error}=await sb.from('messages').select('*').eq('patient_id',currentConversationPatient.id).order('created_at',{ascending:true});
   if(error){
     threadEl.innerHTML='<div style="color:var(--red);font-size:0.8rem">Could not load messages.</div>';
-    return;
-  }
-  if(!data.length){
-    threadEl.innerHTML='<div style="text-align:center;color:var(--ink3);font-size:0.8rem">No messages yet.</div>';
     return;
   }
   threadEl.innerHTML=data.map(m=>{
@@ -2529,12 +2593,14 @@ async function sendConversationReply(){
     if(!resp.ok)throw new Error(result.error||'Could not send reply.');
     document.getElementById('conversation-reply-text').value='';
     await loadConversationThread();
-    loadMessagesOverview();
+    await loadMessagesOverview();
+    const activeItem=document.querySelector('#app-msg-thread-list [data-id="'+CSS.escape(currentConversationPatient.id)+'"]');
+    if(activeItem)activeItem.classList.add('active-thread');
   }catch(err){
     errEl.textContent=err.message;
     errEl.style.display='block';
   }
-  btn.disabled=false;btn.textContent='Send reply';
+  btn.disabled=false;btn.textContent='Send';
 }
 
 async function generateDraftMessage(){
@@ -2846,7 +2912,6 @@ function updateRealLegend(){
   if(!el)return;
   const types=new Set();
   Object.values(realCalAppts).forEach(arr=>arr.forEach(a=>types.add(a.type)));
-  if(!types.size){el.innerHTML='<div style="font-size:0.78rem;color:var(--ink3)">No appointments in view.</div>';return;}
   el.innerHTML=Array.from(types).sort().map(t=>'<div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--ink2)"><span style="width:10px;height:10px;border-radius:3px;background:'+colorForType(t)+';flex-shrink:0;display:inline-block"></span>'+escHtml(t)+'</div>').join('');
 }
 
@@ -2990,31 +3055,42 @@ const carePlanStatusPill={active:'sp-b',completed:'sp-g',on_hold:'sp-a',disconti
 let currentCarePlan=null;
 
 async function loadCarePlans(){
-  const tbody=document.getElementById('app-plans-table-body');
+  const cardsEl=document.getElementById('app-plans-cards');
   const emptyEl=document.getElementById('app-plans-empty');
   emptyEl.style.display='none';
-  tbody.innerHTML='<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  cardsEl.innerHTML='<p style="text-align:center;color:var(--ink3);font-size:0.85rem">Loading…</p>';
   const {data,error}=await sb.from('care_plans').select('*,patients(full_name)').order('created_at',{ascending:false});
   if(error){
-    tbody.innerHTML='';
+    cardsEl.innerHTML='';
     emptyEl.textContent='Could not load care plans: '+error.message;
     emptyEl.style.display='block';
     return;
   }
-  const activeCount=data.filter(p=>p.status==='active').length;
-  document.getElementById('app-plans-count').textContent=activeCount;
-  if(!data.length){
-    tbody.innerHTML='';
-    emptyEl.textContent='No care plans yet. Click "+ New care plan" to add one.';
-    emptyEl.style.display='block';
-    return;
-  }
-  tbody.innerHTML=data.map(p=>'<tr><td><div class="td-name">'+escHtml(p.patients?.full_name||'—')+'</div></td><td>'+escHtml(p.plan_name)+'</td><td>'+p.completed_visits+' / '+p.total_visits+'</td><td><span class="spill '+(carePlanStatusPill[p.status]||'sp-b')+'">'+carePlanStatusLabels[p.status]+'</span></td><td>'+(p.next_review_date||'—')+'</td><td><button class="btn-sm-ghost" data-action="update-plan" data-id="'+escHtml(p.id)+'">Update</button></td></tr>').join('');
+  const activePlans=data.filter(p=>p.status==='active');
+  document.getElementById('app-plans-count').textContent=activePlans.length;
+  document.getElementById('plans-stat-active').textContent=activePlans.length;
+  const avgCompletion=activePlans.length?Math.round(activePlans.reduce((sum,p)=>sum+(p.total_visits?p.completed_visits/p.total_visits:0),0)/activePlans.length*100):0;
+  document.getElementById('plans-stat-completion').textContent=avgCompletion+'%';
+  const weekFromNow=new Date(Date.now()+7*86400000);
+  const dueForReview=data.filter(p=>p.next_review_date&&new Date(p.next_review_date)<=weekFromNow&&(p.status==='active')).length;
+  document.getElementById('plans-stat-review').textContent=dueForReview;
+
+  cardsEl.innerHTML=data.map(p=>{
+    const pct=p.total_visits?Math.round((p.completed_visits||0)/p.total_visits*100):0;
+    const remaining=Math.max(0,(p.total_visits||0)-(p.completed_visits||0));
+    const badgeCls=pct>=100?'wp-done':pct>=60?'':'wp-warn';
+    return '<div class="wp-card" style="margin-bottom:0;cursor:pointer" data-action="update-plan" data-id="'+escHtml(p.id)+'">'
+      +'<div class="wp-header"><div><div class="wp-title">'+escHtml(p.patients?.full_name||'—')+'</div><div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">'+escHtml(p.plan_name)+'</div></div>'
+      +'<div style="display:flex;align-items:center;gap:0.5rem"><span class="spill '+(carePlanStatusPill[p.status]||'sp-b')+'">'+carePlanStatusLabels[p.status]+'</span><span class="wp-badge '+badgeCls+'">'+(p.completed_visits||0)+' / '+p.total_visits+' visits</span></div></div>'
+      +'<div class="wp-progress-wrap"><div class="wp-progress-bar" style="width:'+pct+'%"></div></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink3);margin-top:3px"><span>'+pct+'% complete</span><span>'+remaining+' visits remaining</span><span>Next review: '+(p.next_review_date||'—')+'</span></div>'
+      +'</div>';
+  }).join('');
 }
 
-document.getElementById('app-plans-table-body').addEventListener('click',(e)=>{
-  const btn=e.target.closest('button[data-action="update-plan"]');
-  if(btn)openUpdateCarePlanModal(btn.dataset.id);
+document.getElementById('app-plans-cards').addEventListener('click',(e)=>{
+  const card=e.target.closest('[data-action="update-plan"]');
+  if(card)openUpdateCarePlanModal(card.dataset.id);
 });
 
 async function openNewCarePlanModal(prefillPatientId){
@@ -3099,31 +3175,46 @@ let currentIntakeFormId=null;
 async function loadIntakeForms(){
   const tbody=document.getElementById('app-intake-table-body');
   const emptyEl=document.getElementById('app-intake-empty');
+  const pendingCardsEl=document.getElementById('app-intake-pending-cards');
   emptyEl.style.display='none';
-  tbody.innerHTML='<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="4" style="padding:1.5rem;text-align:center;color:var(--ink3)">Loading…</td></tr>';
+  pendingCardsEl.innerHTML='<p style="text-align:center;color:var(--ink3);font-size:0.85rem">Loading…</p>';
   const {data,error}=await sb.from('intake_forms').select('*,patients(full_name)').order('sent_at',{ascending:false});
   if(error){
     tbody.innerHTML='';
+    pendingCardsEl.innerHTML='';
     emptyEl.textContent='Could not load intake forms: '+error.message;
     emptyEl.style.display='block';
     return;
   }
+  const pendingForms=data.filter(f=>f.status==='pending'||f.status==='expired');
+  const completedForms=data.filter(f=>f.status==='completed');
   document.getElementById('app-intake-count').textContent=data.filter(f=>f.status==='pending').length;
-  if(!data.length){
-    tbody.innerHTML='';
-    emptyEl.textContent='No intake forms sent yet. Click "+ Send intake form" to send one.';
-    emptyEl.style.display='block';
-    return;
-  }
-  tbody.innerHTML=data.map(f=>'<tr><td><div class="td-name">'+escHtml(f.patients?.full_name||'—')+'</div></td><td><span class="spill '+(intakeStatusPill[f.status]||'sp-b')+'">'+f.status+'</span></td><td>'+new Date(f.sent_at).toLocaleDateString()+'</td><td>'+new Date(f.expires_at).toLocaleDateString()+'</td><td>'+(f.status==='completed'?'<button class="btn-sm-ghost" data-action="view-intake" data-id="'+escHtml(f.id)+'">View responses</button>':'<button class="btn-sm-ghost" data-action="copy-intake-link" data-token="'+escHtml(f.token)+'">Copy link</button>')+'</td></tr>').join('');
+
+  const now=new Date();
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
+  const sentThisMonth=data.filter(f=>new Date(f.sent_at)>=monthStart).length;
+  document.getElementById('intake-stat-sent-month').textContent=sentThisMonth;
+  document.getElementById('intake-stat-completed').textContent=completedForms.length;
+  document.getElementById('intake-stat-pending2').textContent=pendingForms.length;
+
+  pendingCardsEl.innerHTML=pendingForms.map(f=>{
+    const isExpired=f.status==='expired'||new Date(f.expires_at)<now;
+    return '<div class="intake-card" data-action="copy-intake-link" data-token="'+escHtml(f.token)+'"><div><div class="intake-title">'+escHtml(f.patients?.full_name||'—')+'</div><div class="intake-sub">Sent '+new Date(f.sent_at).toLocaleDateString()+' · '+(isExpired?'Expired ':'Expires ')+new Date(f.expires_at).toLocaleDateString()+'</div></div><span style="font-size:0.7rem;font-weight:500;color:'+(isExpired?'var(--red)':'var(--amber)')+'">'+(isExpired?'Overdue':'Pending')+'</span></div>';
+  }).join('');
+
+  tbody.innerHTML=completedForms.map(f=>'<tr><td><div class="td-name">'+escHtml(f.patients?.full_name||'—')+'</div></td><td>'+new Date(f.sent_at).toLocaleDateString()+'</td><td>'+new Date(f.expires_at).toLocaleDateString()+'</td><td><button class="btn-sm-ghost" data-action="view-intake" data-id="'+escHtml(f.id)+'">View responses</button></td></tr>').join('');
 }
 
 document.getElementById('app-intake-table-body').addEventListener('click',(e)=>{
   const viewBtn=e.target.closest('button[data-action="view-intake"]');
-  if(viewBtn){openViewIntakeResponses(viewBtn.dataset.id);return;}
-  const copyBtn=e.target.closest('button[data-action="copy-intake-link"]');
-  if(copyBtn){
-    const link=window.location.origin+window.location.pathname+'?intake='+copyBtn.dataset.token;
+  if(viewBtn)openViewIntakeResponses(viewBtn.dataset.id);
+});
+
+document.getElementById('app-intake-pending-cards').addEventListener('click',(e)=>{
+  const copyEl=e.target.closest('[data-action="copy-intake-link"]');
+  if(copyEl){
+    const link=window.location.origin+window.location.pathname+'?intake='+copyEl.dataset.token;
     navigator.clipboard.writeText(link);
     showToast('Link copied.');
   }
@@ -3183,13 +3274,88 @@ async function openViewIntakeResponses(formId){
   openModal('view-intake-real-modal');
 }
 
+async function loadOverview(){
+  const {data:patientsData}=await sb.from('patients').select('id,full_name,sms_consent');
+  const totalPatients=patientsData?.length||0;
+  const consented=(patientsData||[]).filter(p=>p.sms_consent).length;
+  const consentRate=totalPatients?Math.round((consented/totalPatients)*100):0;
+  const patientNames={};
+  (patientsData||[]).forEach(p=>{patientNames[p.id]=p.full_name;});
+
+  const {data:messagesData}=await sb.from('messages').select('patient_id,needs_attention,direction,created_at').order('created_at',{ascending:false});
+  const flaggedByPatient={};
+  let sentCount=0;
+  (messagesData||[]).forEach(m=>{
+    if(m.needs_attention)flaggedByPatient[m.patient_id]=(flaggedByPatient[m.patient_id]||0)+1;
+    if(m.direction==='outbound')sentCount++;
+  });
+
+  const {data:apptData}=await sb.from('appointments').select('id,patient_id,appointment_type,scheduled_at,status').order('scheduled_at',{ascending:true});
+  const now=new Date();
+  const upcomingAppts=(apptData||[]).filter(a=>(a.status==='scheduled'||a.status==='confirmed')&&new Date(a.scheduled_at)>=now);
+
+  const {data:scheduledData}=await sb.from('scheduled_messages').select('id,patient_id,follow_up_type,scheduled_at,status,patients(full_name)').order('scheduled_at',{ascending:false}).limit(5);
+
+  const {data:intakeData}=await sb.from('intake_forms').select('patient_id,completed_at,patients(full_name)').eq('status','completed').order('completed_at',{ascending:false}).limit(3);
+
+  document.getElementById('ov-stat-patients').textContent=totalPatients;
+  document.getElementById('ov-stat-consent').textContent=consentRate+'%';
+  document.getElementById('ov-stat-sent').textContent=sentCount;
+  document.getElementById('ov-stat-attention').textContent=Object.values(flaggedByPatient).reduce((a,b)=>a+b,0);
+  document.getElementById('ov-stat-upcoming').textContent=upcomingAppts.length;
+
+  renderAttentionList('ov-attention-list',flaggedByPatient,patientNames);
+
+  const fuBody=document.getElementById('ov-followups-body');
+  const statusPill={scheduled:'sp-b',sent:'sp-g',canceled:'sp-r',failed:'sp-a'};
+  fuBody.innerHTML=(scheduledData||[]).map(m=>'<tr data-fustatus="'+m.status+'"><td>'+escHtml(m.patients?.full_name||'—')+'</td><td>'+escHtml(m.follow_up_type)+'</td><td>'+new Date(m.scheduled_at).toLocaleString()+'</td><td><span class="spill '+(statusPill[m.status]||'sp-b')+'">'+m.status+'</span></td></tr>').join('');
+  const activeTab=document.querySelector('#apage-overview .dtab.active');
+  filterOverviewFollowups(activeTab,activeTab?activeTab.dataset.fustatus:'all');
+
+  const upcomingEl=document.getElementById('ov-upcoming-appts');
+  const nextAppts=upcomingAppts.slice(0,5);
+  upcomingEl.innerHTML=nextAppts.map(a=>{
+    const d=new Date(a.scheduled_at);
+    return '<div class="uitem"><div class="udate"><div class="ud-day">'+d.getDate()+'</div><div class="ud-mon">'+d.toLocaleString('en-US',{month:'short'})+'</div></div><div class="uinfo"><div class="u-name">'+escHtml(patientNames[a.patient_id]||'—')+'</div><div class="u-type">'+escHtml(a.appointment_type)+'</div></div><div class="u-time">'+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+'</div></div>';
+  }).join('');
+
+  const feedItems=[];
+  (messagesData||[]).filter(m=>m.direction==='outbound').slice(0,3).forEach(m=>{
+    feedItems.push({time:m.created_at,html:'<div class="fdot" style="background:var(--blue-tint)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="#1a4fd6" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="ftext">Follow-up sent to <strong>'+escHtml(patientNames[m.patient_id]||'—')+'</strong></div><div class="ftime">'+new Date(m.created_at).toLocaleString()+'</div></div>'});
+  });
+  (messagesData||[]).filter(m=>m.needs_attention).slice(0,2).forEach(m=>{
+    feedItems.push({time:m.created_at,html:'<div class="fdot" style="background:var(--amber-tint)"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2v4M6 8.5v.5" stroke="#92600a" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><div class="ftext"><strong>'+escHtml(patientNames[m.patient_id]||'—')+'</strong>\'s message needs attention</div><div class="ftime">'+new Date(m.created_at).toLocaleString()+'</div></div>'});
+  });
+  (intakeData||[]).forEach(f=>{
+    feedItems.push({time:f.completed_at,html:'<div class="fdot" style="background:var(--green-tint)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3.5" stroke="#1a6644" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="ftext"><strong>'+escHtml(f.patients?.full_name||'—')+'</strong> submitted intake form</div><div class="ftime">'+new Date(f.completed_at).toLocaleString()+'</div></div>'});
+  });
+  feedItems.sort((a,b)=>new Date(b.time)-new Date(a.time));
+  const feedEl=document.getElementById('ov-activity-feed');
+  feedEl.innerHTML=feedItems.slice(0,5).map(i=>'<div class="fitem">'+i.html+'</div>').join('');
+}
+
+function filterOverviewFollowups(btn,status){
+  document.querySelectorAll('#apage-overview .dtab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('#ov-followups-body tr[data-fustatus]').forEach(row=>{
+    row.style.display=(status==='all'||row.dataset.fustatus===status)?'':'none';
+  });
+}
+
 function renderAnalyticsBarChart(el,items){
-  if(!items.length){el.innerHTML='<p style="padding:1.25rem;color:var(--ink3);font-size:0.85rem">No data yet.</p>';return;}
   const max=Math.max(1,...items.map(i=>i.count));
   el.innerHTML='<div class="bar-chart">'+items.map(i=>{
     const pct=Math.round((i.count/max)*100);
     return '<div class="bar-row"><div class="bar-lbl" style="width:80px;text-align:left">'+escHtml(i.label)+'</div><div class="bar-track"><div class="'+(i.green?'bar-fill-green':'bar-fill')+'" style="width:'+pct+'%'+(i.color?';background:'+i.color:'')+'"></div></div><div class="bar-val">'+i.count+'</div></div>';
   }).join('')+'</div>';
+}
+
+function renderAttentionList(elId,flaggedByPatient,patientNames){
+  const el=document.getElementById(elId);
+  const entries=Object.entries(flaggedByPatient).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML=entries.map(([pid,count])=>
+    '<div class="nst-row"><div><div class="nst-name">'+escHtml(patientNames[pid]||'—')+'</div><div class="nst-count">'+count+' flagged message'+(count===1?'':'s')+'</div></div><span class="spill sp-a">Needs attention</span></div>'
+  ).join('');
 }
 
 async function loadAnalytics(){
@@ -3256,28 +3422,16 @@ async function loadAnalytics(){
     {label:'Canceled',count:apptStatusCounts.canceled,color:'var(--ink3)'},
   ]);
 
-  const attentionEl=document.getElementById('analytics-attention-list');
-  const flaggedEntries=Object.entries(flaggedByPatient).sort((a,b)=>b[1]-a[1]);
-  if(!flaggedEntries.length){
-    attentionEl.innerHTML='<p style="padding:1.25rem;color:var(--ink3);font-size:0.85rem">Nothing needs attention right now.</p>';
-  } else {
-    attentionEl.innerHTML=flaggedEntries.map(([pid,count])=>
-      '<div class="nst-row"><div><div class="nst-name">'+escHtml(patientNames[pid]||'—')+'</div><div class="nst-count">'+count+' flagged message'+(count===1?'':'s')+'</div></div><span class="spill sp-a">Needs attention</span></div>'
-    ).join('');
-  }
+  renderAttentionList('analytics-attention-list',flaggedByPatient,patientNames);
 
   const noShowEl=document.getElementById('analytics-noshow-list');
   const noShowEntries=Object.entries(noShowByPatient).sort((a,b)=>b[1]-a[1]);
-  if(!noShowEntries.length){
-    noShowEl.innerHTML='<p style="padding:1.25rem;color:var(--ink3);font-size:0.85rem">No no-shows recorded.</p>';
-  } else {
-    const noShowMax=Math.max(1,...noShowEntries.map(([,c])=>c));
-    noShowEl.innerHTML=noShowEntries.map(([pid,count])=>{
-      const pct=Math.round((count/noShowMax)*100);
-      const risk=count>=2?{label:'High risk',pill:'sp-r',bar:'var(--red)'}:{label:'Monitor',pill:'sp-a',bar:'var(--amber)'};
-      return '<div class="nst-row"><div><div class="nst-name">'+escHtml(patientNames[pid]||'—')+'</div><div class="nst-count">'+count+' no-show'+(count===1?'':'s')+' total</div></div><div style="display:flex;align-items:center"><div class="nst-bar-wrap"><div class="nst-bar" style="width:'+pct+'%;background:'+risk.bar+'"></div></div><span class="spill '+risk.pill+'">'+risk.label+'</span></div></div>';
-    }).join('');
-  }
+  const noShowMax=Math.max(1,...noShowEntries.map(([,c])=>c));
+  noShowEl.innerHTML=noShowEntries.map(([pid,count])=>{
+    const pct=Math.round((count/noShowMax)*100);
+    const risk=count>=2?{label:'High risk',pill:'sp-r',bar:'var(--red)'}:{label:'Monitor',pill:'sp-a',bar:'var(--amber)'};
+    return '<div class="nst-row"><div><div class="nst-name">'+escHtml(patientNames[pid]||'—')+'</div><div class="nst-count">'+count+' no-show'+(count===1?'':'s')+' total</div></div><div style="display:flex;align-items:center"><div class="nst-bar-wrap"><div class="nst-bar" style="width:'+pct+'%;background:'+risk.bar+'"></div></div><span class="spill '+risk.pill+'">'+risk.label+'</span></div></div>';
+  }).join('');
 }
 
 function isOwnerOrAdmin(){return currentEmployeeRole==='owner'||currentEmployeeRole==='admin';}
