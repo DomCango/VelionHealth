@@ -1671,21 +1671,39 @@ body{font-family:'Figtree',sans-serif;color:var(--ink);-webkit-font-smoothing:an
         <div class="d-metric"><div class="dm-label">Messages sent</div><div class="dm-value" id="analytics-total-sent">—</div></div>
         <div class="d-metric"><div class="dm-label">Needs attention</div><div class="dm-value" id="analytics-needs-attention">—</div></div>
       </div>
-      <div class="dcard">
-        <div class="dcard-header"><div class="dcard-title">Follow-up status breakdown</div></div>
-        <div style="padding:1.25rem" id="analytics-status-breakdown"></div>
+
+      <div class="g2" style="margin-bottom:1.25rem">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Follow-up status breakdown</div></div>
+          <div id="analytics-status-breakdown"></div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Needs attention</div></div>
+          <div id="analytics-attention-list"></div>
+        </div>
       </div>
 
-      <div class="d-metrics-5" style="margin-top:1.5rem;margin-bottom:1.5rem">
+      <div class="g2" style="margin-bottom:1.25rem">
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">Appointment status breakdown</div></div>
+          <div id="analytics-appt-breakdown"></div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-header"><div class="dcard-title">No-show tracking</div></div>
+          <div style="padding:0.75rem 1.25rem;border-bottom:1px solid var(--rule)">
+            <div style="font-size:1.4rem;font-weight:500;color:var(--ink);letter-spacing:-0.03em" id="analytics-noshow-month">—</div>
+            <div style="font-size:0.72rem;color:var(--ink3);margin-top:2px">No-shows this month</div>
+          </div>
+          <div id="analytics-noshow-list"></div>
+        </div>
+      </div>
+
+      <div class="d-metrics-5">
         <div class="d-metric"><div class="dm-label">Total appointments</div><div class="dm-value" id="analytics-appt-total">—</div></div>
         <div class="d-metric"><div class="dm-label">Upcoming</div><div class="dm-value" id="analytics-appt-upcoming">—</div></div>
         <div class="d-metric"><div class="dm-label">Completed</div><div class="dm-value" id="analytics-appt-completed">—</div></div>
         <div class="d-metric"><div class="dm-label">No-show rate</div><div class="dm-value" id="analytics-appt-noshow-rate">—</div></div>
         <div class="d-metric"><div class="dm-label">Canceled</div><div class="dm-value" id="analytics-appt-canceled">—</div></div>
-      </div>
-      <div class="dcard">
-        <div class="dcard-header"><div class="dcard-title">Appointment status breakdown</div></div>
-        <div style="padding:1.25rem" id="analytics-appt-breakdown"></div>
       </div>
     </div>
 
@@ -3165,78 +3183,101 @@ async function openViewIntakeResponses(formId){
   openModal('view-intake-real-modal');
 }
 
+function renderAnalyticsBarChart(el,items){
+  if(!items.length){el.innerHTML='<p style="padding:1.25rem;color:var(--ink3);font-size:0.85rem">No data yet.</p>';return;}
+  const max=Math.max(1,...items.map(i=>i.count));
+  el.innerHTML='<div class="bar-chart">'+items.map(i=>{
+    const pct=Math.round((i.count/max)*100);
+    return '<div class="bar-row"><div class="bar-lbl" style="width:80px;text-align:left">'+escHtml(i.label)+'</div><div class="bar-track"><div class="'+(i.green?'bar-fill-green':'bar-fill')+'" style="width:'+pct+'%'+(i.color?';background:'+i.color:'')+'"></div></div><div class="bar-val">'+i.count+'</div></div>';
+  }).join('')+'</div>';
+}
+
 async function loadAnalytics(){
-  const {data:patientsData}=await sb.from('patients').select('sms_consent');
+  const {data:patientsData}=await sb.from('patients').select('id,full_name,sms_consent');
   const totalPatients=patientsData?.length||0;
   const consented=(patientsData||[]).filter(p=>p.sms_consent).length;
   const consentRate=totalPatients?Math.round((consented/totalPatients)*100):0;
+  const patientNames={};
+  (patientsData||[]).forEach(p=>{patientNames[p.id]=p.full_name;});
 
   const {data:scheduledData}=await sb.from('scheduled_messages').select('status');
   const totalScheduled=scheduledData?.length||0;
   const statusCounts={scheduled:0,sent:0,failed:0,canceled:0};
   (scheduledData||[]).forEach(m=>{statusCounts[m.status]=(statusCounts[m.status]||0)+1;});
 
-  const {data:messagesData}=await sb.from('messages').select('needs_attention');
-  const needsAttention=(messagesData||[]).filter(m=>m.needs_attention).length;
+  const {data:messagesData}=await sb.from('messages').select('patient_id,needs_attention');
+  const flaggedByPatient={};
+  (messagesData||[]).forEach(m=>{if(m.needs_attention)flaggedByPatient[m.patient_id]=(flaggedByPatient[m.patient_id]||0)+1;});
+  const needsAttention=Object.values(flaggedByPatient).reduce((a,b)=>a+b,0);
 
-  const {data:apptData}=await sb.from('appointments').select('status,scheduled_at');
+  const {data:apptData}=await sb.from('appointments').select('patient_id,status,scheduled_at');
   const apptTotal=apptData?.length||0;
   const now=new Date();
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
   const apptStatusCounts={scheduled:0,confirmed:0,completed:0,no_show:0,canceled:0};
-  (apptData||[]).forEach(a=>{apptStatusCounts[a.status]=(apptStatusCounts[a.status]||0)+1;});
+  const noShowByPatient={};
+  let noShowsThisMonth=0;
+  (apptData||[]).forEach(a=>{
+    apptStatusCounts[a.status]=(apptStatusCounts[a.status]||0)+1;
+    if(a.status==='no_show'){
+      noShowByPatient[a.patient_id]=(noShowByPatient[a.patient_id]||0)+1;
+      if(new Date(a.scheduled_at)>=monthStart)noShowsThisMonth++;
+    }
+  });
   const upcoming=(apptData||[]).filter(a=>(a.status==='scheduled'||a.status==='confirmed')&&new Date(a.scheduled_at)>=now).length;
   const completedCount=apptStatusCounts.completed;
   const noShowCount=apptStatusCounts.no_show;
   const noShowRate=(completedCount+noShowCount)?Math.round((noShowCount/(completedCount+noShowCount))*100):0;
-
-  document.getElementById('analytics-appt-total').textContent=apptTotal;
-  document.getElementById('analytics-appt-upcoming').textContent=upcoming;
-  document.getElementById('analytics-appt-completed').textContent=completedCount;
-  document.getElementById('analytics-appt-noshow-rate').textContent=noShowRate+'%';
-  document.getElementById('analytics-appt-canceled').textContent=apptStatusCounts.canceled;
-
-  const apptBreakdownEl=document.getElementById('analytics-appt-breakdown');
-  const apptStatusMeta=[
-    {key:'scheduled',label:'Scheduled',color:'var(--blue)'},
-    {key:'confirmed',label:'Confirmed',color:'var(--green)'},
-    {key:'completed',label:'Completed',color:'var(--green)'},
-    {key:'no_show',label:'No-show',color:'var(--red)'},
-    {key:'canceled',label:'Canceled',color:'var(--ink3)'},
-  ];
-  if(!apptTotal){
-    apptBreakdownEl.innerHTML='<p style="color:var(--ink3);font-size:0.85rem">No appointments yet.</p>';
-  } else {
-    const apptMax=Math.max(1,...apptStatusMeta.map(s=>apptStatusCounts[s.key]||0));
-    apptBreakdownEl.innerHTML=apptStatusMeta.map(s=>{
-      const count=apptStatusCounts[s.key]||0;
-      const pct=Math.round((count/apptMax)*100);
-      return '<div style="margin-bottom:0.9rem"><div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--ink2);margin-bottom:0.3rem"><span>'+s.label+'</span><span>'+count+'</span></div><div style="background:var(--cream);border-radius:4px;height:8px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+s.color+'"></div></div></div>';
-    }).join('');
-  }
 
   document.getElementById('analytics-total-patients').textContent=totalPatients;
   document.getElementById('analytics-consent-rate').textContent=consentRate+'%';
   document.getElementById('analytics-total-scheduled').textContent=totalScheduled;
   document.getElementById('analytics-total-sent').textContent=statusCounts.sent;
   document.getElementById('analytics-needs-attention').textContent=needsAttention;
+  document.getElementById('analytics-appt-total').textContent=apptTotal;
+  document.getElementById('analytics-appt-upcoming').textContent=upcoming;
+  document.getElementById('analytics-appt-completed').textContent=completedCount;
+  document.getElementById('analytics-appt-noshow-rate').textContent=noShowRate+'%';
+  document.getElementById('analytics-appt-canceled').textContent=apptStatusCounts.canceled;
+  document.getElementById('analytics-noshow-month').textContent=noShowsThisMonth;
 
-  const breakdownEl=document.getElementById('analytics-status-breakdown');
-  const statusMeta=[
-    {key:'scheduled',label:'Scheduled',color:'var(--blue)'},
-    {key:'sent',label:'Sent',color:'var(--green)'},
-    {key:'failed',label:'Failed',color:'var(--red)'},
-    {key:'canceled',label:'Canceled',color:'var(--ink3)'},
-  ];
-  if(!totalScheduled){
-    breakdownEl.innerHTML='<p style="color:var(--ink3);font-size:0.85rem">No follow-ups scheduled yet.</p>';
-    return;
+  renderAnalyticsBarChart(document.getElementById('analytics-status-breakdown'),[
+    {label:'Scheduled',count:statusCounts.scheduled},
+    {label:'Sent',count:statusCounts.sent,green:true},
+    {label:'Failed',count:statusCounts.failed,color:'var(--red)'},
+    {label:'Canceled',count:statusCounts.canceled,color:'var(--ink3)'},
+  ]);
+
+  renderAnalyticsBarChart(document.getElementById('analytics-appt-breakdown'),[
+    {label:'Scheduled',count:apptStatusCounts.scheduled},
+    {label:'Confirmed',count:apptStatusCounts.confirmed,green:true},
+    {label:'Completed',count:apptStatusCounts.completed,green:true},
+    {label:'No-show',count:apptStatusCounts.no_show,color:'var(--red)'},
+    {label:'Canceled',count:apptStatusCounts.canceled,color:'var(--ink3)'},
+  ]);
+
+  const attentionEl=document.getElementById('analytics-attention-list');
+  const flaggedEntries=Object.entries(flaggedByPatient).sort((a,b)=>b[1]-a[1]);
+  if(!flaggedEntries.length){
+    attentionEl.innerHTML='<p style="padding:1.25rem;color:var(--ink3);font-size:0.85rem">Nothing needs attention right now.</p>';
+  } else {
+    attentionEl.innerHTML=flaggedEntries.map(([pid,count])=>
+      '<div class="nst-row"><div><div class="nst-name">'+escHtml(patientNames[pid]||'—')+'</div><div class="nst-count">'+count+' flagged message'+(count===1?'':'s')+'</div></div><span class="spill sp-a">Needs attention</span></div>'
+    ).join('');
   }
-  const max=Math.max(1,...statusMeta.map(s=>statusCounts[s.key]||0));
-  breakdownEl.innerHTML=statusMeta.map(s=>{
-    const count=statusCounts[s.key]||0;
-    const pct=Math.round((count/max)*100);
-    return '<div style="margin-bottom:0.9rem"><div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--ink2);margin-bottom:0.3rem"><span>'+s.label+'</span><span>'+count+'</span></div><div style="background:var(--cream);border-radius:4px;height:8px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+s.color+'"></div></div></div>';
-  }).join('');
+
+  const noShowEl=document.getElementById('analytics-noshow-list');
+  const noShowEntries=Object.entries(noShowByPatient).sort((a,b)=>b[1]-a[1]);
+  if(!noShowEntries.length){
+    noShowEl.innerHTML='<p style="padding:1.25rem;color:var(--ink3);font-size:0.85rem">No no-shows recorded.</p>';
+  } else {
+    const noShowMax=Math.max(1,...noShowEntries.map(([,c])=>c));
+    noShowEl.innerHTML=noShowEntries.map(([pid,count])=>{
+      const pct=Math.round((count/noShowMax)*100);
+      const risk=count>=2?{label:'High risk',pill:'sp-r',bar:'var(--red)'}:{label:'Monitor',pill:'sp-a',bar:'var(--amber)'};
+      return '<div class="nst-row"><div><div class="nst-name">'+escHtml(patientNames[pid]||'—')+'</div><div class="nst-count">'+count+' no-show'+(count===1?'':'s')+' total</div></div><div style="display:flex;align-items:center"><div class="nst-bar-wrap"><div class="nst-bar" style="width:'+pct+'%;background:'+risk.bar+'"></div></div><span class="spill '+risk.pill+'">'+risk.label+'</span></div></div>';
+    }).join('');
+  }
 }
 
 function isOwnerOrAdmin(){return currentEmployeeRole==='owner'||currentEmployeeRole==='admin';}
