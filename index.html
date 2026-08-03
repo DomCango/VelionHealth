@@ -4014,7 +4014,7 @@ function buildDayCal(){
   const totalSlots=(END_HOUR-START_HOUR)*4;
   const totalH=totalSlots*SLOT_H;
   const labelsEl=document.getElementById('cal-time-labels');
-  labelsEl.innerHTML='';labelsEl.style.height=totalH+'px';
+  labelsEl.innerHTML='';labelsEl.style.height=totalH+'px';labelsEl.style.paddingTop='0';
   for(let h=START_HOUR;h<END_HOUR;h++){
     const lbl=document.createElement('div');
     lbl.className='cal-time-label';lbl.style.height=(SLOT_H*4)+'px';
