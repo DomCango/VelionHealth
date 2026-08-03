@@ -3991,7 +3991,6 @@ let _calBuilt = false;
 
 function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function minToY(min){return Math.round((min-START_HOUR*60)/15)*SLOT_H}
-function snapMin(min){return Math.round(min/calIntervalMins)*calIntervalMins}
 function fmtTime(min){const h=Math.floor(min/60),m=min%60,ampm=h>=12?'PM':'AM',hh=h>12?h-12:(h===0?12:h);return hh+':'+(m===0?'00':String(m).padStart(2,'0'))+' '+ampm}
 
 function setCalView(v){
@@ -4181,21 +4180,6 @@ function renderApptBlock(appt,slotsEl,key){
   slotsEl.appendChild(block);
 }
 
-function addApptAtSlot(startMin){
-  const patient=calSelectedPatient||document.getElementById('cal-pt-search').value||'';
-  if(!patient){showToast('Select a patient first');return;}
-  const key=dateKey(calCurrentDate);
-  const conflict=(calData[key]||[]).some(a=>startMin<a.startMin+a.durMins&&startMin+calIntervalMins>a.startMin);
-  if(!calData[key])calData[key]=[];
-  calData[key].push({id:nextId++,patient,type:calSelectedType,startMin,durMins:calIntervalMins});
-  buildCal();
-  if(conflict){
-    showToast('⚠️ Double booking at '+fmtTime(startMin)+'. Please confirm with the patient.');
-  } else {
-    showToast('Appointment added: '+fmtTime(startMin));
-  }
-}
-
 function openAddApptModal(){
   document.getElementById('book-appt-title').textContent='Book appointment';
   document.getElementById('book-appt-sub').textContent='Add an appointment directly to the calendar.';
@@ -4283,14 +4267,6 @@ function viewApptPatient(){
   }
 }
 
-function setCalIntervalBtn(btn){
-  document.querySelectorAll('.cal-interval-btn').forEach(b=>{if(b.id==='cal-view-day'||b.id==='cal-view-week')return;b.classList.remove('active')});
-  btn.classList.add('active');calIntervalMins=parseInt(btn.dataset.mins);
-}
-function setApptType(btn){
-  document.querySelectorAll('.cal-type-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');calSelectedType=btn.dataset.type;
-}
 function changeCalDay(dir){calCurrentDate=new Date(calCurrentDate.getTime()+dir*(calView==='week'?7:1)*86400000);buildCal();}
 function goToday(){calCurrentDate=new Date(2026,2,27);buildCal();}
 
